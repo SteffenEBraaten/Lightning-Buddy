@@ -6,6 +6,6 @@ Proper version control (incomplete):
   
   * Don't make pull requests with buggy code, remember to test .
   
-Testing (incomplete):
+Testing (Integration):
   * Test
   * AndroidTest
