@@ -1,19 +1,19 @@
 package com.example.in2000_project
 
-import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 
 
 abstract class BaseActivity : AppCompatActivity() {
-    /*
-        private val settings = getSharedPreferences("prefs", 0)
-        private val editor = settings.edit()
 
-        fun editSharePrefs(): SharedPreferences.Editor {
-            return editor
-        }
-    */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    protected lateinit var toolbar: Toolbar
+
+
+    protected fun setToolbar(title: String, withNavbar: Boolean) {
+        this.toolbar = findViewById(R.id.my_toolbar)
+        this.toolbar.title = title
+        if (withNavbar)
+            this.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
     }
 }
+
