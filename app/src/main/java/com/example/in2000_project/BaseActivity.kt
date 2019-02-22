@@ -8,12 +8,14 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected lateinit var toolbar: Toolbar
 
-
-    protected fun setToolbar(title: String, withNavbar: Boolean) {
+    //R.drawable.ic_arrow_back_white_24dp => back nav button
+    protected fun setToolbar(title: String, navImg: Int?) {
         this.toolbar = findViewById(R.id.my_toolbar)
         this.toolbar.title = title
-        if (withNavbar)
-            this.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        if (navImg != null)
+            this.toolbar.setNavigationIcon(navImg)
     }
+
+
 }
 
