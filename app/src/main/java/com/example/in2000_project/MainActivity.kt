@@ -8,6 +8,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        super.setToolbar(getString(R.string.app_name), false)
+        super.setDrawer()
     }
 }
