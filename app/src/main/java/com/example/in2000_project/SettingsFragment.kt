@@ -20,8 +20,9 @@ private const val ARG_PARAM2 = "param2"
  */
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootkey: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootkey: String) {
+        setPreferencesFromResource(R.xml.preferences, rootkey)
+
     }
 
 
