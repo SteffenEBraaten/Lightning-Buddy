@@ -27,7 +27,7 @@ class MainActivity : BaseActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        super.setToolbar(getString(R.string.app_name), false)
+        super.setDrawer()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         //Get notified when map is ready to be used
