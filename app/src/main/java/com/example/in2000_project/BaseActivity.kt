@@ -8,15 +8,40 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.R.menu
+import android.content.Intent
+import android.support.design.widget.NavigationView
 import android.view.MenuInflater
+import android.content.SharedPreferences
+import android.support.v7.preference.PreferenceManager
 
 
-
-
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var toolbar: Toolbar
     private lateinit var drawer: DrawerLayout
+
+    data class Settings(
+        val useLocation : Boolean,
+        val language : String,
+        val allowNotifications : Boolean,
+        val email : String,
+        val vibrate : Boolean
+    )
+
+    protected fun getPrefs() : SharedPreferences{
+        return PreferenceManager.getDefaultSharedPreferences(baseContext)
+    }
+
+    protected fun getSettings() : Settings{
+        val sharedPrefs = getPrefs()
+        return Settings(
+                    useLocation = sharedPrefs.getBoolean("useLocation", false),
+                    language = sharedPrefs.getString("language", "English") as String,
+                    allowNotifications = sharedPrefs.getBoolean("allowNotifications", true),
+                    email = sharedPrefs.getString("email", "") as String,
+                    vibrate = sharedPrefs.getBoolean("vibrate", true)
+                )
+    }
 
     //R.drawable.ic_arrow_back_white_24dp => back nav button
     private fun setToolbar(title: String, navImg: Int?) {
@@ -32,7 +57,7 @@ abstract class BaseActivity : AppCompatActivity() {
         //TODO: navigate back to previous activity or home
         setToolbar(getString(R.string.app_name), R.drawable.ic_arrow_back_black_24dp)
         this.toolbar.setNavigationOnClickListener{
-            //navback
+            Log.e("test", getSettings().toString())
         }
     }
 
@@ -43,6 +68,22 @@ abstract class BaseActivity : AppCompatActivity() {
         this.toolbar.setNavigationOnClickListener{
             this.drawer.openDrawer(GravityCompat.START)
         }
+
+        setNavigationView()
+    }
+
+    private fun setNavigationView(){
+        val drawerView = findViewById<NavigationView>(R.id.nav_view)
+        drawerView.setNavigationItemSelectedListener(this)
+    }
+
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.drawercontent_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        return true
     }
 
 

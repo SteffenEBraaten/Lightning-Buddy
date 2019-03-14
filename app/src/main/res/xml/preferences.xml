@@ -1,48 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_height="wrap_content"
+                  android:layout_width="wrap_content">
 
-    <PreferenceCategory
-            android:title="General">
+    <PreferenceCategory android:title="General">
 
         <SwitchPreference
                 android:defaultValue="false"
-                android:title="Use my location" android:key="switch_preference_2"/>
+                android:title="Use my location"
+                android:key="useLocation"/>
         <ListPreference
-                android:defaultValue="1"
-                android:title="Choose language" android:entries="@array/languages" android:entryValues="@array/languages"
-                android:key="list_preference_1"/>
+                android:defaultValue="English"
+                android:title="Choose language"
+                android:entries="@array/languages"
+                android:entryValues="@array/languages"
+                android:key="language"/>
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-            android:title="Notifications">
+    <PreferenceCategory android:title="Notifications">
 
         <SwitchPreference
-                android:defaultValue="false"
-                android:title="Allow notifications" android:key="switch_preference_1"/>
+                android:defaultValue="true"
+                android:title="Allow notifications"
+                android:key="allowNotifications"/>
 
         <EditTextPreference
-                android:defaultValue="Default value"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:title="Email" android:key="edit_text_preference_1"/>
+                android:title="Email"
+                android:key="email"/>
 
         <SwitchPreference
-                android:defaultValue="false"
-                android:title="Vibration" android:key="switch_preference_3"/>
+                android:defaultValue="true"
+                android:title="Vibrate"
+                android:key="vibrate"/>
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-            android:title="About">
+    <PreferenceCategory android:title="About">
 
         <Preference android:title="Terms of service">
-            <intent
-                    android:action="android.intent.action.VIEW"/>
+            <intent android:action="android.intent.action.VIEW"/>
         </Preference>
         <Preference android:title="Reset">
-            <intent
-                    android:action="android.intent.action.VIEW"/>
+            <intent android:action="android.intent.action.VIEW"/>
         </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

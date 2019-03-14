@@ -39,6 +39,5 @@
             android:theme="@style/NavigationTheme"
             app:headerLayout="@layout/drawercontent_header"
             app:menu="@menu/drawercontent"/>
-
 </android.support.v4.widget.DrawerLayout>
 

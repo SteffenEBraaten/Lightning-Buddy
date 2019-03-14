@@ -1,6 +1,7 @@
 package com.example.in2000_project
 
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.preference.PreferenceFragmentCompat
@@ -20,10 +21,8 @@ private const val ARG_PARAM2 = "param2"
  */
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootkey: String) {
-        setPreferencesFromResource(R.xml.preferences, rootkey)
-
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.preferences, rootKey)
     }
-
 
 }
