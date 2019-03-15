@@ -1,8 +1,8 @@
-package com.example.in2000_project
+package com.example.in2000_project.Settings
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import com.example.in2000_project.BaseActivity
+import com.example.in2000_project.R
 
 class SettingsActivity : BaseActivity() {
 
@@ -11,7 +11,10 @@ class SettingsActivity : BaseActivity() {
         setContentView(R.layout.activity_settings)
         super.attachBackButton()
         supportFragmentManager.beginTransaction()
-            .replace(R.id.settingsFragment, SettingsFragment())
+            .replace(
+                R.id.settingsFragment,
+                SettingsFragment()
+            )
             .commit()
     }
 
