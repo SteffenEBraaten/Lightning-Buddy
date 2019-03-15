@@ -14,7 +14,8 @@
                 android:title="Choose language"
                 android:entries="@array/languages"
                 android:entryValues="@array/languages"
-                android:key="language"/>
+                android:key="language"
+                android:summary="@string/language"/>
 
     </PreferenceCategory>
 
@@ -29,7 +30,8 @@
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:title="Email"
-                android:key="email"/>
+                android:key="email"
+                android:summary="@string/email"/>
 
         <SwitchPreference
                 android:defaultValue="true"
