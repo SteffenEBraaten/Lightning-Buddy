@@ -1,5 +1,6 @@
 # Gruppe01
 
+
 Proper version control (incomplete):
   * Always branch from test, then pull request when done => test.
   * All pull requests must be reviewed by another dev before merging.
@@ -9,4 +10,3 @@ Proper version control (incomplete):
 Testing (Integration):
   * Test
   * AndroidTest
-
