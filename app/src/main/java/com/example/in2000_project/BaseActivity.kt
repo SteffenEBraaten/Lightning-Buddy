@@ -4,12 +4,12 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.MenuItem
 import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
 import android.support.v7.preference.PreferenceManager
+import com.example.in2000_project.Settings.SettingsActivity
 
 
 abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
