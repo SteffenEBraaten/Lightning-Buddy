@@ -1,22 +1,15 @@
-package com.example.in2000_project
+package com.example.in2000_project.Settings
 
 import android.util.Patterns
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.support.v7.preference.PreferenceManager
-import android.util.Log
 import android.widget.Toast
+import com.example.in2000_project.R
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -38,7 +31,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun refreshFragment(){
         fragmentManager!!.beginTransaction()
-            .replace(R.id.settingsFragment, SettingsFragment())
+            .replace(
+                R.id.settingsFragment,
+                SettingsFragment()
+            )
             .commit()
     }
 
