@@ -1,4 +1,4 @@
 # Gruppe01
 
-Testing (UI flow):
+Application documentation
 
