@@ -5,12 +5,9 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
-import android.R.menu
 import android.content.Intent
 import android.support.design.widget.NavigationView
-import android.view.MenuInflater
 import android.content.SharedPreferences
 import android.support.v7.preference.PreferenceManager
 
@@ -21,11 +18,12 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     private lateinit var drawer: DrawerLayout
 
     data class Settings(
-        val useLocation : Boolean,
-        val language : String,
-        val allowNotifications : Boolean,
-        val email : String,
-        val vibrate : Boolean
+        val useLocation: Boolean,
+        val language: String,
+        val allowNotifications: Boolean,
+        val email: String,
+        val vibrate: Boolean,
+        val termsOfService: Boolean
     )
 
     protected fun getPrefs() : SharedPreferences{
@@ -39,11 +37,11 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     language = sharedPrefs.getString("language", "English") as String,
                     allowNotifications = sharedPrefs.getBoolean("allowNotifications", true),
                     email = sharedPrefs.getString("email", "") as String,
-                    vibrate = sharedPrefs.getBoolean("vibrate", true)
+                    vibrate = sharedPrefs.getBoolean("vibrate", true),
+                    termsOfService = sharedPrefs.getBoolean("termsOfService", false)
                 )
     }
 
-    //R.drawable.ic_arrow_back_white_24dp => back nav button
     private fun setToolbar(title: String, navImg: Int?) {
         this.toolbar = findViewById(R.id.my_toolbar)
         this.toolbar.title = title
@@ -57,7 +55,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         //TODO: navigate back to previous activity or home
         setToolbar(getString(R.string.app_name), R.drawable.ic_arrow_back_black_24dp)
         this.toolbar.setNavigationOnClickListener{
-            Log.e("test", getSettings().toString())
+            finish()
         }
     }
 
