@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_height="wrap_content"
+                  android:layout_width="wrap_content">
+
+    <PreferenceCategory android:title="General">
+
+        <SwitchPreference
+                android:defaultValue="false"
+                android:title="Use my location"
+                android:key="useLocation"/>
+        <ListPreference
+                android:defaultValue="English"
+                android:title="Choose language"
+                android:entries="@array/languages"
+                android:entryValues="@array/languages"
+                android:key="language"
+                android:summary="@string/language"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Notifications">
+
+        <SwitchPreference
+                android:defaultValue="true"
+                android:title="Allow notifications"
+                android:key="allowNotifications"/>
+
+        <EditTextPreference
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="Email"
+                android:key="email"
+                android:summary="@string/email"/>
+
+        <SwitchPreference
+                android:defaultValue="true"
+                android:title="Vibrate"
+                android:key="vibrate"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="About">
+
+        <Preference android:title="Terms of service">
+            <intent android:action="android.intent.action.VIEW"/>
+        </Preference>
+        <Preference android:title="Reset">
+            <intent android:action="android.intent.action.VIEW"/>
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>
