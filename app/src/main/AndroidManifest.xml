@@ -13,9 +13,9 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SettingsActivity">
+        <activity android:name=".Settings.SettingsActivity">
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".Maps.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
