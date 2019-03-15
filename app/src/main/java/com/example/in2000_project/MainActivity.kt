@@ -7,6 +7,7 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
@@ -28,10 +30,14 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var viewModel: MapsViewmodel
+    private lateinit var mapsAPI: String
+    private lateinit var placesClient: PlacesClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mapsAPI = getString(R.string.Maps_API)
 
         super.setDrawer()
 
@@ -41,9 +47,8 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener 
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        Places.initialize(applicationContext, getString(R.string.Maps_API))
-        //TODO: Mulig å slette?
-        val placesClient: PlacesClient = Places.createClient(this)
+        Places.initialize(applicationContext, mapsAPI)
+        placesClient = Places.createClient(this)
     }
 
     val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
@@ -77,13 +82,18 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener 
         val autocompleteFragment: AutocompleteSupportFragment =
             supportFragmentManager.findFragmentById(R.id.searchbar_fragment) as AutocompleteSupportFragment
 
-        autocompleteFragment.setPlaceFields(arrayListOf(Place.Field.ID, Place.Field.NAME))
-
+        autocompleteFragment.setPlaceFields(arrayListOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
+            Place.Field.VIEWPORT))
         autocompleteFragment.setOnPlaceSelectedListener(this)
     }
 
-    override fun onPlaceSelected(p0: Place) {
-
+    override fun onPlaceSelected(place: Place) {
+        googleMap.clear()
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.viewport, 0))
+        //Only run bellow part if latLng is not null
+        place.latLng?.run {
+            googleMap.addMarker(MarkerOptions().position(place.latLng!!))
+        }
     }
 
     override fun onError(status: Status) {
