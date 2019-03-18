@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -25,6 +26,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import java.util.*
 
 class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener {
     private lateinit var googleMap: GoogleMap
@@ -91,7 +93,8 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener 
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.viewport, 0))
         //Only run bellow part if latLng is not null
         place.latLng?.run {
-            googleMap.addMarker(MarkerOptions().position(place.latLng!!))
+            //googleMap.addMarker(MarkerOptions().position(place.latLng!!))
+            setMarkerLightning(place.latLng!!)
         }
     }
 
@@ -130,9 +133,12 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener 
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.standard_json))
     }
     fun setMarkerLightning(location: LatLng) {
-        googleMap.addMarker(MarkerOptions().position(location)
+        val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
             .fromBitmap(resizeMapIcon("lightning_icon_tmp", 150, 150))))
+            Handler().postDelayed({
+                marker.remove()
+            }, 5000)
     }
     fun resizeMapIcon(iconName: String, width: Int, height: Int): Bitmap {
         val imageBitmap: Bitmap = BitmapFactory
