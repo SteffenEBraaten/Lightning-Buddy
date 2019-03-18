@@ -3,6 +3,8 @@ package com.example.in2000_project
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -16,8 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
@@ -29,7 +30,6 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener 
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
-    private lateinit var viewModel: MapsViewmodel
     private lateinit var mapsAPI: String
     private lateinit var placesClient: PlacesClient
 
@@ -54,7 +54,6 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener 
     val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-        viewModel = MapsViewmodel(this)
 
         //Check for location permissions and request permissions if not already granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -121,5 +120,24 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, PlaceSelectionListener 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    //TODO: Decide if setting light and dark mode should rather be done in one function or two functions like I did bellow
+    fun setMapDarkMode() {
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.darkmode_json))
+    }
+    fun setLightMode() {
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.standard_json))
+    }
+    fun setMarkerLightning(location: LatLng) {
+        googleMap.addMarker(MarkerOptions().position(location)
+            .icon(BitmapDescriptorFactory
+            .fromBitmap(resizeMapIcon("lightning_icon_tmp", 150, 150))))
+    }
+    fun resizeMapIcon(iconName: String, width: Int, height: Int): Bitmap {
+        val imageBitmap: Bitmap = BitmapFactory
+            .decodeResource(resources, resources.getIdentifier(iconName, "drawable", packageName))
+        val resizedBitmap: Bitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false)
+        return resizedBitmap
     }
 }
