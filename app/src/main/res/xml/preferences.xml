@@ -15,6 +15,10 @@
                 android:entryValues="@array/languages"
                 android:key="language"
                 android:summary="@string/language"/>
+        <SwitchPreference
+                android:defaultValue="false"
+                android:title="Dark mode"
+                android:key="darkMode"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Notifications">
