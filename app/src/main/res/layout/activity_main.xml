@@ -2,33 +2,33 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                         xmlns:app="http://schemas.android.com/apk/res-auto"
                                         xmlns:tools="http://schemas.android.com/tools"
-                                        tools:context=".MainActivity"
+                                        tools:context=".Maps.MainActivity"
                                         android:id="@+id/drawer_layout"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:fitsSystemWindows="true">
     <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
+	<include layout="@layout/toolbar"/>
+
     <FrameLayout
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/content_frame"
+		android:layout_height="match_parent"
+		android:layout_width="match_parent">
 
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+		<fragment
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/map_frag"
+			android:name="com.example.in2000_project.MapFragment"/>
 
-                <include layout="@layout/toolbar"/>
-
-                <fragment
-                        xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:tools="http://schemas.android.com/tools"
-                        android:name="com.google.android.gms.maps.SupportMapFragment"
-                        android:id="@+id/map"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
-            </LinearLayout>
-    </FrameLayout>
+	</FrameLayout>
+	</LinearLayout>
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <android.support.design.widget.NavigationView
@@ -42,3 +42,4 @@
             app:menu="@menu/drawercontent"/>
 
 </android.support.v4.widget.DrawerLayout>
+
