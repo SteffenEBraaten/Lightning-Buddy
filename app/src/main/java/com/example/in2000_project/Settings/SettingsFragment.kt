@@ -2,6 +2,7 @@ package com.example.in2000_project.Settings
 
 import android.util.Patterns
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -10,6 +11,7 @@ import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.PreferenceManager
 import android.widget.Toast
 import com.example.in2000_project.R
+import android.support.v7.app.AppCompatDelegate
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -90,6 +92,38 @@ class SettingsFragment : PreferenceFragmentCompat() {
             refreshFragment()
             true
         }
+
+        val darkMode = findPreference("darkMode")
+        darkMode?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
+            if(value == true) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+            }
+            reStart()
+            true
+        }
+    }
+
+    private fun darkMode(){
+        val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context)
+        val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
+        if(darkMode){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
+    }
+
+    private fun reStart(){
+        startActivity(Intent(activity, SettingsActivity::class.java))
+        activity!!.overridePendingTransition(R.anim.alpha_enter,R.anim.alpha_exit)
+        activity!!.finish()
     }
 
     private fun isValidEmail(email : String) : Boolean{
@@ -118,8 +152,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         sharedPrefsEditor.putBoolean("allowNotifications", true)
         sharedPrefsEditor.putString("email", "")
         sharedPrefsEditor.putBoolean("vibrate", true)
+        sharedPrefsEditor.putBoolean("darkMode", false)
         sharedPrefsEditor.apply()
         refreshFragment()
+        darkMode()
+        reStart()
     }
 
     private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog{
