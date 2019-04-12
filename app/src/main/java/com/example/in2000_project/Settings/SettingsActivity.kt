@@ -22,13 +22,15 @@ class SettingsActivity : BaseActivity() {
             .commit()
     }
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        overridePendingTransition(R.anim.alpha_enter, R.anim.alpha_exit)
-        finish()
+
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.alpha_enter, R.anim.alpha_exit)
+            finish()
+
             return true
-    }
 
 
+        }
 
 }

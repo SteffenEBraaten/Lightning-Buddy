@@ -1,17 +1,49 @@
 package com.example.in2000_project.Settings
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.location.Location
+import android.os.Bundle
+import android.os.Handler
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
+import android.support.v4.content.ContextCompat
+
+import android.util.Log
+import android.widget.Toast
+import com.google.android.gms.common.api.Status
+
+import com.example.in2000_project.BaseActivity
+import com.example.in2000_project.MapFragment
+import com.example.in2000_project.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+
+import com.google.android.gms.maps.model.*
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import java.util.*
 import android.util.Patterns
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.PreferenceManager
-import android.widget.Toast
-import com.example.in2000_project.R
 import android.support.v7.app.AppCompatDelegate
+
 
 
 // TODO: Rename parameter arguments, choose names that match
