@@ -11,7 +11,7 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher"
             android:supportsRtl="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Settings.SettingsActivity">
         </activity>
@@ -25,8 +25,8 @@
 
         <!--Google maps API key-->
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/Maps_API"/>
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc"/>
 
     </application>
 

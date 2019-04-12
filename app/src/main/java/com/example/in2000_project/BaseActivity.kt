@@ -8,7 +8,9 @@ import android.view.MenuItem
 import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
+import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
+import com.example.in2000_project.Maps.MainActivity
 import com.example.in2000_project.Settings.SettingsActivity
 
 
@@ -20,6 +22,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     data class Settings(
         val useLocation: Boolean,
         val language: String,
+        val darkMode: Boolean,
         val allowNotifications: Boolean,
         val email: String,
         val vibrate: Boolean,
@@ -35,6 +38,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         return Settings(
                     useLocation = sharedPrefs.getBoolean("useLocation", false),
                     language = sharedPrefs.getString("language", "English") as String,
+                    darkMode = sharedPrefs.getBoolean("darkMode", false),
                     allowNotifications = sharedPrefs.getBoolean("allowNotifications", true),
                     email = sharedPrefs.getString("email", "") as String,
                     vibrate = sharedPrefs.getBoolean("vibrate", true),
@@ -55,16 +59,21 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         //TODO: navigate back to previous activity or home
         setToolbar(getString(R.string.app_name), R.drawable.ic_arrow_back_black_24dp)
         this.toolbar.setNavigationOnClickListener{
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.alpha_enter, R.anim.alpha_exit)
             finish()
+
+
         }
     }
-
 
     protected fun setDrawer(){
         setToolbar(getString(R.string.app_name), R.drawable.ic_menu_black_24dp)
         this.drawer = findViewById(R.id.drawer_layout)
         this.toolbar.setNavigationOnClickListener{
             this.drawer.openDrawer(GravityCompat.START)
+
         }
 
         setNavigationView()
@@ -83,6 +92,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
         return true
     }
+
 
 
 }
