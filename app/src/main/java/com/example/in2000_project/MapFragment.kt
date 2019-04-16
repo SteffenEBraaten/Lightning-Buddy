@@ -69,7 +69,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
 
-        //TODO: Comment here
+        //Make map style follow dark mode toggle
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
         if (darkMode) {
