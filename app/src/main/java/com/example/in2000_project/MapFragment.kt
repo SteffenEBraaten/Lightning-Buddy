@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,6 +78,11 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
                 , MY_PERMISSIONS_REQUEST_ACCESS_LOCATION)
         }
+        googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
+            override fun onMapClick(postion: LatLng?) {
+                Log.e("ALF", "CLICKY")
+            }
+        })
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when(requestCode) {
