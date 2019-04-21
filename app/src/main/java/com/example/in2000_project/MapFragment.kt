@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
+import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,6 +68,15 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+
+        //Make map style follow dark mode toggle
+        val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
+        if (darkMode) {
+            setMapStyle(false)
+        } else {
+            setMapStyle(true)
+        }
 
         //Check for location permissions and request permissions if not already granted
         if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
