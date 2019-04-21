@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -79,11 +80,22 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                 , MY_PERMISSIONS_REQUEST_ACCESS_LOCATION)
         }
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
-            override fun onMapClick(postion: LatLng?) {
-                Log.e("ALF", "CLICKY")
+            override fun onMapClick(position: LatLng?) {
+                addMarkerWithRadius(position!!)
             }
         })
     }
+    private fun addMarkerWithRadius(position: LatLng) {
+        googleMap.clear()
+        googleMap.addMarker(MarkerOptions().position(position))
+        //radius is in meters. Currently set to 10km
+        var radius: Double = 10000.0
+        var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
+            .fillColor(Color.argb(150, 146, 184, 244)))
+        //The zoom level is kind of tricky if you change the radius
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when(requestCode) {
             MY_PERMISSIONS_REQUEST_ACCESS_LOCATION -> {
