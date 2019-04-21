@@ -1,6 +1,7 @@
 package com.example.in2000_project
 
 import android.Manifest
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
+import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,12 +33,14 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 
+
 class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var mapsAPI: String
     private lateinit var placesClient: PlacesClient
+    private lateinit var viewModel : MapsViewmodel // use this to get data
 
     //Factory method for creating new map fragment
     companion object {
@@ -52,6 +56,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        this.viewModel = ViewModelProviders.of(this.activity!!, MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))).get(MapsViewmodel::class.java)
+
         mapsAPI = getString(R.string.Maps_API)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
         //Get notified when map is ready to be used
@@ -61,7 +68,6 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
         Places.initialize(activity!!, mapsAPI)
         placesClient = Places.createClient(activity!!)
-
     }
 
     val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100

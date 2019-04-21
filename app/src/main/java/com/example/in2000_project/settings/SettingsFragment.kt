@@ -1,4 +1,4 @@
-package com.example.in2000_project.Settings
+package com.example.in2000_project.settings
 
 import android.util.Patterns
 import android.content.Context
@@ -8,8 +8,16 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.PreferenceManager
+import android.util.Log
 import android.widget.Toast
+import com.example.in2000_project.maps.MapRepository
 import com.example.in2000_project.R
+import com.example.in2000_project.utils.TestUtil
+import com.example.in2000_project.utils.UalfUtil
+import java.util.*
+import kotlinx.coroutines.*
+
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -81,7 +89,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
                 sharedPrefsEditor.putString(preference.key, "")
                 sharedPrefsEditor.apply()
-                Toast.makeText(activity, "Invalid email", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Invalid email", Toast.LENGTH_SHORT).show()
             }
             true
         }
@@ -112,15 +120,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun resetSettings() {
-        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-        sharedPrefsEditor.putBoolean("useLocation", false)
-        sharedPrefsEditor.putString("language", "English")
-        sharedPrefsEditor.putBoolean("allowNotifications", true)
-        sharedPrefsEditor.putString("email", "")
-        sharedPrefsEditor.putBoolean("vibrate", true)
-        sharedPrefsEditor.apply()
-        refreshFragment()
+//        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
+//        sharedPrefsEditor.putBoolean("useLocation", false)
+//        sharedPrefsEditor.putString("language", "English")
+//        sharedPrefsEditor.putBoolean("allowNotifications", true)
+//        sharedPrefsEditor.putString("email", "")
+//        sharedPrefsEditor.putBoolean("vibrate", true)
+//        sharedPrefsEditor.apply()
+//        refreshFragment()
+
+        TestUtil.testMetLightning()
     }
+
 
     private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog{
         val alertBuilder = AlertDialog.Builder(this.context as Context)

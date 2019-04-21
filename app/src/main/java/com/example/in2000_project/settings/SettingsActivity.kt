@@ -1,4 +1,4 @@
-package com.example.in2000_project.Settings
+package com.example.in2000_project.settings
 
 import android.os.Bundle
 import com.example.in2000_project.BaseActivity
