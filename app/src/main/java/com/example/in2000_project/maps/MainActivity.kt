@@ -20,3 +20,6 @@ class MainActivity : BaseActivity() {
         }
     }
 }
+
+git commit -m "Added repository interfaces for getting lightning data from metProxy(past 48 hours) and frostProxy(historical data). Also added alarmManager that does a request to metProxy every 5 minutes. This backr
+ound process starts as the emulator is turned on and when user enters application. Setting for turning this feature off and adjusting request frequensy is not implemented but current implementation exist with these features in mind"
