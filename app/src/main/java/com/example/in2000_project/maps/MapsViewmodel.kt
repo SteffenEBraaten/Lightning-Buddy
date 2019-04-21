@@ -51,6 +51,7 @@ public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewMode
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 public class MapsViewmodelFactory(private val sharedPref: SharedPreferences) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return MapsViewmodel(sharedPref) as T

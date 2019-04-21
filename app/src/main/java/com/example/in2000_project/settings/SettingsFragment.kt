@@ -1,23 +1,18 @@
 package com.example.in2000_project.settings
 
+
 import android.util.Patterns
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.PreferenceManager
-import android.util.Log
 import android.widget.Toast
-import com.example.in2000_project.maps.MapRepository
 import com.example.in2000_project.R
-import com.example.in2000_project.utils.TestUtil
-import com.example.in2000_project.utils.UalfUtil
-import java.util.*
-import kotlinx.coroutines.*
-
-
+import android.support.v7.app.AppCompatDelegate
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -98,6 +93,38 @@ class SettingsFragment : PreferenceFragmentCompat() {
             refreshFragment()
             true
         }
+
+        val darkMode = findPreference("darkMode")
+        darkMode?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
+            if(value == true) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+            }
+            reStart()
+            true
+        }
+    }
+
+    private fun darkMode(){
+        val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context)
+        val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
+        if(darkMode){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
+    }
+
+    private fun reStart(){
+        startActivity(Intent(activity, SettingsActivity::class.java))
+        activity!!.overridePendingTransition(R.anim.alpha_enter,R.anim.alpha_exit)
+        activity!!.finish()
     }
 
     private fun isValidEmail(email : String) : Boolean{
@@ -120,16 +147,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun resetSettings() {
-//        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-//        sharedPrefsEditor.putBoolean("useLocation", false)
-//        sharedPrefsEditor.putString("language", "English")
-//        sharedPrefsEditor.putBoolean("allowNotifications", true)
-//        sharedPrefsEditor.putString("email", "")
-//        sharedPrefsEditor.putBoolean("vibrate", true)
-//        sharedPrefsEditor.apply()
-//        refreshFragment()
-
-        TestUtil.testMetLightning()
+        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
+        sharedPrefsEditor.putBoolean("useLocation", true)
+        sharedPrefsEditor.putString("language", "English")
+        sharedPrefsEditor.putBoolean("allowNotifications", true)
+        sharedPrefsEditor.putString("email", "")
+        sharedPrefsEditor.putBoolean("vibrate", true)
+        sharedPrefsEditor.putBoolean("darkMode", false)
+        sharedPrefsEditor.apply()
+        refreshFragment()
+        darkMode()
+        reStart()
     }
 
 

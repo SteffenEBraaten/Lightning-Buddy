@@ -20,7 +20,9 @@
 			tools:ignore="InnerclassSeparator" />
 
         <activity android:name=".maps.MainActivity"
-			tools:ignore="InnerclassSeparator">
+			tools:ignore="ExtraText,InnerclassSeparator">
+            android:theme="@style/AppTheme"
+            tools:ignore="GoogleAppIndexingWarning">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -30,8 +32,8 @@
 
         <!--Google maps API key-->
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/Maps_API"/>
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc"/>
 
 		<receiver android:name=".alarm.AutoStart"
 			tools:ignore="InnerclassSeparator">

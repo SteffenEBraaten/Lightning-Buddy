@@ -75,6 +75,15 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
 
+        //Make map style follow dark mode toggle
+        val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
+        if (darkMode) {
+            setMapStyle(false)
+        } else {
+            setMapStyle(true)
+        }
+
         //Check for location permissions and request permissions if not already granted
         if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
