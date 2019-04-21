@@ -25,7 +25,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:id="@+id/map_frag"
-			android:name="com.example.in2000_project.MapFragment"/>
+			android:name="com.example.in2000_project.maps.MapFragment"/>
 
 	</FrameLayout>
 	</LinearLayout>

@@ -1,8 +1,7 @@
-package com.example.in2000_project
+package com.example.in2000_project.maps
 
 import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,13 +11,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.in2000_project.R
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -57,7 +56,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.viewModel = ViewModelProviders.of(this.activity!!, MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))).get(MapsViewmodel::class.java)
+        this.viewModel = ViewModelProviders.of(this.activity!!,
+            MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))
+        ).get(MapsViewmodel::class.java)
 
         mapsAPI = getString(R.string.Maps_API)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
@@ -139,9 +140,13 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     }
     fun setMapStyle(lightMode: Boolean) {
         if (lightMode) {
-            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity!!, R.raw.standard_json))
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity!!,
+                R.raw.standard_json
+            ))
         } else {
-            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity!!, R.raw.darkmode_json))
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity!!,
+                R.raw.darkmode_json
+            ))
         }
     }
     fun setMarkerLightning(location: LatLng) {

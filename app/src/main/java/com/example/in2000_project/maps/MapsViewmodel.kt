@@ -1,24 +1,13 @@
-package com.example.in2000_project
+package com.example.in2000_project.maps
 
-import android.app.Activity
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import android.content.Context
 import android.content.SharedPreferences
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.util.Log
-import com.example.in2000_project.maps.MainActivity
-import com.example.in2000_project.maps.MapRepository
 import com.example.in2000_project.utils.UalfUtil
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewModel(){
