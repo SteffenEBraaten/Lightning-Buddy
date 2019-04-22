@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.example.in2000_project">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.in2000_project">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:roundIcon="@mipmap/ic_launcher"
-            android:supportsRtl="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Settings.SettingsActivity">
-        </activity>
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".LightningHistory.LightningHistory"
+            android:label="@string/title_activity_lightning_history"
+            android:theme="@style/NoActionBar"></activity>
+        <activity android:name=".Settings.SettingsActivity"></activity>
         <activity android:name=".Maps.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!--Google maps API key-->
+        </activity> <!-- Google maps API key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/Maps_API"/>
-
+            android:value="@string/Maps_API" />
     </application>
 
 </manifest>

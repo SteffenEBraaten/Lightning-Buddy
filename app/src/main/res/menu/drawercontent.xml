@@ -6,8 +6,8 @@
                 android:icon="@drawable/ic_location_searching_black_24dp"
                 android:title="Map"/>
         <item
-                android:id="@+id/test2"
-                android:title="test2"/>
+                android:id="@+id/drawercontent_lightninghistory"
+                android:title="LightningHistory"/>
         <item
                 android:id="@+id/test3"
                 android:title="test3"/>

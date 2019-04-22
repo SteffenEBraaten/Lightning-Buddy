@@ -9,6 +9,7 @@ import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
 import android.support.v7.preference.PreferenceManager
+import com.example.in2000_project.LightningHistory.LightningHistory
 import com.example.in2000_project.Settings.SettingsActivity
 
 
@@ -79,6 +80,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.drawercontent_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+            R.id.drawercontent_lightninghistory -> startActivity(Intent(this, LightningHistory::class.java))
         }
 
         return true
