@@ -1,5 +1,6 @@
 package com.example.in2000_project
 
+import android.content.Context
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
@@ -10,8 +11,9 @@ import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
-import com.example.in2000_project.Maps.MainActivity
-import com.example.in2000_project.Settings.SettingsActivity
+import com.example.in2000_project.alarm.AlarmService
+import com.example.in2000_project.maps.MainActivity
+import com.example.in2000_project.settings.SettingsActivity
 
 
 abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -28,6 +30,12 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         val vibrate: Boolean,
         val termsOfService: Boolean
     )
+
+    protected fun setAlarm(){ //TODO: get minutes from settings?
+        val serviceIntent = Intent(this, AlarmService::class.java)
+        serviceIntent.putExtra("minutes", 5)
+        this.startService(serviceIntent)
+    }
 
     protected fun getPrefs() : SharedPreferences{
         return PreferenceManager.getDefaultSharedPreferences(baseContext)

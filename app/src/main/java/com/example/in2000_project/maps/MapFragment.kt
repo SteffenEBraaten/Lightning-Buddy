@@ -1,7 +1,7 @@
-package com.example.in2000_project
+package com.example.in2000_project.maps
 
 import android.Manifest
-import android.content.Context
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -11,13 +11,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.in2000_project.R
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -32,12 +32,14 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 
+
 class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var mapsAPI: String
     private lateinit var placesClient: PlacesClient
+    private lateinit var viewModel : MapsViewmodel // use this to get data
 
     //Factory method for creating new map fragment
     companion object {
@@ -53,6 +55,11 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        this.viewModel = ViewModelProviders.of(this.activity!!,
+            MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))
+        ).get(MapsViewmodel::class.java)
+
         mapsAPI = getString(R.string.Maps_API)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
         //Get notified when map is ready to be used
@@ -62,7 +69,6 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
         Places.initialize(activity!!, mapsAPI)
         placesClient = Places.createClient(activity!!)
-
     }
 
     val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
@@ -143,9 +149,13 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     }
     fun setMapStyle(lightMode: Boolean) {
         if (lightMode) {
-            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity!!, R.raw.standard_json))
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity!!,
+                R.raw.standard_json
+            ))
         } else {
-            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity!!, R.raw.darkmode_json))
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity!!,
+                R.raw.darkmode_json
+            ))
         }
     }
     fun setMarkerLightning(location: LatLng) {
