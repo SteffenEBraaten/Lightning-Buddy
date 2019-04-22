@@ -87,7 +87,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     }
     private fun addMarkerWithRadius(position: LatLng) {
         googleMap.clear()
-        googleMap.addMarker(MarkerOptions().position(position))
+        googleMap.addMarker(MarkerOptions().position(position).draggable(true))
         //radius is in meters. Currently set to 10km
         var radius: Double = 10000.0
         var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
