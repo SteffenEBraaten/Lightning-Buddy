@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
 
 	<application
@@ -20,8 +22,9 @@
 			tools:ignore="InnerclassSeparator" />
 
         <activity android:name=".maps.MainActivity"
-				tools:ignore="ExtraText,InnerclassSeparator"
+				      tools:ignore="ExtraText,InnerclassSeparator"
             	android:theme="@style/AppTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
 import android.support.v7.preference.PreferenceManager
+import android.util.Log
 import android.widget.Toast
 import com.example.in2000_project.maps.MapsViewmodel
 
@@ -17,7 +18,7 @@ class Alarm : BroadcastReceiver() {
 
         val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
-        wl.acquire(10*60*1000L /*10 minutes*/)
+        wl.acquire(60*1000L /*10 minutes*/)
         MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
         Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
 
@@ -52,7 +53,7 @@ class Alarm : BroadcastReceiver() {
         )
     }
 
-    fun cancelAlarm(context: Context) {
+    private fun cancelAlarm(context: Context) {
         val intent = Intent(context, Alarm::class.java)
         val sender = PendingIntent.getBroadcast(context, 0, intent, 0)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

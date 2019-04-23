@@ -21,6 +21,7 @@ class SettingsActivity : BaseActivity() {
             )
             .commit()
     }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
 
             val intent = Intent(this, MainActivity::class.java)
@@ -29,8 +30,6 @@ class SettingsActivity : BaseActivity() {
             finish()
 
             return true
-
-
-        }
+    }
 
 }
