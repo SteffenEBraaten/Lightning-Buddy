@@ -81,11 +81,11 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         }
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
-                addMarkerWithRadius(position!!)
+                addMarkerWithRadius(position!!, googleMap)
             }
         })
     }
-    private fun addMarkerWithRadius(position: LatLng) {
+    private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap) {
         googleMap.clear()
         googleMap.addMarker(MarkerOptions().position(position).draggable(true))
         //radius is in meters. Currently set to 10km
@@ -94,6 +94,20 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             .fillColor(Color.argb(150, 146, 184, 244)))
         //The zoom level is kind of tricky if you change the radius
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
+        googleMap.setOnMarkerDragListener(object: GoogleMap.OnMarkerDragListener {
+            override fun onMarkerDragStart(marker: Marker?) {
+                circle.center = marker?.position
+            }
+
+            override fun onMarkerDragEnd(marker: Marker?) {
+               circle.center = marker?.position
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker?.position, 11.1.toFloat()))
+            }
+
+            override fun onMarkerDrag(marker: Marker?) {
+                circle.center = marker?.position
+            }
+        })
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
