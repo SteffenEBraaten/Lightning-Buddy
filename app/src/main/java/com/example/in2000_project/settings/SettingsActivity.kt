@@ -1,11 +1,11 @@
-package com.example.in2000_project.Settings
+package com.example.in2000_project.settings
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import com.example.in2000_project.BaseActivity
-import com.example.in2000_project.Maps.MainActivity
 import com.example.in2000_project.R
+import com.example.in2000_project.maps.MainActivity
 
 
 class SettingsActivity : BaseActivity() {

@@ -1,4 +1,4 @@
-package com.example.in2000_project.Settings
+package com.example.in2000_project.settings
 
 
 import android.util.Patterns
@@ -13,7 +13,6 @@ import android.support.v7.preference.PreferenceManager
 import android.widget.Toast
 import com.example.in2000_project.R
 import android.support.v7.app.AppCompatDelegate
-import com.example.in2000_project.MapFragment
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -85,7 +84,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
                 sharedPrefsEditor.putString(preference.key, "")
                 sharedPrefsEditor.apply()
-                Toast.makeText(activity, "Invalid email", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Invalid email", Toast.LENGTH_SHORT).show()
             }
             true
         }
@@ -149,7 +148,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun resetSettings() {
         val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-        sharedPrefsEditor.putBoolean("useLocation", false)
+        sharedPrefsEditor.putBoolean("useLocation", true)
         sharedPrefsEditor.putString("language", "English")
         sharedPrefsEditor.putBoolean("allowNotifications", true)
         sharedPrefsEditor.putString("email", "")
@@ -160,6 +159,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         darkMode()
         reStart()
     }
+
 
     private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog{
         val alertBuilder = AlertDialog.Builder(this.context as Context)
