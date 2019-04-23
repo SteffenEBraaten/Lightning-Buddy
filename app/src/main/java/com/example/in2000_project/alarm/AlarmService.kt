@@ -12,7 +12,7 @@ class AlarmService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(intent != null){
             val extras = intent.extras as Bundle
-            val minutes = extras.get("minutes") as Int?
+            val minutes = extras.get("minutes")?.toString()?.toInt()
             alarm.setAlarm(this, minutes ?: 5)
         }
 
@@ -22,7 +22,7 @@ class AlarmService : Service() {
     @Suppress("OverridingDeprecatedMember")
     override fun onStart(intent: Intent, startId: Int) {
         val extras = intent.extras as Bundle
-        val minutes = extras.get("minutes") as Int?
+        val minutes = extras.get("minutes")?.toString()?.toInt()
         alarm.setAlarm(this, minutes ?: 5)
     }
 

@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.in2000_project.utils.UalfUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

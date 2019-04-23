@@ -13,6 +13,7 @@ import android.support.v7.preference.PreferenceManager
 import android.widget.Toast
 import com.example.in2000_project.R
 import android.support.v7.app.AppCompatDelegate
+import com.example.in2000_project.alarm.AlarmService
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -30,6 +31,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences, rootKey)
         attachEvents()
         setSummaries()
+        setAlarm()
     }
 
     private fun refreshFragment(){
@@ -45,8 +47,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
         val email = sharedPrefs.getString("email", "")
         preferenceScreen.findPreference("email").summary = email
+
         val language = sharedPrefs.getString("language", "English")
         preferenceScreen.findPreference("language").summary = language
+        var lightningDataFrequency = sharedPrefs.getString("lightningDataFrequency", "5")
+
+        if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = "No updates"
+        else lightningDataFrequency = "Every $lightningDataFrequency minutes"
+        preferenceScreen.findPreference("lightningDataFrequency").summary = lightningDataFrequency
     }
 
     private fun attachEvents(){
@@ -94,31 +102,39 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        preferenceScreen.findPreference("lightningDataFrequency").setOnPreferenceChangeListener { _, _ ->
+            refreshFragment()
+            true
+        }
+
         val darkMode = findPreference("darkMode")
         darkMode?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
-            if(value == true) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-
-            }
-            else{
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
-            }
+            setDarkMode(value as Boolean)
             reStart()
             true
         }
     }
 
+    private fun setAlarm(){
+        val serviceIntent = Intent(this.activity, AlarmService::class.java)
+        val minutes = android.preference.PreferenceManager.getDefaultSharedPreferences(context).getString("lightningDataFrequency", "5")
+        serviceIntent.putExtra("minutes", minutes)
+        this.activity!!.startService(serviceIntent)
+    }
+
     private fun darkMode(){
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context)
         val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
-        if(darkMode){
+        setDarkMode(darkMode)
+    }
+
+    private fun setDarkMode(isDarkMode: Boolean) {
+        if(isDarkMode){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
         else{
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
-
     }
 
     private fun reStart(){
@@ -153,6 +169,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         sharedPrefsEditor.putBoolean("allowNotifications", true)
         sharedPrefsEditor.putString("email", "")
         sharedPrefsEditor.putBoolean("vibrate", true)
+        sharedPrefsEditor.putString("lightningDataFrequency", "5")
         sharedPrefsEditor.putBoolean("darkMode", false)
         sharedPrefsEditor.apply()
         refreshFragment()

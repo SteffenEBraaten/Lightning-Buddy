@@ -27,10 +27,6 @@ class Alarm : BroadcastReceiver() {
 
 
     fun setAlarm(context: Context, minutes: Int) {
-        if (minutes == 0){
-            this.cancelAlarm(context)
-            return
-        }
 
         val alarmUp = PendingIntent.getBroadcast(
             context, 0,
@@ -39,8 +35,10 @@ class Alarm : BroadcastReceiver() {
         ) != null
 
         if(alarmUp && minutes == this.frequency) return
-        if(alarmUp) cancelAlarm(context)
         this.frequency = minutes
+
+        if(alarmUp) cancelAlarm(context)
+        if (minutes == 0) return
 
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val i = Intent(context, Alarm::class.java)
@@ -48,7 +46,7 @@ class Alarm : BroadcastReceiver() {
         am.setRepeating(
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis(),
-            (1000 * 60 * 1).toLong(),
+            (1000 * 60 * minutes).toLong(),
             pi
         )
     }
