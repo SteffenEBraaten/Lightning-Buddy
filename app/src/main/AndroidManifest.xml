@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
 
 	<application
@@ -16,12 +18,16 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
         <activity android:name=".settings.SettingsActivity"
-			tools:ignore="InnerclassSeparator" />
+			tools:ignore="InnerclassSeparator"
+            android:theme="@style/AppTheme"/>
 
         <activity android:name=".maps.MainActivity"
 			tools:ignore="ExtraText,InnerclassSeparator"
             android:theme="@style/AppTheme">
+				      tools:ignore="ExtraText,InnerclassSeparator"
+            	android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

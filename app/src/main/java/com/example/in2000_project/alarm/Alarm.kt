@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
 import android.support.v7.preference.PreferenceManager
+import android.util.Log
 import android.widget.Toast
 import com.example.in2000_project.maps.MapsViewmodel
 
@@ -17,7 +18,7 @@ class Alarm : BroadcastReceiver() {
 
         val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
-        wl.acquire(10*60*1000L /*10 minutes*/)
+        wl.acquire(60*1000L /*10 minutes*/)
         MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
         Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
 
@@ -26,10 +27,6 @@ class Alarm : BroadcastReceiver() {
 
 
     fun setAlarm(context: Context, minutes: Int) {
-        if (minutes == 0){
-            this.cancelAlarm(context)
-            return
-        }
 
         val alarmUp = PendingIntent.getBroadcast(
             context, 0,
@@ -38,8 +35,10 @@ class Alarm : BroadcastReceiver() {
         ) != null
 
         if(alarmUp && minutes == this.frequency) return
-        if(alarmUp) cancelAlarm(context)
         this.frequency = minutes
+
+        if(alarmUp) cancelAlarm(context)
+        if (minutes == 0) return
 
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val i = Intent(context, Alarm::class.java)
@@ -47,12 +46,12 @@ class Alarm : BroadcastReceiver() {
         am.setRepeating(
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis(),
-            (1000 * 60 * 1).toLong(),
+            (1000 * 60 * minutes).toLong(),
             pi
         )
     }
 
-    fun cancelAlarm(context: Context) {
+    private fun cancelAlarm(context: Context) {
         val intent = Intent(context, Alarm::class.java)
         val sender = PendingIntent.getBroadcast(context, 0, intent, 0)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

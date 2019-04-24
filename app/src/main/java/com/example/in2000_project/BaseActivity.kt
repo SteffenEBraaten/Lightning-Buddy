@@ -29,9 +29,10 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         val termsOfService: Boolean
     )
 
-    protected fun setAlarm(){ //TODO: get minutes from settings?
+    protected fun setAlarm(){
         val serviceIntent = Intent(this, AlarmService::class.java)
-        serviceIntent.putExtra("minutes", 5)
+        val minutes = getPrefs().getString("lightningDataFrequency", "5")
+        serviceIntent.putExtra("minutes", minutes!!)
         this.startService(serviceIntent)
     }
 
