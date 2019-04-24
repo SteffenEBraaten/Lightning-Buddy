@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IN2000_Project</string>
+    <string name="resetSettingsMessage">Alle lagra felt vil bli sletta og innstillingar vil bli tilbakestilt. Vil du
+        fortsetja?
+    </string>
+    <string name="hello_blank_fragment">Hei blanke fragment</string>
+    <string name="dark_mode">Mørk modus</string>
+    <string name="general">Generelt</string>
+    <string name="use_Location">Bruk min lokasjon</string>
+    <string name="notifications">Varslingar</string>
+    <string name="allow_Notifications">Tillat varslingar</string>
+    <string name="vibrate">Vibrering</string>
+    <string name="about">Om</string>
+    <string name="termsOfServiceTitle">Vilkår for bruk</string>
+    <string name="reset">Tilbakestill</string>
+    <string name="cancel">Avbryt</string>
+    <string name="accept">Eg aksepterer</string>
+    <string name="decline">Eg avslår</string>
+    <string name="invalidEmail">Ugyldig e-post</string>
+    <string name="ok">Ok</string>
+    <string name="email">E-mail</string>
+    <string name="settings">Innstillingar</string>
+    <string name="map">Kart</string>
+    <string name="menu">Meny</string>
+</resources>
