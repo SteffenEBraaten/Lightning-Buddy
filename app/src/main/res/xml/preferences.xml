@@ -32,7 +32,7 @@
                 android:key="vibrate"/>
         <ListPreference
                 android:defaultValue="5"
-                android:title="Data update frequency"
+                android:title="@string/dataUpdateFrequency"
                 android:entries="@array/lightningDataFrequency"
                 android:entryValues="@array/lightningDataFrequency"
                 android:key="lightningDataFrequency"/>

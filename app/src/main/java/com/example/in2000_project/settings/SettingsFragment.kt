@@ -50,8 +50,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         preferenceScreen.findPreference("email").summary = email
         var lightningDataFrequency = sharedPrefs.getString("lightningDataFrequency", "5")
 
-        if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = "No updates"
-        else lightningDataFrequency = "Every $lightningDataFrequency minutes"
+        if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = getString(R.string.noUpdates)
+        else lightningDataFrequency = getString(R.string.every) + " " + lightningDataFrequency + " " + getString(R.string.minutes)
         preferenceScreen.findPreference("lightningDataFrequency").summary = lightningDataFrequency
     }
 
