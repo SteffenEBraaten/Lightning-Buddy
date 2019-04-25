@@ -10,14 +10,10 @@ import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
-<<<<<<< HEAD
 import com.example.in2000_project.LightningHistory.LightningHistory
-import com.example.in2000_project.Settings.SettingsActivity
-=======
 import com.example.in2000_project.alarm.AlarmService
 import com.example.in2000_project.maps.MainActivity
 import com.example.in2000_project.settings.SettingsActivity
->>>>>>> test
 
 
 abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
