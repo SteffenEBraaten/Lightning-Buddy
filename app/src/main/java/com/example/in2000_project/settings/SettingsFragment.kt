@@ -1,7 +1,9 @@
-package com.example.in2000_project.Settings
+package com.example.in2000_project.settings
+
 
 import android.util.Patterns
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -10,6 +12,9 @@ import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.PreferenceManager
 import android.widget.Toast
 import com.example.in2000_project.R
+import android.support.v7.app.AppCompatDelegate
+import com.example.in2000_project.alarm.AlarmService
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -27,6 +32,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences, rootKey)
         attachEvents()
         setSummaries()
+        setAlarm()
     }
 
     private fun refreshFragment(){
@@ -42,18 +48,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
         val email = sharedPrefs.getString("email", "")
         preferenceScreen.findPreference("email").summary = email
-        val language = sharedPrefs.getString("language", "English")
-        preferenceScreen.findPreference("language").summary = language
+        var lightningDataFrequency = sharedPrefs.getString("lightningDataFrequency", "5")
+
+        if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = getString(R.string.noUpdates)
+        else lightningDataFrequency = getString(R.string.every) + " " + lightningDataFrequency + " " + getString(R.string.minutes)
+        preferenceScreen.findPreference("lightningDataFrequency").summary = lightningDataFrequency
     }
 
     private fun attachEvents(){
         val termsOfService = findPreference("termsOfService")
         termsOfService?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val alert = binaryAlertDialogCreator(
-                "Terms Of Service",
+                getString(R.string.termsOfServiceTitle),
                 getString(R.string.termsOfService),
-                "I agree",
-                "I disagree",
+                getString(R.string.accept),
+                getString(R.string.decline),
                 ::acceptTermsAgreement,
                 ::declineTermsAgreement)
 
@@ -64,10 +73,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val reset = findPreference("resetSettings")
         reset?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val alert = binaryAlertDialogCreator(
-                "Reset settings",
+                getString(R.string.reset),
                  getString(R.string.resetSettingsMessage),
-                "Reset",
-                "Cancel",
+                getString(R.string.reset),
+                getString(R.string.cancel),
                  ::resetSettings,
                  {})
             alert.show()
@@ -81,15 +90,45 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
                 sharedPrefsEditor.putString(preference.key, "")
                 sharedPrefsEditor.apply()
-                Toast.makeText(activity, "Invalid email", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, getString(R.string.invalidEmail), Toast.LENGTH_SHORT).show()
             }
             true
         }
 
-        preferenceScreen.findPreference("language").setOnPreferenceChangeListener { _, _ ->
-            refreshFragment()
+        val darkMode = findPreference("darkMode")
+        darkMode?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
+            setDarkMode(value as Boolean)
+            reStart()
             true
         }
+    }
+
+    private fun setAlarm(){
+        val serviceIntent = Intent(this.activity, AlarmService::class.java)
+        val minutes = android.preference.PreferenceManager.getDefaultSharedPreferences(context).getString("lightningDataFrequency", "5")
+        serviceIntent.putExtra("minutes", minutes)
+        this.activity!!.startService(serviceIntent)
+    }
+
+    private fun darkMode(){
+        val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context)
+        val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
+        setDarkMode(darkMode)
+    }
+
+    private fun setDarkMode(isDarkMode: Boolean) {
+        if(isDarkMode){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+    }
+
+    private fun reStart(){
+        startActivity(Intent(activity, SettingsActivity::class.java))
+        activity!!.overridePendingTransition(R.anim.alpha_enter,R.anim.alpha_exit)
+        activity!!.finish()
     }
 
     private fun isValidEmail(email : String) : Boolean{
@@ -113,14 +152,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun resetSettings() {
         val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-        sharedPrefsEditor.putBoolean("useLocation", false)
-        sharedPrefsEditor.putString("language", "English")
+        sharedPrefsEditor.putBoolean("useLocation", true)
         sharedPrefsEditor.putBoolean("allowNotifications", true)
         sharedPrefsEditor.putString("email", "")
         sharedPrefsEditor.putBoolean("vibrate", true)
+        sharedPrefsEditor.putString("lightningDataFrequency", "5")
+        sharedPrefsEditor.putBoolean("darkMode", false)
         sharedPrefsEditor.apply()
         refreshFragment()
+        darkMode()
+        reStart()
     }
+
 
     private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog{
         val alertBuilder = AlertDialog.Builder(this.context as Context)
