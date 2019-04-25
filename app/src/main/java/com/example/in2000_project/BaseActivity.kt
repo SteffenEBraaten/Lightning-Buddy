@@ -1,6 +1,5 @@
 package com.example.in2000_project
 
-import android.content.Context
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
@@ -23,7 +22,6 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
     data class Settings(
         val useLocation: Boolean,
-        val language: String,
         val darkMode: Boolean,
         val allowNotifications: Boolean,
         val email: String,
@@ -46,7 +44,6 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         val sharedPrefs = getPrefs()
         return Settings(
                     useLocation = sharedPrefs.getBoolean("useLocation", false),
-                    language = sharedPrefs.getString("language", "English") as String,
                     darkMode = sharedPrefs.getBoolean("darkMode", false),
                     allowNotifications = sharedPrefs.getBoolean("allowNotifications", true),
                     email = sharedPrefs.getString("email", "") as String,
@@ -101,8 +98,5 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
         return true
     }
-
-
-
 }
 

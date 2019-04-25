@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatDelegate
 import com.example.in2000_project.alarm.AlarmService
 
 
+
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -47,13 +48,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
         val email = sharedPrefs.getString("email", "")
         preferenceScreen.findPreference("email").summary = email
-
-        val language = sharedPrefs.getString("language", "English")
-        preferenceScreen.findPreference("language").summary = language
         var lightningDataFrequency = sharedPrefs.getString("lightningDataFrequency", "5")
 
-        if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = "No updates"
-        else lightningDataFrequency = "Every $lightningDataFrequency minutes"
+        if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = getString(R.string.noUpdates)
+        else lightningDataFrequency = getString(R.string.every) + " " + lightningDataFrequency + " " + getString(R.string.minutes)
         preferenceScreen.findPreference("lightningDataFrequency").summary = lightningDataFrequency
     }
 
@@ -61,10 +59,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val termsOfService = findPreference("termsOfService")
         termsOfService?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val alert = binaryAlertDialogCreator(
-                "Terms Of Service",
+                getString(R.string.termsOfServiceTitle),
                 getString(R.string.termsOfService),
-                "I agree",
-                "I disagree",
+                getString(R.string.accept),
+                getString(R.string.decline),
                 ::acceptTermsAgreement,
                 ::declineTermsAgreement)
 
@@ -75,10 +73,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val reset = findPreference("resetSettings")
         reset?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val alert = binaryAlertDialogCreator(
-                "Reset settings",
+                getString(R.string.reset),
                  getString(R.string.resetSettingsMessage),
-                "Reset",
-                "Cancel",
+                getString(R.string.reset),
+                getString(R.string.cancel),
                  ::resetSettings,
                  {})
             alert.show()
@@ -92,18 +90,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
                 sharedPrefsEditor.putString(preference.key, "")
                 sharedPrefsEditor.apply()
-                Toast.makeText(activity, "Invalid email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, getString(R.string.invalidEmail), Toast.LENGTH_SHORT).show()
             }
-            true
-        }
-
-        preferenceScreen.findPreference("language").setOnPreferenceChangeListener { _, _ ->
-            refreshFragment()
-            true
-        }
-
-        preferenceScreen.findPreference("lightningDataFrequency").setOnPreferenceChangeListener { _, _ ->
-            refreshFragment()
             true
         }
 
@@ -165,7 +153,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun resetSettings() {
         val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
         sharedPrefsEditor.putBoolean("useLocation", true)
-        sharedPrefsEditor.putString("language", "English")
         sharedPrefsEditor.putBoolean("allowNotifications", true)
         sharedPrefsEditor.putString("email", "")
         sharedPrefsEditor.putBoolean("vibrate", true)
