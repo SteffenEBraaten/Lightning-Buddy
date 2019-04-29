@@ -1,44 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_height="wrap_content"
                   android:layout_width="wrap_content">
 
-    <PreferenceCategory android:title="General">
+    <PreferenceCategory android:title="@string/general">
         <SwitchPreference
                 android:defaultValue="false"
-                android:title="Use my location"
+                android:title="@string/use_Location"
                 android:key="useLocation"/>
-        <ListPreference
-                android:defaultValue="English"
-                android:title="Choose language"
-                android:entries="@array/languages"
-                android:entryValues="@array/languages"
-                android:key="language"
-                android:summary="@string/language"/>
+        <SwitchPreference
+                android:defaultValue="false"
+                android:title="@string/dark_mode"
+                android:key="darkMode"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Notifications">
+    <PreferenceCategory android:title="@string/notifications">
         <SwitchPreference
                 android:defaultValue="true"
-                android:title="Allow notifications"
+                android:title="@string/allow_Notifications"
                 android:key="allowNotifications"/>
         <EditTextPreference
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:title="Email"
+                android:title="@string/email"
                 android:key="email"
                 android:summary="@string/email"/>
         <SwitchPreference
                 android:defaultValue="true"
-                android:title="Vibrate"
+                android:title="@string/vibrate"
                 android:key="vibrate"/>
+        <ListPreference
+                android:defaultValue="5"
+                android:title="@string/dataUpdateFrequency"
+                android:entries="@array/lightningDataFrequency"
+                android:entryValues="@array/lightningDataFrequency"
+                android:key="lightningDataFrequency"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="About">
-        <Preference android:title="Terms of service"
+    <PreferenceCategory android:title="@string/about">
+        <Preference android:title="@string/termsOfServiceTitle"
                     android:defaultValue="false"
                     android:key="termsOfService"/>
-        <Preference android:title="Reset"
+        <Preference android:title="@string/reset"
                     android:key="resetSettings"/>
     </PreferenceCategory>
+    <Preference/>
 </PreferenceScreen>
