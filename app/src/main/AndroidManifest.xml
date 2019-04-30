@@ -26,8 +26,6 @@
         <activity android:name=".maps.MainActivity"
 			tools:ignore="ExtraText,InnerclassSeparator"
             android:theme="@style/AppTheme">
-				      tools:ignore="ExtraText,InnerclassSeparator"
-            	android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
