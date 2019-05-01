@@ -21,7 +21,9 @@ private const val ARG_PARAM2 = "param2"
  */
 class SliderFragment : Fragment() {
 
-    var tempTitle : String = ""
+    private var tempTitle : String = ""
+    private var tempContent : String = ""
+    private var tempPath : Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +35,8 @@ class SliderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         slider_title.text = tempTitle
+        slider_content.text = tempContent
+        slider_image.setImageResource(tempPath)
     }
 
     //Sets the title of the sliderFragment
@@ -40,7 +44,12 @@ class SliderFragment : Fragment() {
         tempTitle = title
     }
 
-    //Sets the picture of the
-    //fun setPicture(path : String){}
+    // Sets the content for the sliderFragment
+    fun setContent(content : String){
+        tempContent = content
+    }
 
+    fun setPath(path : Int){
+        tempPath = path
+    }
 }

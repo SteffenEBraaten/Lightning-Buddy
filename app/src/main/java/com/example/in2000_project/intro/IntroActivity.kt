@@ -39,13 +39,19 @@ class IntroActivity : AppCompatActivity() {
             finish()
         }
 
-        slider1.setTitle("Memes")
+        slider1.setPath(R.drawable.lightning_symbol)
+        slider1.setTitle(getString(R.string.slider1_Title))
+        slider1.setContent(getString(R.string.slider1_description))
 
 
-        slider2.setTitle("are")
+        slider2.setPath(R.drawable.lightning_symbol)
+        slider2.setTitle(getString(R.string.slider2_Title))
+        slider2.setContent(getString(R.string.slider2_description))
 
 
-        slider3.setTitle("good")
+        slider3.setPath(R.drawable.lightning_symbol)
+        slider3.setTitle(getString(R.string.slider3_Title))
+        slider3.setContent(getString(R.string.slider3_description))
 
 
         adapter = MyPageAdapter(supportFragmentManager)

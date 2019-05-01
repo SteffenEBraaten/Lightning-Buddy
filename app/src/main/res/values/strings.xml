@@ -50,6 +50,21 @@
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="done">Done</string>
+    <string name="slider1_Title">Welcome to appname!</string>
+    <string name="slider1_description">
+        Now, you will be able to see where lightning storms are happening close to you! Check out the map for
+        lightning strikes that have struck in the last 24 hours.
+    </string>
+    <string name="slider2_Title">Get notified about lightning strikes!</string>
+    <string name="slider2_description">
+        Use the map and set location where you would like to get notified about lightning storms so that you can remain
+        safe and informed! You can also adjust the radius around your location for where would like to get notified.
+    </string>
+    <string name="slider3_Title">Help us make the app even better!</string>
+    <string name="slider3_description">
+        In the settings panel you can send us feedback on our app. This will help us making the app even better
+        and by that we can increase your user experience!
+    </string>
 
 
 </resources>
