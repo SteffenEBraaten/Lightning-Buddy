@@ -27,4 +27,20 @@
     <string name="dataUpdateFrequency">Data oppdaterings frekvens</string>
     <string name="noUpdates">Ingen oppdateringer</string>
     <string name="minutes">minutt</string>
+    <string name="done">Ferdig</string>
+    <string name="next">Neste</string>
+    <string name="skip">Hopp over</string>
+    <string name="slider1_Title">Velkommen til appname!</string>
+    <string name="slider1_description">Nå vil du kunne se hvor lynnedslag slår ned i nærheten av deg! På kartet kan du
+        se lynnedslag som har slått ned de siste 24 timene.
+    </string>
+    <string name="slider2_Title">Bli varlset om lynnedslag!</string>
+    <string name="slider2_description">Bruk kartet for å sette steder du vil bli varslet om hvis lyn slår ned i området
+        slik at du kan forholde deg trygg og informert!\nDu kan også justere radiusen rundt din posisjon for hvor du vil
+        bli varslet om lynnedslag.
+    </string>
+    <string name="slider3_Title">Hjelp oss med å gjøre appen enda bedre!</string>
+    <string name="slider3_description">I innstillinger kan du gi oss tilbakemelding på appen vår. Din tilbakemelding vil
+        kunne hjelpe oss å gjøre appen eneda bedre og dermed gjøre din brukeropplevelse bedre!
+    </string>
 </resources>
