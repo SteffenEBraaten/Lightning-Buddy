@@ -58,9 +58,11 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("Fragment map", "Getting viewmodel for map")
         this.viewModel = ViewModelProviders.of(this.activity!!,
             MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))
         ).get(MapsViewmodel::class.java)
+        Log.d("Fragment map", "Successfully got viewmodel")
 
         mapsAPI = getString(R.string.Maps_API)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
@@ -73,16 +75,20 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         placesClient = Places.createClient(activity!!)
     }
 
+    data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
     val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+        Log.d("Fragment map", "Map ready")
 
         //Make map style follow dark mode toggle
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
         if (darkMode) {
+            Log.d("Fragment map", "Map = darkmode")
             setMapStyle(false)
         } else {
+            Log.d("Fragment map", "Map = lightmode")
             setMapStyle(true)
         }
 
@@ -95,15 +101,20 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
                 , MY_PERMISSIONS_REQUEST_ACCESS_LOCATION)
         }
+
+        var prevMarker: MarkerWithCircle? = MarkerWithCircle(null, null)
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
-                addMarkerWithRadius(position!!, googleMap)
+                Log.d("Fragment map", "Map clicked at pos " + position.toString())
+                prevMarker = addMarkerWithRadius(position!!, googleMap, prevMarker)
             }
         })
     }
-    private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap) {
-        googleMap.clear()
-        googleMap.addMarker(MarkerOptions().position(position).draggable(true))
+    private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap, prevMark: MarkerWithCircle?): MarkerWithCircle? {
+        prevMark?.marker?.remove()
+        prevMark?.circle?.remove()
+
+        prevMark?.marker = googleMap.addMarker(MarkerOptions().position(position).draggable(true))
         //radius is in meters. Currently set to 10km
         var radius: Double = 10000.0
         var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
@@ -124,6 +135,8 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                 circle.center = marker?.position
             }
         })
+        prevMark?.circle = circle
+        return prevMark
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
