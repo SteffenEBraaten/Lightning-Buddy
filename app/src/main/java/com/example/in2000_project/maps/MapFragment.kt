@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.in2000_project.R
@@ -114,8 +115,11 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                 prevMarker = addMarkerWithRadius(position!!, googleMap, prevMarker)
 
                 Log.d("Fragment map", "Adding save button")
-                var fragmentLayout: LinearLayout = rootView.findViewById<LinearLayout>(R.id.map_linear_layout)
+                var fragmentLayout: FrameLayout = rootView.findViewById<FrameLayout>(R.id.map_frame)
                 var saveButton: Button = Button(activity)
+                saveButton.text = "Test"
+                saveButton.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT)
                 //TODO: Sett parameterene til knappen
                 fragmentLayout.addView(saveButton)
 
