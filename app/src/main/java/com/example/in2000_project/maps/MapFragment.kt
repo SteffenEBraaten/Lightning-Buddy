@@ -18,6 +18,8 @@ import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.in2000_project.R
 import com.google.android.gms.common.api.Status
@@ -42,6 +44,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var mapsAPI: String
     private lateinit var placesClient: PlacesClient
     private lateinit var viewModel : MapsViewmodel // use this to get data
+    private lateinit var rootView: View
 
     //Factory method for creating new map fragment
     companion object {
@@ -52,7 +55,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.map_fragment, parent, false)
+        Log.d("Fragment map", "Inflating map fragment")
+        rootView = inflater.inflate(R.layout.map_fragment, parent, false)
+        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,7 +81,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     }
 
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
-    val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
+    private val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         Log.d("Fragment map", "Map ready")
@@ -105,8 +110,15 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         var prevMarker: MarkerWithCircle? = MarkerWithCircle(null, null)
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
-                Log.d("Fragment map", "Map clicked at pos " + position.toString())
+                Log.d("Fragment map", "Map clicked at posistion $position")
                 prevMarker = addMarkerWithRadius(position!!, googleMap, prevMarker)
+
+                Log.d("Fragment map", "Adding save button")
+                var fragmentLayout: LinearLayout = rootView.findViewById<LinearLayout>(R.id.map_linear_layout)
+                var saveButton: Button = Button(activity)
+                //TODO: Sett parameterene til knappen
+                fragmentLayout.addView(saveButton)
+
             }
         })
     }
@@ -121,6 +133,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             .fillColor(Color.argb(150, 146, 184, 244)))
         //The zoom level is kind of tricky if you change the radius
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
+        Log.d("Fragment map", "Marker added")
         googleMap.setOnMarkerDragListener(object: GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker?) {
                 circle.center = marker?.position
@@ -129,6 +142,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             override fun onMarkerDragEnd(marker: Marker?) {
                circle.center = marker?.position
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker?.position, 11.1.toFloat()))
+                Log.d("Fragment map", "Marker moved")
             }
 
             override fun onMarkerDrag(marker: Marker?) {
@@ -136,6 +150,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             }
         })
         prevMark?.circle = circle
+        Log.d("Fragment map", "Returning marker")
         return prevMark
     }
 
@@ -146,10 +161,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                     if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
                         googleMap.isMyLocationEnabled = true
+                        Log.d("Fragment map", "Location permission granted")
                         setUpMap()
                     }
                 } else {
                     // Permission denied.
+                    Log.d("Fragment map", "Location permission denied")
                 }
             }
             else -> {
@@ -166,6 +183,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                     lastLocation = location
                     val currentLatLng = LatLng(location.latitude, location.longitude)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                    Log.d("Fragment map", "Current position: $currentLatLng")
                 }
             }
         }
@@ -179,7 +197,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     }
     override fun onPlaceSelected(place: Place) {
+        Log.d("Fragment map", "Clearing map of markers")
         googleMap.clear()
+        Log.d("Fragment map", "Moving to $place")
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.viewport, 0))
         //Only run bellow part if latLng is not null
         place.latLng?.run {
