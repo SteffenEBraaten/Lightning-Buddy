@@ -2,7 +2,9 @@ package com.example.in2000_project.maps
 
 import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -33,6 +35,9 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.util.*
 
 
 class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
@@ -43,6 +48,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var placesClient: PlacesClient
     private lateinit var viewModel : MapsViewmodel // use this to get data
     private lateinit var rootView: View
+    private var markersList: LinkedList<MarkerWithCircle> = LinkedList()
+    private var savedMarkersList: LinkedList<savedMarkers>? = null
+    private var sharedPrefs: SharedPreferences? = null
+
+    data class savedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
+    data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
 
     //Factory method for creating new map fragment
     companion object {
@@ -55,6 +66,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                               savedInstanceState: Bundle?): View? {
         Log.d("Fragment map", "Inflating map fragment")
         rootView = inflater.inflate(R.layout.map_fragment, parent, false)
+        sharedPrefs = this.activity?.getSharedPreferences("Map Fragment", Context.MODE_PRIVATE)
         return rootView
     }
 
@@ -76,9 +88,23 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
         Places.initialize(activity!!, mapsAPI)
         placesClient = Places.createClient(activity!!)
+
+        retrieveSavedMarkers()
+    }
+    private fun retrieveSavedMarkers() {
+        Log.d("Fragment map", "Retrieving saved markers from shared preferences")
+        val jsonLinkedList = sharedPrefs!!.getString("savedMarkers", null)
+        if (jsonLinkedList != null) {
+            savedMarkersList = Gson().fromJson(jsonLinkedList, object: TypeToken<LinkedList<MarkerWithCircle>>(){}.type)
+            Log.d("Fragment map", "Saved markers retrieved")
+            //TODO: DENNE ER FEIL....
+            Log.d("Sdasd", savedMarkersList.toString())
+        }
+        if (savedMarkersList == null) {
+            Log.d("Fragment map", "No saved markers")
+        }
     }
 
-    data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
     private val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
@@ -112,13 +138,13 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                 Log.d("Fragment map", "Map clicked at posistion $position")
                 prevMarker = addMarkerWithRadius(position!!, googleMap, prevMarker)
 
-                saveButton = addSaveButton(saveButton)
+                saveButton = addSaveButton(saveButton, prevMarker!!)
 
 
             }
         })
     }
-    private fun addSaveButton(prevButton: Button?): Button {
+    private fun addSaveButton(prevButton: Button?, marker: MarkerWithCircle): Button {
         Log.d("Fragment map", "Adding save button")
         var fragmentLayout: RelativeLayout = rootView.findViewById<RelativeLayout>(R.id.map_frame)
 
@@ -142,11 +168,11 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         saveButton.setOnClickListener {
             saveButton.alpha = 1.toFloat()
             fadeButton(saveButton)
-            Log.d("Fragment map", "Button clicked")
+            Log.d("Fragment map", "Save button clicked")
+            markersList.add(marker)
         }
 
         fadeButton(saveButton)
-
         return saveButton
     }
     private fun fadeButton(button: Button) {
@@ -268,6 +294,50 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             .decodeResource(resources, resources.getIdentifier(iconName, "drawable", activity!!.packageName))
         val resizedBitmap: Bitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false)
         return resizedBitmap
+    }
+    private fun persistentSave() {
+        for (entry: MarkerWithCircle in markersList) {
+            var position: LatLng? = entry.marker?.position
+            var radius: Double? = entry.circle?.radius
+            savedMarkersList?.add(savedMarkers(position!!.latitude, position.longitude, radius!!))
+        }
+
+        markersList?.run {
+            val prefEditor = sharedPrefs?.edit()
+            prefEditor?.putString("savedMarkers", Gson().toJson(savedMarkersList))
+            Log.d("Fragment map", "Markers saved")
+            prefEditor?.apply()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("Fragment Map", "Pause")
+        persistentSave()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("Fragment Map", "Stop")
+        persistentSave()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("Fragment Map", "View destroy")
+        persistentSave()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("Fragment Map", "Destroy")
+        persistentSave()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("Fragment Map", "Detach")
+        persistentSave()
     }
 
 }
