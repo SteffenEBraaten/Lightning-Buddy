@@ -117,10 +117,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                 Log.d("Fragment map", "Adding save button")
                 var fragmentLayout: FrameLayout = rootView.findViewById<FrameLayout>(R.id.map_frame)
                 var saveButton: Button = Button(activity)
-                saveButton.text = "Test"
+                saveButton.text = resources.getString(R.string.save)
                 saveButton.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT)
-                //TODO: Sett parameterene til knappen
                 fragmentLayout.addView(saveButton)
 
             }

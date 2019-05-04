@@ -65,6 +65,7 @@
         In the settings panel you can send us feedback on our app. This will help us making the app even better
         and by that we can increase your user experience!
     </string>
+    <string name="save">Save</string>
 
 
 </resources>
