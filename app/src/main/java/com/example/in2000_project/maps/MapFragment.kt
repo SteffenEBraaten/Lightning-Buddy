@@ -139,11 +139,20 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         fragmentLayout.addView(saveButton)
         Log.d("Fragment map", "Save button $saveButton added")
 
-        //saveButton.setOnClickListener {  }
+        saveButton.setOnClickListener {
+            saveButton.alpha = 1.toFloat()
+            fadeButton(saveButton)
+            Log.d("Fragment map", "Button clicked")
+        }
 
-        val timeToFade: Long = 3000
-        saveButton.animate().alpha(0.6.toFloat()).setDuration(timeToFade).startDelay = 5000
+        fadeButton(saveButton)
+
         return saveButton
+    }
+    private fun fadeButton(button: Button) {
+        val timeToFade: Long = 3000
+        val fadeDelay: Long = 4000
+        button.animate().alpha(0.6.toFloat()).setDuration(timeToFade).startDelay = fadeDelay
     }
     private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap, prevMark: MarkerWithCircle?): MarkerWithCircle? {
         prevMark?.marker?.remove()
