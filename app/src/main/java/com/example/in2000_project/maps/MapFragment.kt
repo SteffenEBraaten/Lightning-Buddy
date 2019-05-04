@@ -18,10 +18,7 @@ import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import com.example.in2000_project.R
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -109,21 +106,44 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         }
 
         var prevMarker: MarkerWithCircle? = MarkerWithCircle(null, null)
+        var saveButton: Button? = null
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
                 Log.d("Fragment map", "Map clicked at posistion $position")
                 prevMarker = addMarkerWithRadius(position!!, googleMap, prevMarker)
 
-                Log.d("Fragment map", "Adding save button")
-                var fragmentLayout: FrameLayout = rootView.findViewById<FrameLayout>(R.id.map_frame)
-                var saveButton: Button = Button(activity)
-                saveButton.text = resources.getString(R.string.save)
-                saveButton.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT)
-                fragmentLayout.addView(saveButton)
+                saveButton = addSaveButton(saveButton)
+
 
             }
         })
+    }
+    private fun addSaveButton(prevButton: Button?): Button {
+        Log.d("Fragment map", "Adding save button")
+        var fragmentLayout: RelativeLayout = rootView.findViewById<RelativeLayout>(R.id.map_frame)
+
+        fragmentLayout.removeView(prevButton)
+        prevButton?.run {
+            Log.d("Fragment map", "Removed button $prevButton")
+        }
+
+        var saveButton: Button = Button(activity)
+        saveButton.text = resources.getString(R.string.save)
+
+        var layoutParameters: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        saveButton.layoutParams = layoutParameters
+
+        layoutParameters.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        layoutParameters.addRule(RelativeLayout.ALIGN_PARENT_END)
+        fragmentLayout.addView(saveButton)
+        Log.d("Fragment map", "Save button $saveButton added")
+
+        //saveButton.setOnClickListener {  }
+
+        val timeToFade: Long = 3000
+        saveButton.animate().alpha(0.6.toFloat()).setDuration(timeToFade).startDelay = 5000
+        return saveButton
     }
     private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap, prevMark: MarkerWithCircle?): MarkerWithCircle? {
         prevMark?.marker?.remove()
