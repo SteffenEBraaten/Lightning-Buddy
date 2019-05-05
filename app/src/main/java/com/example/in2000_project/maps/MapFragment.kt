@@ -2,7 +2,9 @@ package com.example.in2000_project.maps
 
 import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,7 +20,7 @@ import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.*
 import com.example.in2000_project.R
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -33,6 +35,9 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.util.*
 
 
 class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
@@ -42,6 +47,13 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var mapsAPI: String
     private lateinit var placesClient: PlacesClient
     private lateinit var viewModel : MapsViewmodel // use this to get data
+    private lateinit var rootView: View
+    private var markersList: LinkedList<MarkerWithCircle> = LinkedList()
+    private var savedMarkersList: MutableSet<SavedMarkers>? = null
+    private var sharedPrefs: SharedPreferences? = null
+
+    data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
+    data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
 
     //Factory method for creating new map fragment
     companion object {
@@ -52,15 +64,20 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.map_fragment, parent, false)
+        Log.d("Fragment map", "Inflating map fragment")
+        rootView = inflater.inflate(R.layout.map_fragment, parent, false)
+        sharedPrefs = this.activity?.getSharedPreferences("Map Fragment", Context.MODE_PRIVATE)
+        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("Fragment map", "Getting viewmodel for map")
         this.viewModel = ViewModelProviders.of(this.activity!!,
             MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))
         ).get(MapsViewmodel::class.java)
+        Log.d("Fragment map", "Successfully got viewmodel")
 
         mapsAPI = getString(R.string.Maps_API)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
@@ -71,18 +88,36 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
         Places.initialize(activity!!, mapsAPI)
         placesClient = Places.createClient(activity!!)
+
+        retrieveSavedMarkers()
+    }
+    private fun retrieveSavedMarkers() {
+        Log.d("Fragment map", "Retrieving saved markers from shared preferences")
+        val jsonLinkedList = sharedPrefs!!.getString("SavedMarkers", null)
+        if (jsonLinkedList != null) {
+            savedMarkersList = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<SavedMarkers>>(){}.type)
+            Log.d("Fragment map", "Saved markers retrieved")
+            Log.d("Fragment map", savedMarkersList.toString())
+        }
+        if (savedMarkersList == null) {
+            Log.d("Fragment map", "No saved markers")
+            savedMarkersList = mutableSetOf()
+        }
     }
 
-    val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
+    private val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+        Log.d("Fragment map", "Map ready")
 
         //Make map style follow dark mode toggle
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
         if (darkMode) {
+            Log.d("Fragment map", "Map = darkmode")
             setMapStyle(false)
         } else {
+            Log.d("Fragment map", "Map = lightmode")
             setMapStyle(true)
         }
 
@@ -95,21 +130,69 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
                 , MY_PERMISSIONS_REQUEST_ACCESS_LOCATION)
         }
+
+        var prevMarker: MarkerWithCircle? = MarkerWithCircle(null, null)
+        var saveButton: Button? = null
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
-                addMarkerWithRadius(position!!, googleMap)
+                Log.d("Fragment map", "Map clicked at posistion $position")
+                prevMarker = addMarkerWithRadius(position!!, googleMap, prevMarker)
+
+                saveButton = addSaveButton(saveButton, prevMarker!!)
+
+
             }
         })
     }
-    private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap) {
-        googleMap.clear()
-        googleMap.addMarker(MarkerOptions().position(position).draggable(true))
+    private fun addSaveButton(prevButton: Button?, marker: MarkerWithCircle): Button {
+        Log.d("Fragment map", "Adding save button")
+        var fragmentLayout: RelativeLayout = rootView.findViewById<RelativeLayout>(R.id.map_frame)
+
+        fragmentLayout.removeView(prevButton)
+        prevButton?.run {
+            Log.d("Fragment map", "Removed button $prevButton")
+        }
+
+        var saveButton: Button = Button(activity)
+        saveButton.text = resources.getString(R.string.save)
+
+        var layoutParameters: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        saveButton.layoutParams = layoutParameters
+
+        layoutParameters.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        layoutParameters.addRule(RelativeLayout.ALIGN_PARENT_END)
+        fragmentLayout.addView(saveButton)
+        Log.d("Fragment map", "Save button $saveButton added")
+
+        saveButton.setOnClickListener {
+            saveButton.alpha = 1.toFloat()
+            fadeButton(saveButton)
+            Log.d("Fragment map", "Save button clicked")
+            markersList.add(marker)
+            Log.d("Fragment map", "markersList size: " + markersList.size)
+        }
+
+        fadeButton(saveButton)
+        return saveButton
+    }
+    private fun fadeButton(button: Button) {
+        val timeToFade: Long = 3000
+        val fadeDelay: Long = 4000
+        button.animate().alpha(0.6.toFloat()).setDuration(timeToFade).startDelay = fadeDelay
+    }
+    private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap, prevMark: MarkerWithCircle?): MarkerWithCircle? {
+        prevMark?.marker?.remove()
+        prevMark?.circle?.remove()
+
+        prevMark?.marker = googleMap.addMarker(MarkerOptions().position(position).draggable(true))
         //radius is in meters. Currently set to 10km
         var radius: Double = 10000.0
         var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
             .fillColor(Color.argb(150, 146, 184, 244)))
         //The zoom level is kind of tricky if you change the radius
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
+        Log.d("Fragment map", "Marker added")
         googleMap.setOnMarkerDragListener(object: GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker?) {
                 circle.center = marker?.position
@@ -118,12 +201,16 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             override fun onMarkerDragEnd(marker: Marker?) {
                circle.center = marker?.position
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker?.position, 11.1.toFloat()))
+                Log.d("Fragment map", "Marker moved")
             }
 
             override fun onMarkerDrag(marker: Marker?) {
                 circle.center = marker?.position
             }
         })
+        prevMark?.circle = circle
+        Log.d("Fragment map", "Returning marker")
+        return prevMark
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -133,10 +220,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                     if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
                         googleMap.isMyLocationEnabled = true
+                        Log.d("Fragment map", "Location permission granted")
                         setUpMap()
                     }
                 } else {
                     // Permission denied.
+                    Log.d("Fragment map", "Location permission denied")
                 }
             }
             else -> {
@@ -153,6 +242,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                     lastLocation = location
                     val currentLatLng = LatLng(location.latitude, location.longitude)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                    Log.d("Fragment map", "Current position: $currentLatLng")
                 }
             }
         }
@@ -166,7 +256,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     }
     override fun onPlaceSelected(place: Place) {
+        Log.d("Fragment map", "Clearing map of markers")
         googleMap.clear()
+        Log.d("Fragment map", "Moving to $place")
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.viewport, 0))
         //Only run bellow part if latLng is not null
         place.latLng?.run {
@@ -203,6 +295,50 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             .decodeResource(resources, resources.getIdentifier(iconName, "drawable", activity!!.packageName))
         val resizedBitmap: Bitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false)
         return resizedBitmap
+    }
+    private fun persistentSave() {
+        for (entry: MarkerWithCircle in markersList) {
+            var position: LatLng? = entry.marker?.position
+            var radius: Double? = entry.circle?.radius
+            savedMarkersList?.add(SavedMarkers(position!!.latitude, position.longitude, radius!!))
+        }
+
+        markersList?.run {
+            val prefEditor = sharedPrefs?.edit()
+            prefEditor?.putString("SavedMarkers", Gson().toJson(savedMarkersList))
+            Log.d("Fragment map", "Markers saved")
+            prefEditor?.apply()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("Fragment Map", "Pause")
+        persistentSave()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("Fragment Map", "Stop")
+        persistentSave()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("Fragment Map", "View destroy")
+        persistentSave()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("Fragment Map", "Destroy")
+        persistentSave()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("Fragment Map", "Detach")
+        persistentSave()
     }
 
 }
