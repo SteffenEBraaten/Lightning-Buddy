@@ -365,6 +365,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         super.onDestroy()
         Log.d("Fragment Map", "Destroy")
         persistentSave()
+        coRoutine.cancel()
     }
 
     override fun onDetach() {
@@ -372,11 +373,4 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         Log.d("Fragment Map", "Detach")
         persistentSave()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        coRoutine.cancel()
-
-    }
-
 }
