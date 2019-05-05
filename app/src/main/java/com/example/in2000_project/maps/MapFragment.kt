@@ -49,10 +49,10 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var viewModel : MapsViewmodel // use this to get data
     private lateinit var rootView: View
     private var markersList: LinkedList<MarkerWithCircle> = LinkedList()
-    private var savedMarkersList: LinkedList<savedMarkers>? = null
+    private var savedMarkersList: MutableSet<SavedMarkers>? = null
     private var sharedPrefs: SharedPreferences? = null
 
-    data class savedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
+    data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
 
     //Factory method for creating new map fragment
@@ -93,15 +93,15 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     }
     private fun retrieveSavedMarkers() {
         Log.d("Fragment map", "Retrieving saved markers from shared preferences")
-        val jsonLinkedList = sharedPrefs!!.getString("savedMarkers", null)
+        val jsonLinkedList = sharedPrefs!!.getString("SavedMarkers", null)
         if (jsonLinkedList != null) {
-            savedMarkersList = Gson().fromJson(jsonLinkedList, object: TypeToken<LinkedList<MarkerWithCircle>>(){}.type)
+            savedMarkersList = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<SavedMarkers>>(){}.type)
             Log.d("Fragment map", "Saved markers retrieved")
-            //TODO: DENNE ER FEIL....
-            Log.d("Sdasd", savedMarkersList.toString())
+            Log.d("Fragment map", savedMarkersList.toString())
         }
         if (savedMarkersList == null) {
             Log.d("Fragment map", "No saved markers")
+            savedMarkersList = mutableSetOf()
         }
     }
 
@@ -170,6 +170,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             fadeButton(saveButton)
             Log.d("Fragment map", "Save button clicked")
             markersList.add(marker)
+            Log.d("Fragment map", "markersList size: " + markersList.size)
         }
 
         fadeButton(saveButton)
@@ -299,12 +300,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         for (entry: MarkerWithCircle in markersList) {
             var position: LatLng? = entry.marker?.position
             var radius: Double? = entry.circle?.radius
-            savedMarkersList?.add(savedMarkers(position!!.latitude, position.longitude, radius!!))
+            savedMarkersList?.add(SavedMarkers(position!!.latitude, position.longitude, radius!!))
         }
 
         markersList?.run {
             val prefEditor = sharedPrefs?.edit()
-            prefEditor?.putString("savedMarkers", Gson().toJson(savedMarkersList))
+            prefEditor?.putString("SavedMarkers", Gson().toJson(savedMarkersList))
             Log.d("Fragment map", "Markers saved")
             prefEditor?.apply()
         }
