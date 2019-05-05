@@ -1,6 +1,7 @@
 package com.example.in2000_project.maps
 
 import android.Manifest
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
@@ -22,6 +23,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.in2000_project.R
+import com.example.in2000_project.utils.UalfUtil
+import com.example.in2000_project.utils.WeatherDataUtil
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -38,6 +41,12 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.lang.Exception
+
 
 
 class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
@@ -47,6 +56,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var mapsAPI: String
     private lateinit var placesClient: PlacesClient
     private lateinit var viewModel : MapsViewmodel // use this to get data
+
     private lateinit var rootView: View
     private var markersList: LinkedList<MarkerWithCircle> = LinkedList()
     private var savedMarkersList: MutableSet<SavedMarkers>? = null
@@ -54,6 +64,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
+
+    private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>
+    private lateinit var coRoutine: Job
+    //Milliseconds
+    private var refreshRate: Long = 3 * 60 * 1000
+
 
     //Factory method for creating new map fragment
     companion object {
@@ -78,6 +94,13 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))
         ).get(MapsViewmodel::class.java)
         Log.d("Fragment map", "Successfully got viewmodel")
+
+        changeObserver = Observer<ArrayList<UalfUtil.Ualf>> { newLightning ->
+            newLightning?.forEach {
+                val newLocation = LatLng(it.lat, it.long)
+                setMarkerLightning(newLocation)
+            }
+        }
 
         mapsAPI = getString(R.string.Maps_API)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
@@ -109,6 +132,15 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         Log.d("Fragment map", "Map ready")
+        MapsViewmodel.recentData.observe(this, changeObserver)
+        coRoutine = GlobalScope.launch{
+            while (true) {
+                viewModel.getRecentApiData()
+                Log.d("Refresh API", "API refreshed")
+                //Every 5 minute
+                delay(refreshRate)
+            }
+        }
 
         //Make map style follow dark mode toggle
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -285,10 +317,10 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     fun setMarkerLightning(location: LatLng) {
         val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
-                .fromBitmap(resizeMapIcon("lightning_icon_tmp", 150, 150))))
+                .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
         Handler().postDelayed({
             marker.remove()
-        }, 5000)
+        }, refreshRate)
     }
     private fun resizeMapIcon(iconName: String, width: Int, height: Int): Bitmap {
         val imageBitmap: Bitmap = BitmapFactory
@@ -339,6 +371,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         super.onDetach()
         Log.d("Fragment Map", "Detach")
         persistentSave()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coRoutine.cancel()
+
     }
 
 }

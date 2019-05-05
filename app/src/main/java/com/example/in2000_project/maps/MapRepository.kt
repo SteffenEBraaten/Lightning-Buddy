@@ -1,6 +1,7 @@
 package com.example.in2000_project.maps
 
 import android.annotation.SuppressLint
+import android.util.Log
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
