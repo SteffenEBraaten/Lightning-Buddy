@@ -1,19 +1,21 @@
 package com.example.in2000_project.maps
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
 import com.example.in2000_project.*
+import com.example.in2000_project.utils.UalfUtil
 
 
 class MainActivity : BaseActivity() {
     private lateinit var viewModel: MapsViewmodel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         this.viewModel = ViewModelProviders.of(this, MapsViewmodelFactory(getPrefs())).get(
             MapsViewmodel::class.java)
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         darkMode()
         super.setAlarm()

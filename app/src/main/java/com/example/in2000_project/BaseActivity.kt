@@ -1,5 +1,7 @@
 package com.example.in2000_project
 
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
@@ -12,6 +14,8 @@ import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
 import com.example.in2000_project.alarm.AlarmService
 import com.example.in2000_project.maps.MainActivity
+import com.example.in2000_project.maps.MapsViewmodel
+import com.example.in2000_project.maps.MapsViewmodelFactory
 import com.example.in2000_project.settings.SettingsActivity
 
 
@@ -78,8 +82,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         setToolbar(getString(R.string.app_name), R.drawable.ic_menu_black_24dp)
         this.drawer = findViewById(R.id.drawer_layout)
         this.toolbar.setNavigationOnClickListener{
-            this.drawer.openDrawer(GravityCompat.START)
-
+           this.drawer.openDrawer(GravityCompat.START)
         }
 
         setNavigationView()

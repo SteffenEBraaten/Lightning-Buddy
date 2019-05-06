@@ -2,6 +2,7 @@ package com.example.in2000_project.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.arch.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import com.example.in2000_project.maps.MapsViewmodel
+import com.example.in2000_project.maps.MapsViewmodelFactory
 
 class Alarm : BroadcastReceiver() {
     private var frequency: Int = 0

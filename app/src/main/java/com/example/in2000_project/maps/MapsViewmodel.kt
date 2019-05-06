@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.SharedPreferences
 import android.util.Log
+import com.bumptech.glide.load.engine.executor.GlideExecutor.UncaughtThrowableStrategy.LOG
+import com.example.in2000_project.utils.DateUtil
 import com.example.in2000_project.utils.UalfUtil
 import com.example.in2000_project.utils.WeatherDataUtil
 import com.google.gson.Gson
@@ -12,10 +14,13 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewModel(){
-
-    var recentData = MutableLiveData<ArrayList<UalfUtil.Ualf>>() //observe this and update UI on change
+    companion object Data {
+        val recentData = MutableLiveData<ArrayList<UalfUtil.Ualf>>() //observe this and update UI on change
+    }
 
     public fun getRecentApiData(){
         GlobalScope.launch{
@@ -60,7 +65,7 @@ public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewMode
     }
 
     public fun setRecentData(data: ArrayList<UalfUtil.Ualf>?){
-        this.recentData.value = data ?: ArrayList()
+        MapsViewmodel.recentData.postValue(data)
     }
 
     public fun getSavedRecentData(): ArrayList<UalfUtil.Ualf>? {
