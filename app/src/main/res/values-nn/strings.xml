@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IN2000_Project</string>
     <string name="resetSettingsMessage">Alle lagra felt vil bli sletta og innstillingar vil bli tilbakestilt. Vil du
         fortsetja?
     </string>
@@ -30,7 +29,7 @@
     <string name="done">Ferdig</string>
     <string name="next">Neste</string>
     <string name="skip">Hopp over</string>
-    <string name="slider1_Title">Velkommen til appname!</string>
+    <string name="slider1_Title">Velkommen til Lightning Buddy!</string>
     <string name="slider1_description">No vil du kunna sjå der lynnedslag slår ned i nærleiken av deg! På kartet kan
         du\n sjå lynnedslag som har slått ned dei siste 24 timane.
     </string>
