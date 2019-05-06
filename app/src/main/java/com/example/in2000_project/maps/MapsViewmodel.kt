@@ -5,26 +5,50 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.SharedPreferences
 import android.util.Log
+import com.bumptech.glide.load.engine.executor.GlideExecutor.UncaughtThrowableStrategy.LOG
+import com.example.in2000_project.utils.DateUtil
 import com.example.in2000_project.utils.UalfUtil
+import com.example.in2000_project.utils.WeatherDataUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewModel(){
-
-    var recentData = MutableLiveData<ArrayList<UalfUtil.Ualf>>() //observe this and update UI on change
+    companion object Data {
+        val recentData = MutableLiveData<ArrayList<UalfUtil.Ualf>>() //observe this and update UI on change
+    }
 
     public fun getRecentApiData(){
         GlobalScope.launch{
-            val data = MapRepository().getMetLightningData()
-            if(!data.isNullOrEmpty()){
-                val ualfs = UalfUtil.createUalfs(data)
-                if(!ualfs.isNullOrEmpty()){
-                    setRecentData(ualfs)
-                    saveRecentData(ualfs)
+            try {
+                val data = MapRepository().getMetLightningData()
+                if (!data.isNullOrEmpty()) {
+                    val ualfs = UalfUtil.createUalfs(data)
+                    if (!ualfs.isNullOrEmpty()) {
+                        setRecentData(ualfs)
+                        saveRecentData(ualfs)
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e("getRecentApiData", "failed to update metLightning: $e")
             }
+
+        }
+
+        GlobalScope.launch{
+            try {
+                val data = MapRepository().getMetLocationForecastData("60.10","9.58")
+                if(!data.isNullOrEmpty()){
+                    val weatherdata = WeatherDataUtil.createWeatherData(data)
+                    if(weatherdata.isNotEmpty()){
+                        Log.d("WEATHERDATA","NOT EMPTY:\n${Gson().toJson(weatherdata)}")
+                    }
+                }
+            }catch (e: Exception) {Log.e("getRecentApiData","failed to update metLocationForecast: $e")}
         }
     }
 
@@ -41,7 +65,7 @@ public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewMode
     }
 
     public fun setRecentData(data: ArrayList<UalfUtil.Ualf>?){
-        this.recentData.value = data ?: ArrayList()
+        MapsViewmodel.recentData.postValue(data)
     }
 
     public fun getSavedRecentData(): ArrayList<UalfUtil.Ualf>? {

@@ -1,6 +1,7 @@
 package com.example.in2000_project.maps
 
 import android.annotation.SuppressLint
+import android.util.Log
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -19,7 +20,7 @@ class MapRepository{
 
 
     public fun getMetLightningData() : String? {
-        val httpClient = addLogging(true)
+        val httpClient = addLogging(false)
 
         val retrofit = Retrofit.Builder()
             .baseUrl(metProxy)
@@ -31,6 +32,23 @@ class MapRepository{
         val metAPI = retrofit.create(MetLightningAPI::class.java)
 
         val call = metAPI.getData()
+
+        val d = call.execute()
+        return d.body()
+    }
+
+    public fun getMetLocationForecastData(lat: String, lon: String) : String? {
+        val httpClient = addLogging(false)
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(metProxy)
+            .addConverterFactory(NullOnEmptyConverterFactory())
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .client(httpClient.build())
+            .build()
+
+        val metAPI = retrofit.create(MetLocationForecastAPI::class.java)
+        val call = metAPI.getData(lat, lon)
 
         val d = call.execute()
         return d.body()
@@ -84,6 +102,12 @@ interface MetLightningAPI{
     @Headers("User-agent: Gruppe01")
     @GET("weatherapi/lightning/1.0/")
     fun getData(): Call<String>
+}
+
+interface MetLocationForecastAPI{
+    @Headers("User-agent: Gruppe01")
+    @GET("weatherapi/locationforecast/1.9/")
+    fun getData(@Query("lat") lat: String, @Query("lon") lon: String): Call<String>
 }
 
 

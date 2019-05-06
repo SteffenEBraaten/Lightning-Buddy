@@ -101,6 +101,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             reStart()
             true
         }
+
+        preferenceScreen.findPreference("lightningDataFrequency").setOnPreferenceChangeListener { _, _ ->
+            refreshFragment()
+            true
+        }
     }
 
     private fun setAlarm(){
