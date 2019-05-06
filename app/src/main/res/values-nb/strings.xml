@@ -43,4 +43,6 @@
         kunne hjelpe oss å gjøre appen eneda bedre og dermed gjøre din brukeropplevelse bedre!
     </string>
     <string name="save">Lagre</string>
+    <string name="notification_title">Nytt lyn oppdaget</string>
+    <string name="notification_content">Nytt lyn oppdaget på:</string>
 </resources>

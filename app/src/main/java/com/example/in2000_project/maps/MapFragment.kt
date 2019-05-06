@@ -69,7 +69,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>
     private lateinit var coRoutine: Job
     //Milliseconds
-    private var refreshRate: Long = 3 * 60 * 1000
+    private var refreshRate: Long = 5 * 60 * 1000
 
 
     //Factory method for creating new map fragment
@@ -83,7 +83,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                               savedInstanceState: Bundle?): View? {
         Log.d("Fragment map", "Inflating map fragment")
         rootView = inflater.inflate(R.layout.map_fragment, parent, false)
-        sharedPrefs = this.activity?.getSharedPreferences("Map Fragment", Context.MODE_PRIVATE)
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity)
         return rootView
     }
 
@@ -136,8 +136,8 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         MapsViewmodel.recentData.observe(this, changeObserver)
         coRoutine = GlobalScope.launch{
             while (true) {
+                //viewModel.getRecentApiData()
                 viewModel.getRecentApiData()
-                //viewModel.getDummyData(4)
                 Log.d("Refresh API", "API refreshed")
                 delay(refreshRate)
             }
@@ -226,6 +226,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         //The zoom level is kind of tricky if you change the radius
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
         Log.d("Fragment map", "Marker added")
+
         googleMap.setOnMarkerDragListener(object: GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker?) {
                 circle.center = marker?.position

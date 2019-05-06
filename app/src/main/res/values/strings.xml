@@ -66,6 +66,8 @@
         and by that we can increase your user experience!
     </string>
     <string name="save">Save</string>
+    <string name="notification_title">New lightning detected</string>
+    <string name="notification_content">New lightning detected at:</string>
 
 
 </resources>

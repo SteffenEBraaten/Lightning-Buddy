@@ -84,7 +84,6 @@ public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewMode
             dummyDataString += " " + longitude.toString()
             dummyDataString += "\n"
         }
-        Log.d("ALFY", dummyDataString)
         val ualfs = UalfUtil.createUalfs(dummyDataString)
         if (!ualfs.isNullOrEmpty()) {
             setRecentData(ualfs)
