@@ -14,7 +14,8 @@
         you wish to continue?
     </string>
     <string name="termsOfService" translatable="false">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua.
         Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
         Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -23,7 +24,7 @@
 
     <string name="en" translatable="false">English</string>
     <string name="no" translatable="false">Norsk</string>
-    
+
     <string name="dark_mode">Dark mode</string>
     <string name="general">General</string>
     <string name="use_Location">Use my location</string>
@@ -46,5 +47,25 @@
     <string name="minutes">minutes</string>
     <string name="dataUpdateFrequency">Data update frequency</string>
     <string name="noUpdates">No updates</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="slider1_Title">Welcome to appname!</string>
+    <string name="slider1_description">
+        Now, you will be able to see where lightning storms are happening close to you! Check out the map for
+        lightning strikes that have struck in the last 24 hours.
+    </string>
+    <string name="slider2_Title">Get notified about lightning strikes!</string>
+    <string name="slider2_description">
+        Use the map and set location where you would like to get notified about lightning storms so that you can remain
+        safe and informed! You can also adjust the radius around your location for where would like to get notified.
+    </string>
+    <string name="slider3_Title">Help us make the app even better!</string>
+    <string name="slider3_description">
+        In the settings panel you can send us feedback on our app. This will help us making the app even better
+        and by that we can increase your user experience!
+    </string>
+    <string name="save">Save</string>
+
 
 </resources>

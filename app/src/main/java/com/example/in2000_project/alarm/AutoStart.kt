@@ -8,7 +8,7 @@ import android.preference.PreferenceManager.getDefaultSharedPreferences
 class AutoStart : BroadcastReceiver() {
     var alarm = Alarm()
 
-    override fun onReceive(context: Context, intent: Intent) { //TODO: get minutes from settings
+    override fun onReceive(context: Context, intent: Intent) {
         val serviceIntent = Intent(context, AlarmService::class.java)
         val minutes = getDefaultSharedPreferences(context).getString("lightningDataFrequency", "5")
         serviceIntent.putExtra("minutes", minutes)
