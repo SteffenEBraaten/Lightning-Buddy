@@ -61,6 +61,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private var markersList: LinkedList<MarkerWithCircle> = LinkedList()
     private var savedMarkersList: MutableSet<SavedMarkers>? = null
     private var sharedPrefs: SharedPreferences? = null
+    private var prevSearchMarker: Marker? = null
 
     data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
@@ -98,7 +99,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         changeObserver = Observer<ArrayList<UalfUtil.Ualf>> { newLightning ->
             newLightning?.forEach {
                 val newLocation = LatLng(it.lat, it.long)
-                setMarkerLightning(newLocation)
+                setMarkerLightning(newLocation, refreshRate)
             }
         }
 
@@ -136,8 +137,8 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         coRoutine = GlobalScope.launch{
             while (true) {
                 viewModel.getRecentApiData()
+                //viewModel.getDummyData(4)
                 Log.d("Refresh API", "API refreshed")
-                //Every 5 minute
                 delay(refreshRate)
             }
         }
@@ -288,13 +289,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     }
     override fun onPlaceSelected(place: Place) {
-        Log.d("Fragment map", "Clearing map of markers")
-        googleMap.clear()
+        prevSearchMarker?.remove()
         Log.d("Fragment map", "Moving to $place")
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.viewport, 0))
         //Only run bellow part if latLng is not null
         place.latLng?.run {
-            googleMap.addMarker(MarkerOptions().position(place.latLng!!))
+            prevSearchMarker = googleMap.addMarker(MarkerOptions().position(place.latLng!!))
         }
     }
     override fun onError(status: Status) {
@@ -314,13 +314,25 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             ))
         }
     }
-    fun setMarkerLightning(location: LatLng) {
+    fun setMarkerLightning(location: LatLng, duration: Long) {
+        Log.d("Fragment map", "Setting marker at $location")
         val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
                 .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
-        Handler().postDelayed({
-            marker.remove()
-        }, refreshRate)
+            Handler().postDelayed({
+                marker.remove()
+            }, duration)
+    }
+    /*
+    Function overloading if the marker should not be removed after a given time.
+    Function returns the marker so caller can handle removal
+     */
+    fun setMarkerLightning(location: LatLng): Marker {
+        Log.d("Fragment map", "Setting marker at $location")
+        val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
+            .icon(BitmapDescriptorFactory
+                .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
+        return marker
     }
     private fun resizeMapIcon(iconName: String, width: Int, height: Int): Bitmap {
         val imageBitmap: Bitmap = BitmapFactory
