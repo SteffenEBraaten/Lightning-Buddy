@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IN2000_Project</string>
+    <string name="app_name" translatable="false">Lightning Buddy</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -50,7 +50,7 @@
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="done">Done</string>
-    <string name="slider1_Title">Welcome to appname!</string>
+    <string name="slider1_Title">Welcome to Ligtning Buddy!</string>
     <string name="slider1_description">
         Now, you will be able to see where lightning storms are happening close to you! Check out the map for
         lightning strikes that have struck in the last 24 hours.
