@@ -1,7 +1,5 @@
 package com.example.in2000_project
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
@@ -10,13 +8,10 @@ import android.view.MenuItem
 import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
-import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
-import com.example.in2000_project.LightningHistory.LightningHistory
+import com.example.in2000_project.LightningHistory.LightningHistoryActivity
 import com.example.in2000_project.alarm.AlarmService
 import com.example.in2000_project.maps.MainActivity
-import com.example.in2000_project.maps.MapsViewmodel
-import com.example.in2000_project.maps.MapsViewmodelFactory
 import com.example.in2000_project.settings.SettingsActivity
 
 
@@ -98,7 +93,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.drawercontent_settings -> startActivity(Intent(this, SettingsActivity::class.java))
-            R.id.drawercontent_lightninghistory -> startActivity(Intent(this, LightningHistory::class.java))
+            R.id.drawercontent_lightninghistory -> startActivity(Intent(this, LightningHistoryActivity::class.java))
         }
 
         return true

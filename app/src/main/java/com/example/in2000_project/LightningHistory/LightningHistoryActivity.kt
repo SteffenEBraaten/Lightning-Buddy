@@ -2,26 +2,21 @@ package com.example.in2000_project.LightningHistory
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.EditText
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import com.example.in2000_project.BaseActivity
 import com.example.in2000_project.R
-//import com.example.in2000_project.LightningHistory.His
 
-import kotlinx.android.synthetic.main.activity_lightning_history.*
-import kotlinx.android.synthetic.main.activity_lightning_history.view.*
-import kotlinx.android.synthetic.main.dialog_select_area.*
+//import com.example.in2000_project.LightningHistoryActivity.His
+
 import java.util.*
-import java.util.logging.Logger
 
-class LightningHistory : BaseActivity() {
+class LightningHistoryActivity : BaseActivity() {
 //    val tempPlaceSelection = arrayOf("Oslo, Drammen, Lillestrøm", "Trondheim")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,8 +26,33 @@ class LightningHistory : BaseActivity() {
         var toolbar : Toolbar = findViewById(R.id.my_toolbar)
         toolbar.title = getString(R.string.lightningHistory)
 
-        val dialogAreaSelect = AlertDialog.Builder(this@LightningHistory)
-        val view = layoutInflater.inflate(R.layout.dialog_select_area, null)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction().add(R.id.content_frame, MapWithoutSearchbar.newInstance(),
+                "map_fragment").commit()
+        }
+        inflateDialog()
+
+        val searchbar = findViewById<SearchView>(R.id.select_area_and_date)
+        searchbar.setOnClickListener { inflateDialog() }
+    }
+
+    private fun clickDatePicker(view: View?, editText: EditText) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            // Display Selected date in Toast
+            Toast.makeText(this, """$dayOfMonth - ${monthOfYear + 1} - $year""", Toast.LENGTH_LONG).show()
+            editText.setText("""$dayOfMonth - ${monthOfYear + 1} - $year""")
+        }, year, month, day)
+        dpd.show()
+    }
+
+    private fun inflateDialog(){
+        val dialogAreaSelect = AlertDialog.Builder(this@LightningHistoryActivity)
+        val view = layoutInflater.inflate(R.layout.dialog_select_area_and_date, null)
         dialogAreaSelect.setView(view)
 
         val areaSelectLabel = view.findViewById<TextView>(R.id.areaSelectLabel)
@@ -74,26 +94,5 @@ class LightningHistory : BaseActivity() {
             }
         }
         dialog.show()
-
-
-
-
-
-//        supportFragmentManager.beginTransaction().add(R.id.content_frame, MapFragment.newInstance(),
-//            "Map Fragment").commit()
-    }
-
-    private fun clickDatePicker(view: View?, editText: EditText) {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            // Display Selected date in Toast
-            Toast.makeText(this, """$dayOfMonth - ${monthOfYear + 1} - $year""", Toast.LENGTH_LONG).show()
-            editText.setText("""$dayOfMonth - ${monthOfYear + 1} - $year""")
-        }, year, month, day)
-        dpd.show()
     }
 }
