@@ -36,7 +36,7 @@ class Alarm : BroadcastReceiver() {
         val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
         wl.acquire(60*1000L /*10 minutes*/)
-        MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getDummyData(100)
+        MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
         inspectRecentData()
         Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
 

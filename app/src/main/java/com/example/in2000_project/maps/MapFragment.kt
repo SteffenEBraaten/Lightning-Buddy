@@ -137,7 +137,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         coRoutine = GlobalScope.launch{
             while (true) {
                 //viewModel.getRecentApiData()
-                viewModel.getDummyData(100)
+                viewModel.getRecentApiData()
                 Log.d("Refresh API", "API refreshed")
                 delay(refreshRate)
             }
@@ -220,12 +220,13 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
         prevMark?.marker = googleMap.addMarker(MarkerOptions().position(position).draggable(true))
         //radius is in meters. Currently set to 10km
-        var radius: Double = 1000000.0
+        var radius: Double = 10000.0
         var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
             .fillColor(Color.argb(150, 146, 184, 244)))
         //The zoom level is kind of tricky if you change the radius
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
         Log.d("Fragment map", "Marker added")
+
         googleMap.setOnMarkerDragListener(object: GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker?) {
                 circle.center = marker?.position
