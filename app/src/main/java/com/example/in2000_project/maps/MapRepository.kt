@@ -72,6 +72,7 @@ class MapRepository{
         val call = frostAPI.getData("$fromTime/$toTime")
 
         val d = call.execute()
+        Log.e("Frost call test:", "${d.isSuccessful}")
         return d.body()
     }
 

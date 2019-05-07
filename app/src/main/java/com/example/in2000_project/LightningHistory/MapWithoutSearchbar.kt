@@ -50,7 +50,7 @@ class MapWithoutSearchbar : OnMapReadyCallback, PlaceSelectionListener, Fragment
     private lateinit var lastLocation: Location
     private lateinit var mapsAPI: String
     private lateinit var placesClient: PlacesClient
-    private lateinit var viewModel : MapsViewmodel // use this to get data
+    private lateinit var viewModel : HistoryViewmodel // use this to get data
 
     private lateinit var rootView: View
 //    private var markersList: LinkedList<MarkerWithCircle> = LinkedList()
@@ -60,7 +60,7 @@ class MapWithoutSearchbar : OnMapReadyCallback, PlaceSelectionListener, Fragment
 //    data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
 //    data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
 
-//    private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>
+    private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>
 //    private lateinit var coRoutine: Job
     //Milliseconds
 //    private var refreshRate: Long = 3 * 60 * 1000
@@ -85,9 +85,9 @@ class MapWithoutSearchbar : OnMapReadyCallback, PlaceSelectionListener, Fragment
         super.onViewCreated(view, savedInstanceState)
 
         Log.d("Fragment map", "Getting viewmodel for map")
-        this.viewModel = ViewModelProviders.of(this.activity!!,
-            MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))
-        ).get(MapsViewmodel::class.java)
+//        this.viewModel = ViewModelProviders.of(this.activity!!,
+//            MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))
+//        ).get(HistoryViewmodel::class.java)
         Log.d("Fragment map", "Successfully got viewmodel")
 
 //        changeObserver = Observer<ArrayList<UalfUtil.Ualf>> { newLightning ->
