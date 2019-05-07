@@ -57,6 +57,5 @@ class MainActivity : BaseActivity() {
         else{
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
-
     }
 }

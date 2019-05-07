@@ -16,6 +16,7 @@ import com.example.in2000_project.alarm.AlarmService
 import com.example.in2000_project.maps.MainActivity
 import com.example.in2000_project.maps.MapsViewmodel
 import com.example.in2000_project.maps.MapsViewmodelFactory
+import com.example.in2000_project.maps.RadiusFragment
 import com.example.in2000_project.settings.SettingsActivity
 
 
@@ -97,6 +98,13 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.drawercontent_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+            R.id.drawercontent_set_radius -> {
+                var setRadiusFragment: RadiusFragment = RadiusFragment()
+                supportFragmentManager.beginTransaction().add(R.id.main_relative, setRadiusFragment).commit()
+                item.isChecked = false
+                this.drawer.closeDrawer(GravityCompat.START)
+
+            }
         }
 
         return true

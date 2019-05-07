@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+    <!--Min and max are km-->
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp">
+        <TextView
+                android:id="@+id/radius_max_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Test"
+                android:layout_toStartOf="@+id/radius_seek"/>
+        <SeekBar
+                android:id="@+id/radius_seek"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:max="100"
+                android:progress="1"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"/>
+        <TextView
+                android:id="@+id/radius_min_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Test"
+                android:layout_toEndOf="@+id/radius_seek"/>
+    </RelativeLayout>
+    <TextView
+            android:id="@+id/radius_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+
+</LinearLayout>
