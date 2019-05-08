@@ -45,4 +45,5 @@
     <string name="save">Lagra</string>
     <string name="notification_title">Nytt lyn oppdaga</string>
     <string name="notification_content">Nytt lyn oppdage på:</string>
+    <string name="radius">Radius</string>
 </resources>

@@ -5,10 +5,15 @@
                 android:id="@+id/test1"
                 android:icon="@drawable/ic_location_searching_black_24dp"
                 android:title="@string/map"/>
+
+        <item
+                android:id="@+id/drawercontent_lightninghistory"
+                android:title="LightningHistory"/>
         <item
                 android:id="@+id/drawercontent_set_radius"
                 android:icon="@drawable/ic_priority_high_black_24dp"
-                android:title="radius"/>
+                android:title="@string/radius"/>
+
         <item
                 android:id="@+id/test3"
                 android:title="test3"/>
