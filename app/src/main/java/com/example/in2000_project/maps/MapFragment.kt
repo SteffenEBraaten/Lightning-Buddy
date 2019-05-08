@@ -62,7 +62,14 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private var savedMarkersList: MutableSet<SavedMarkers>? = null
     private var sharedPrefs: SharedPreferences? = null
 
-    data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
+    data class SavedMarkers(var name: String,
+                            var latitude: Double,
+                            var longitude: Double,
+                            var radius: Double) {
+        constructor(lat: Double, long: Double, r: Double) :
+                this("defaultName", lat, long, r)
+
+    }
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
 
     private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>

@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.in2000_project.R
 import com.example.in2000_project.maps.MapRepository
+import com.example.in2000_project.maps.NetworkErrorException
 import com.example.in2000_project.utils.UalfUtil
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -21,16 +22,20 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.coroutines.*
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
+import android.app.PendingIntent.getActivity
+import android.content.Intent
 
 
 class HistoryViewmodel : ViewModel(){
+
     companion object Data {
         val recentData = MutableLiveData<ArrayList<UalfUtil.Ualf>>() //observe this and update UI on change
     }
 
+    fun handleSearh(context: Context, from: Date, to: Date, act: LightningHistoryActivity, mapFrag: MapWithoutSearchbar?){
 
-    fun handleSearh(context: Context, from: Date, to: Date){
-        Log.e("Test handle search", "Test test")
         CoroutineScope(Dispatchers.IO).launch {
             try {
 
@@ -39,24 +44,29 @@ class HistoryViewmodel : ViewModel(){
                     if (!data.isNullOrEmpty()){
                         val ualfs = UalfUtil.createUalfs(data)
                         if (!ualfs.isNullOrEmpty()) {
-                            for (ualf in ualfs){
-                                Log.e("test", "test : $ualf")
-                            }
+                            act.dispayToast(context,"Generating lightning...", Toast.LENGTH_SHORT)
+                            Log.e("MAP FRAG", "${mapFrag?.toString()}")
+//                            mapFrag?.plotLightning(ualfs)
+                            HistoryViewmodel.recentData.postValue(ualfs)
+                            act.dispayToast(context,"Done!", Toast.LENGTH_SHORT)
                         }
                     }
                     else{
-                        Toast.makeText(context, "There was no data for this place/period, please try again!", Toast.LENGTH_LONG).show()
+                        act.dispayToast(context, "There was no data for this place/period, please try again!", Toast.LENGTH_LONG)
                     }
                 }
             }
 
-            catch (e: Exception){
-                Log.e("getHistoricalData", "failed to get historical data: $e")
-                Toast.makeText(context, "An error has occured", Toast.LENGTH_LONG).show()
-            }
+            catch (e: NetworkErrorException){
+                withContext(Dispatchers.Main) {
+                    act.dispayToast(context,"Error: ${e.errorCode} ${e.reason}", Toast.LENGTH_LONG)
+                    if (e.errorCode != 0){
+                        act.inflateDialog(context, from, to)
 
+                    }
+                    Log.e("getHistoricalData", "failed to get historical data: $e")
+                }
+            }
         }
     }
-
-
 }

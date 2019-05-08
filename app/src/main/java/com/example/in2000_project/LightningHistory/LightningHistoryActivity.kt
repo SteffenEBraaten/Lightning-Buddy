@@ -8,50 +8,128 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.example.in2000_project.BaseActivity
 import com.example.in2000_project.R
+import com.example.in2000_project.maps.MapFragment
+import com.example.in2000_project.maps.MapFragment.SavedMarkers
 import com.example.in2000_project.maps.MapRepository
 import com.example.in2000_project.utils.UalfUtil
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.fragment_map_without_searchbar.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.lang.Exception
 
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
-class LightningHistoryActivity : BaseActivity() {
+class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListener{
+
+    var markers = HashMap<Int, SavedMarkers>()
+    val spinnerList: ArrayList<String> = ArrayList()
+//    lateinit var spinner: Spinner
+    var selectedMarker: SavedMarkers = SavedMarkers("All", 62.116681, 16.121960, 800000.0)
+    var selectedMarkerIndex = 0
+    var currentToast: Toast? = null
+
+    lateinit var to: Date
+    lateinit var from: Date
+    lateinit var today: Date
+    var mapFrag: MapWithoutSearchbar? = null
+    var calendar: Calendar = Calendar.getInstance()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val defaulAreaChoices = resources.getStringArray(R.array.defualtAreaChoices)
+        Log.e("Spinner length", spinnerList.size.toString())
+        for (i in defaulAreaChoices.indices){
+            val jsonObj = JSONObject(defaulAreaChoices[i])
+            val savedMarker = SavedMarkers( jsonObj.getString("name"),
+                                            jsonObj.getDouble("lat"),
+                                            jsonObj.getDouble("long"),
+                                            jsonObj.getDouble("radius"))
+            markers.put(i, savedMarker)
+//            spinnerList[i] = savedMarker.name
+            spinnerList.add(savedMarker.name)
+        }
+
+        Log.e("Default Markers", markers.toString())
+
+        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", null)
+        if (jsonLinkedList != null) {
+            val savedMarkersList: Array<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<MapFragment.SavedMarkers>>(){}.type)
+            val offset = spinnerList.size
+            for (i in savedMarkersList.indices){
+                markers.put(i + offset, savedMarkersList[i])
+                spinnerList.add(savedMarkersList[i].name)
+            }
+            Log.e("HistoryAct", savedMarkersList.toString())
+        }
+        else{
+            Log.e("HistoryAct", "No Saved markers")
+        }
+
+
+
         setContentView(R.layout.activity_lightning_history)
         super.attachBackButton()
         var toolbar : Toolbar = findViewById(R.id.my_toolbar)
         toolbar.title = getString(R.string.lightningHistory)
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().add(R.id.content_frame, MapWithoutSearchbar.newInstance(),
-                "map_fragment").commit()
-        }
-//        HistoryViewmodel().inflateDialog(this)
+        supportFragmentManager.beginTransaction().add(R.id.content_frame, MapWithoutSearchbar.newInstance(),
+            "mapWithoutSearchbar").commit()
 
-        inflateDialog(this)
 
         val searchbar = findViewById<SearchView>(R.id.select_area_and_date)
-//        searchbar.setOnClickListener { HistoryViewmodel().inflateDialog(this) }
-        searchbar.setOnClickListener { inflateDialog(this) }
+        searchbar.setOnClickListener { inflateDialog(this, this.from, this.to) }
     }
 
-    fun inflateDialog(context: Context){
+    override fun onResume() {
+        this.today = Calendar.getInstance().time
+        super.onResume()
+    }
+
+    override fun onStart() {
+
+        this.to = calendar.time
+        this.calendar.add(Calendar.DATE, -1)
+        this.from = calendar.time
+        this.mapFrag = supportFragmentManager.findFragmentById(R.id.map_frag) as MapWithoutSearchbar?
+        Log.e("MAP FRAG FROM Lightning", "${this.mapFrag}")
+
+        inflateDialog(this, this.from, this.to)
+        super.onStart()
+    }
+
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        this.selectedMarker = markers.getOrDefault(position, SavedMarkers("All", 62.116681, 16.121960, 800000.0))
+        this.selectedMarkerIndex = position
+    }
+
+    fun inflateDialog(context: Context, from: Date, to: Date){
         val layoutInflater = LayoutInflater.from(context)
         val dialogAreaSelect = AlertDialog.Builder(context)
         val view = layoutInflater.inflate(R.layout.dialog_select_area_and_date, null)
         dialogAreaSelect.setView(view)
+
+        val spinner: Spinner = view.findViewById<Spinner>(R.id.areaSelect)
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerList)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = spinnerAdapter
+        spinner.onItemSelectedListener = this
+        spinner.setSelection(this.selectedMarkerIndex)
+
 
         val areaSelectLabel = view.findViewById<TextView>(R.id.areaSelectLabel)
         val fromDateLabel = view.findViewById<TextView>(R.id.fromDateLabel)
@@ -60,20 +138,15 @@ class LightningHistoryActivity : BaseActivity() {
         fromDateLabel.text = "From"
         toDateLabel.text = "To"
 
-        val frostApiIsShit = false
-        val formater = SimpleDateFormat("yyyy-MM-dd")
-        val calendar = Calendar.getInstance()
-        val to = calendar.time
-        calendar.add(Calendar.DATE, -1)
-        val from = calendar.time
+
 
         val fromDateEditText = view.findViewById<EditText>(R.id.fromDate)
         val toDateEditText = view.findViewById<EditText>(R.id.toDate)
-        fromDateEditText.setText(formater.format(from))
-        toDateEditText.setText(formater.format(to))
+        fromDateEditText.setText(SimpleDateFormat("yyyy-MM-dd").format(from))
+        toDateEditText.setText(SimpleDateFormat("yyyy-MM-dd").format(to))
 
-        fromDateEditText.setOnClickListener { v -> clickDatePicker(v, fromDateEditText, context, frostApiIsShit) }
-        toDateEditText.setOnClickListener { v -> clickDatePicker(v, toDateEditText, context, frostApiIsShit)}
+        fromDateEditText.setOnClickListener { v -> clickDatePicker(v, fromDateEditText, context, from) }
+        toDateEditText.setOnClickListener { v -> clickDatePicker(v, toDateEditText, context, to)}
 
         dialogAreaSelect.setPositiveButton("Search") { dialog, whichButton -> var placeHolder = 123}
         var dialog = dialogAreaSelect.create()
@@ -88,23 +161,28 @@ class LightningHistoryActivity : BaseActivity() {
                 if ( fromDateString == "" || toDateString == ""){
                     validDates = false
                     if (fromDateString == ""){
-                        Toast.makeText(context, "Please select a date from", Toast.LENGTH_LONG).show()
+                        dispayToast(context, "Please select a date from", Toast.LENGTH_LONG)
                         fromDateEditText.performClick()
                     }
                     else{
-                        Toast.makeText(context, "Please select a date to", Toast.LENGTH_LONG).show()
+                        dispayToast(context, "Please select a date to", Toast.LENGTH_LONG)
                         toDateEditText.performClick()
                     }
                 }
-                val selectedFrom = formater.parse(fromDateString)
-                val selectedTo = formater.parse(toDateString)
+                val selectedFrom = SimpleDateFormat("yyyy-MM-dd").parse(fromDateString)
+                val selectedTo = SimpleDateFormat("yyyy-MM-dd").parse(toDateString)
                 if (selectedFrom > selectedTo) {
                     validDates = false
-                    Toast.makeText(context, "Invalid time period!", Toast.LENGTH_LONG).show()
+                    dispayToast(context, "Invalid time period!", Toast.LENGTH_LONG)
 
                 }
+
                 if (validDates){
-                    HistoryViewmodel().handleSearh(context, selectedFrom, selectedTo)
+                    if (selectedFrom == selectedTo) {
+                        selectedFrom.time -= 1000 * 60 * 60 * 24
+                    }
+                    HistoryViewmodel().handleSearh(context, selectedFrom, selectedTo, this, this.mapFrag)
+                    dispayToast(context, "Loading data...", Toast.LENGTH_SHORT)
                     dialog.dismiss()
                 }
 
@@ -113,18 +191,19 @@ class LightningHistoryActivity : BaseActivity() {
         dialog.show()
     }
 
+    fun dispayToast(context: Context, text: String, length: Int) {
 
+        this.currentToast?.cancel()
+        this.currentToast = Toast.makeText(context, text, length)
+        this.currentToast?.show()
+    }
 
-    private fun clickDatePicker(view: View?, editText: EditText, context: Context, frostApiIsShit: Boolean) {
-        if (frostApiIsShit){
-            Toast.makeText(context, "FrostAPI currently only support history from yesterday, date selection is disabled", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+    private fun clickDatePicker(view: View?, editText: EditText, context: Context, initDate: Date) {
+        val localCalendar = Calendar.getInstance()
+        localCalendar.time = initDate
+        val year = localCalendar.get(Calendar.YEAR)
+        val month = localCalendar.get(Calendar.MONTH)
+        val day = localCalendar.get(Calendar.DAY_OF_MONTH)
 
         val dpd = DatePickerDialog(context, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
             // Display Selected date in Toast
@@ -138,7 +217,15 @@ class LightningHistoryActivity : BaseActivity() {
             }
 //            Toast.makeText(context, "$year-${textMonth}-$textDate", Toast.LENGTH_LONG).show()
             editText.setText("$year-${textMonth}-$textDate")
+            if (this.from == initDate){
+                this.from = SimpleDateFormat("yyy-MM-dd").parse("$year-${textMonth}-$textDate")
+            }
+            else{
+                this.to = SimpleDateFormat("yyy-MM-dd").parse("$year-${textMonth}-$textDate")
+            }
         }, year, month, day)
+
+        dpd.datePicker.maxDate = this.today.time
         dpd.show()
     }
 
