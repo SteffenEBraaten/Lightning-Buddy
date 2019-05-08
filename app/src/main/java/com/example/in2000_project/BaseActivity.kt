@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
+import android.support.v4.app.Fragment
 import android.support.v7.preference.PreferenceManager
 import com.example.in2000_project.LightningHistory.LightningHistoryActivity
 import com.example.in2000_project.alarm.AlarmService
@@ -76,6 +77,13 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
         }
     }
+    protected fun attachCancelButton(fragment: Fragment) {
+        setToolbar(getString(R.string.app_name), R.drawable.abc_ic_clear_material)
+        this.toolbar.setNavigationOnClickListener {
+            supportFragmentManager.beginTransaction().remove(fragment).commit()
+            setDrawer()
+        }
+    }
 
     protected fun setDrawer(){
         setToolbar(getString(R.string.app_name), R.drawable.ic_menu_black_24dp)
@@ -101,6 +109,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                 supportFragmentManager.beginTransaction().add(R.id.main_relative, setRadiusFragment).commit()
                 item.isChecked = false
                 this.drawer.closeDrawer(GravityCompat.START)
+                attachCancelButton(setRadiusFragment)
 
             }
             R.id.drawercontent_lightninghistory -> startActivity(Intent(this, LightningHistoryActivity::class.java))

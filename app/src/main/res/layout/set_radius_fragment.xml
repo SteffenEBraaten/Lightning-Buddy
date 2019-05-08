@@ -7,37 +7,49 @@
         android:layout_alignParentBottom="true"
         android:background="@color/colorSetRadius">
     <!--Min and max are km-->
-    <RelativeLayout
+    <SeekBar
+            android:id="@+id/radius_seek"
+            android:progressBackgroundTint="@color/quantum_white_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:max="100"
+            android:progress="1"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            />
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+        <EditText
+                android:id="@+id/radius_input_field"
+                android:inputType="numberDecimal"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/quantum_white_text"
+                android:backgroundTint="@color/quantum_white_text"/>
         <TextView
-                android:id="@+id/radius_max_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Text to the left"
-                android:layout_toStartOf="@+id/radius_seek"/>
-        <SeekBar
-                android:id="@+id/radius_seek"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:max="100"
-                android:progress="1"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
-                android:layout_centerInParent="true"/>
-        <TextView
-                android:id="@+id/radius_min_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Text to the right"
-                android:layout_toEndOf="@+id/radius_seek"/>
-    </RelativeLayout>
+                android:textSize="20sp"
+                android:text="@string/km"
+                android:textColor="@color/quantum_white_text"/>
+    </LinearLayout>
+
     <TextView
             android:id="@+id/radius_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Text underneath"/>
+            android:textColor="@color/quantum_white_text"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis libero nec elit porta blandit. Praesent eget elementum enim. Vivamus."
+            android:layout_marginBottom="25dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"/>
 
 
 </LinearLayout>
