@@ -64,9 +64,11 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
 
         Log.e("Default Markers", markers.toString())
 
-        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", null)
-        if (jsonLinkedList != null) {
-            val savedMarkersList: Array<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<MapFragment.SavedMarkers>>(){}.type)
+        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", "")
+//        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", null)
+        if (jsonLinkedList != "") {
+            val savedMarkersList: ArrayList<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableList<SavedMarkers>>(){}.type)
+//            Log.e("SavedMarkerList", savedMarkersList.toString())
             val offset = spinnerList.size
             for (i in savedMarkersList.indices){
                 markers.put(i + offset, savedMarkersList[i])
@@ -95,6 +97,22 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
 
     override fun onResume() {
         this.today = Calendar.getInstance().time
+//        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", null)
+//        if (jsonLinkedList != null) {
+//            val savedMarkersList: Array<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<MapFragment.SavedMarkers>>(){}.type)
+//            val offset = spinnerList.size
+//            for (i in savedMarkersList.indices){
+//                markers.put(i + offset, savedMarkersList[i])
+//                spinnerList.add(savedMarkersList[i].name)
+//            }
+//            Log.e("HistoryAct", savedMarkersList.toString())
+//        }
+//        else{
+//            Log.e("HistoryAct", "No Saved markers")
+//        }
+
+
+
         super.onResume()
     }
 

@@ -93,5 +93,6 @@
 
     <!--Lighning History-->
     <string name="lightningHistory">Lightning History</string>
+    <string name="defaultSearchLabel">Search</string>
     <!---->
 </resources>

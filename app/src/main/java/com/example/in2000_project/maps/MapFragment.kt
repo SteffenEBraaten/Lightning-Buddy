@@ -89,7 +89,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                               savedInstanceState: Bundle?): View? {
         Log.d("Fragment map", "Inflating map fragment")
         rootView = inflater.inflate(R.layout.map_fragment, parent, false)
-        sharedPrefs = this.activity?.getSharedPreferences("Map Fragment", Context.MODE_PRIVATE)
+//        sharedPrefs = this.activity?.getSharedPreferences("Global", Context.MODE_PRIVATE)
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.activity as Context)
+
         return rootView
     }
 
@@ -138,6 +140,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+        this.googleMap.uiSettings.isZoomControlsEnabled = true
         Log.d("Fragment map", "Map ready")
         MapsViewmodel.recentData.observe(this, changeObserver)
         coRoutine = GlobalScope.launch{
@@ -336,6 +339,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         return resizedBitmap
     }
     private fun persistentSave() {
+        Log.e("Persistent Save", "Saving")
         for (entry: MarkerWithCircle in markersList) {
             var position: LatLng? = entry.marker?.position
             var radius: Double? = entry.circle?.radius
