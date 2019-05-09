@@ -93,9 +93,13 @@
     <!--<string name="dataUpdateFrequency">Data update frequency</string>-->
     <!--<string name="noUpdates">No updates</string>-->
 
-    <!--Lighning History-->
+    <!--Lightning History-->
     <string name="lightningHistory">Lightning History</string>
     <string name="radius">Radius</string>
-    <string name="km">km</string>
+
+    <!--Radius fragment-->
+    <string name="meter">meters</string>
+    <string name="radius_fragment_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis libero nec elit porta blandit. Praesent eget elementum enim. Vivamus.</string>
+    <string name="set">Set</string>
     <!---->
 </resources>

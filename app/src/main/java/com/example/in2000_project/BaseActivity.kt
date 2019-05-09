@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.preference.PreferenceManager
 import com.example.in2000_project.LightningHistory.LightningHistoryActivity
@@ -105,18 +106,27 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         when(item.itemId){
             R.id.drawercontent_settings -> startActivity(Intent(this, SettingsActivity::class.java))
             R.id.drawercontent_set_radius -> {
-                var setRadiusFragment: RadiusFragment = RadiusFragment()
-                supportFragmentManager.beginTransaction().add(R.id.main_relative, setRadiusFragment).commit()
-                item.isChecked = false
-                this.drawer.closeDrawer(GravityCompat.START)
-                attachCancelButton(setRadiusFragment)
-
+                startRadiusFragment(item)
             }
             R.id.drawercontent_lightninghistory -> startActivity(Intent(this, LightningHistoryActivity::class.java))
 
         }
 
         return true
+    }
+
+    private fun startRadiusFragment(item: MenuItem) {
+        var setRadiusFragment: RadiusFragment = RadiusFragment()
+        var inputArguments: Bundle = Bundle()
+        inputArguments.putString("min", "0")
+        inputArguments.putString("max", "1000")
+        inputArguments.putString("buttonText", resources.getString(R.string.set))
+        setRadiusFragment.arguments = inputArguments
+
+        supportFragmentManager.beginTransaction().add(R.id.main_relative, setRadiusFragment).commit()
+        item.isChecked = false
+        this.drawer.closeDrawer(GravityCompat.START)
+        attachCancelButton(setRadiusFragment)
     }
 }
 

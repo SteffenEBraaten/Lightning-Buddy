@@ -46,4 +46,6 @@
     <string name="notification_title">Nytt lyn oppdaget</string>
     <string name="notification_content">Nytt lyn oppdaget på:</string>
     <string name="radius">Radius</string>
+    <string name="meter">meter</string>
+    <string name="set">Sett</string>
 </resources>
