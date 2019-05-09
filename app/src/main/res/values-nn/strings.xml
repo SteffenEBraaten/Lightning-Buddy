@@ -44,4 +44,18 @@
         hjelpa oss å gjera appen eneda betre og dermed gjera brukaropplevinga di betre!
     </string>
     <string name="save">Lagra</string>
+
+    <!--Lighning History-->
+    <string name="lightningHistory">Lyn Historie</string>
+    <string name="defaultSearchHint">Søk</string>
+    <string name="areaSearchLabel">Vel et område</string>
+    <string name="fromDateLabel">Frå Dato</string>
+    <string name="toDateLabel">Til Dato</string>
+    <string name="errorFromDate">Ver vennleg og vel en dato frå</string>
+    <string name="errorToDate">Ver vennleg og vel en dato til</string>
+    <string name="invalidTimePeriod">Invalid time period!</string>
+    <string name="loadingData">Laster data...</string>
+    <string name="generateLightning">Genererer lyn...</string>
+    <string name="noDataForPeriod">Det var inkje data for vald periode/område, ver vennleg og prøv igjen!</string>
+
 </resources>

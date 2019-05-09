@@ -73,7 +73,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
 
     private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>
-    private lateinit var coRoutine: Job
+    private var coRoutine: Job? = null
     //Milliseconds
     private var refreshRate: Long = 3 * 60 * 1000
 
@@ -376,7 +376,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         super.onDestroy()
         Log.d("Fragment Map", "Destroy")
         persistentSave()
-        coRoutine.cancel()
+        coRoutine?.cancel()
     }
 
     override fun onDetach() {
