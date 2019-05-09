@@ -132,7 +132,7 @@ class MapWithoutSearchbar() : OnMapReadyCallback, PlaceSelectionListener, Fragme
 
         val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
-                .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
+                .fromBitmap(resizeMapIcon("lightning_symbol", 50, 150))))
         this.historyMarkers.add(marker)
         marker.tag = info
 
