@@ -90,7 +90,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         setToolbar(getString(R.string.app_name), R.drawable.ic_menu_black_24dp)
         this.drawer = findViewById(R.id.drawer_layout)
         this.toolbar.setNavigationOnClickListener{
-           this.drawer.openDrawer(GravityCompat.START)
+        this.drawer.openDrawer(GravityCompat.START)
         }
 
         setNavigationView()
@@ -118,9 +118,11 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     private fun startRadiusFragment(item: MenuItem) {
         var setRadiusFragment: RadiusFragment = RadiusFragment()
         var inputArguments: Bundle = Bundle()
-        inputArguments.putString("min", "0")
+        inputArguments.putString("defaultProgress", "0")
         inputArguments.putString("max", "1000")
         inputArguments.putString("buttonText", resources.getString(R.string.set))
+        inputArguments.putString("measure", resources.getString(R.string.meter))
+        inputArguments.putString("bodyText", resources.getString(R.string.user_radius_text))
         setRadiusFragment.arguments = inputArguments
 
         supportFragmentManager.beginTransaction().add(R.id.main_relative, setRadiusFragment).commit()

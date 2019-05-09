@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.support.v7.preference.PreferenceManager
@@ -22,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.example.in2000_project.BaseActivity
 import com.example.in2000_project.R
 import com.example.in2000_project.utils.UalfUtil
 import com.example.in2000_project.utils.WeatherDataUtil
@@ -40,6 +42,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.activity_settings.*
 import java.util.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -165,60 +168,30 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         }
 
         var prevMarker: MarkerWithCircle? = MarkerWithCircle(null, null)
-        var saveButton: Button? = null
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
                 Log.d("Fragment map", "Map clicked at posistion $position")
                 prevMarker = addMarkerWithRadius(position!!, googleMap, prevMarker)
-
-                saveButton = addSaveButton(saveButton, prevMarker!!)
-
-
             }
         })
-    }
-    private fun addSaveButton(prevButton: Button?, marker: MarkerWithCircle): Button {
-        Log.d("Fragment map", "Adding save button")
-        var fragmentLayout: RelativeLayout = rootView.findViewById<RelativeLayout>(R.id.map_frame)
-
-        fragmentLayout.removeView(prevButton)
-        prevButton?.run {
-            Log.d("Fragment map", "Removed button $prevButton")
-        }
-
-        var saveButton: Button = Button(activity)
-        saveButton.text = resources.getString(R.string.save)
-
-        var layoutParameters: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT)
-        saveButton.layoutParams = layoutParameters
-
-        layoutParameters.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-        layoutParameters.addRule(RelativeLayout.ALIGN_PARENT_END)
-        fragmentLayout.addView(saveButton)
-        Log.d("Fragment map", "Save button $saveButton added")
-
-        saveButton.setOnClickListener {
-            saveButton.alpha = 1.toFloat()
-            fadeButton(saveButton)
-            Log.d("Fragment map", "Save button clicked")
-            markersList.add(marker)
-            Log.d("Fragment map", "markersList size: " + markersList.size)
-        }
-
-        fadeButton(saveButton)
-        return saveButton
-    }
-    private fun fadeButton(button: Button) {
-        val timeToFade: Long = 3000
-        val fadeDelay: Long = 4000
-        button.animate().alpha(0.6.toFloat()).setDuration(timeToFade).startDelay = fadeDelay
     }
     private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap, prevMark: MarkerWithCircle?): MarkerWithCircle? {
         prevMark?.marker?.remove()
         prevMark?.circle?.remove()
 
         prevMark?.marker = googleMap.addMarker(MarkerOptions().position(position).draggable(true))
+
+        val setRadiusFragment: RadiusFragment = RadiusFragment()
+        var inputArguments: Bundle = Bundle()
+        inputArguments.putString("defaultProgress", "10")
+        inputArguments.putString("max", "800")
+        inputArguments.putString("buttonText", resources.getString(R.string.save))
+        inputArguments.putString("measure", resources.getString(R.string.km))
+        inputArguments.putString("bodyText", resources.getString(R.string.marker_radius_text))
+        setRadiusFragment.arguments = inputArguments
+
+        fragmentManager?.beginTransaction()?.add(R.id.main_relative, setRadiusFragment)?.commit()
+
         //radius is in meters. Currently set to 10km
         var radius: Double = 10000.0
         var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)

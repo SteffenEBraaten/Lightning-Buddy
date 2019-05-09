@@ -99,7 +99,9 @@
 
     <!--Radius fragment-->
     <string name="meter">meters</string>
-    <string name="radius_fragment_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis libero nec elit porta blandit. Praesent eget elementum enim. Vivamus.</string>
+    <string name="user_radius_text">To receive notifications when you are about to enter a location with forecasted lightning storms in the near future, please set the radius you wish to be notified in.</string>
     <string name="set">Set</string>
+    <string name="km" translatable="false">km</string>
+    <string name="marker_radius_text">Set the radius for the location you wish to to be notified about lightning in.</string>
     <!---->
 </resources>
