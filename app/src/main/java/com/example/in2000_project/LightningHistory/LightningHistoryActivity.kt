@@ -34,7 +34,6 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
 
     var markers = HashMap<Int, SavedMarkers>()
     val spinnerList: ArrayList<String> = ArrayList()
-//    lateinit var spinner: Spinner
     var selectedMarker: SavedMarkers = SavedMarkers("All", 62.116681, 16.121960, 800000.0)
     var selectedMarkerIndex = 0
     var currentToast: Toast? = null
@@ -45,11 +44,12 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
     var mapFrag: MapWithoutSearchbar? = null
     var calendar: Calendar = Calendar.getInstance()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val defaulAreaChoices = resources.getStringArray(R.array.defualtAreaChoices)
-        Log.e("Spinner length", spinnerList.size.toString())
+//        Log.e("Spinner length", spinnerList.size.toString())
         for (i in defaulAreaChoices.indices){
             val jsonObj = JSONObject(defaulAreaChoices[i])
             val savedMarker = SavedMarkers( jsonObj.getString("name"),
@@ -57,25 +57,24 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
                                             jsonObj.getDouble("long"),
                                             jsonObj.getDouble("radius"))
             markers.put(i, savedMarker)
-//            spinnerList[i] = savedMarker.name
             spinnerList.add(savedMarker.name)
         }
 
         Log.e("Default Markers", markers.toString())
 
-        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", null)
-        if (!jsonLinkedList.isNullOrEmpty()) {
-            val savedMarkersList: Array<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<SavedMarkers>>(){}.type)
+        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", "")
+        if (jsonLinkedList != "") {
+            val savedMarkersList: ArrayList<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableList<SavedMarkers>>(){}.type)
             val offset = spinnerList.size
             for (i in savedMarkersList.indices){
                 markers.put(i + offset, savedMarkersList[i])
                 spinnerList.add(savedMarkersList[i].name)
             }
-            Log.e("HistoryAct", savedMarkersList.toString())
+//            Log.e("HistoryAct", savedMarkersList.toString())
         }
-        else{
-            Log.e("HistoryAct", "No Saved markers")
-        }
+//        else{
+//            Log.e("HistoryAct", "No Saved markers")
+//        }
 
 
 
@@ -84,8 +83,8 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
         var toolbar : Toolbar = findViewById(R.id.my_toolbar)
         toolbar.title = getString(R.string.lightningHistory)
 
-        supportFragmentManager.beginTransaction().add(R.id.content_frame, MapWithoutSearchbar.newInstance(),
-            "mapWithoutSearchbar").commit()
+
+
 
 
         val searchbar = findViewById<SearchView>(R.id.select_area_and_date)
@@ -93,7 +92,23 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
     }
 
     override fun onResume() {
+        supportFragmentManager.beginTransaction().add(R.id.content_frame, MapWithoutSearchbar.newInstance(),
+            "mapWithoutSearchbar").commit()
+
         this.today = Calendar.getInstance().time
+        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", null)
+        if (jsonLinkedList != null) {
+            val savedMarkersList: ArrayList<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableList<SavedMarkers>>(){}.type)
+            val offset = spinnerList.size
+            for (i in savedMarkersList.indices){
+                markers.put(i + offset, savedMarkersList[i])
+                spinnerList.add(savedMarkersList[i].name)
+            }
+//            Log.e("HistoryAct", savedMarkersList.toString())
+        }
+//        else{
+//            Log.e("HistoryAct", "No Saved markers")
+//        }
         super.onResume()
     }
 
@@ -103,10 +118,25 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
         this.calendar.add(Calendar.DATE, -1)
         this.from = calendar.time
         this.mapFrag = supportFragmentManager.findFragmentById(R.id.map_frag) as MapWithoutSearchbar?
-        Log.e("MAP FRAG FROM Lightning", "${this.mapFrag}")
-
+//        Log.e("MAP FRAG FROM Lightning", "${this.mapFrag}")
         inflateDialog(this, this.from, this.to)
         super.onStart()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val fragment = supportFragmentManager.findFragmentByTag("mapWithoutSearchbar")
+        if (fragment != null){
+            supportFragmentManager.beginTransaction().remove(fragment).commit()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val fragment = supportFragmentManager.findFragmentByTag("mapWithoutSearchbar")
+        if (fragment != null){
+            supportFragmentManager.beginTransaction().remove(fragment).commit()
+        }
     }
 
 
@@ -122,7 +152,7 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
         val view = layoutInflater.inflate(R.layout.dialog_select_area_and_date, null)
         dialogAreaSelect.setView(view)
 
-        val spinner: Spinner = view.findViewById<Spinner>(R.id.areaSelect)
+        val spinner = view.findViewById<Spinner>(R.id.areaSelect)
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerList)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = spinnerAdapter
@@ -130,12 +160,12 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
         spinner.setSelection(this.selectedMarkerIndex)
 
 
-        val areaSelectLabel = view.findViewById<TextView>(R.id.areaSelectLabel)
+        val areaSearchLabel = view.findViewById<TextView>(R.id.areaSelectLabel)
         val fromDateLabel = view.findViewById<TextView>(R.id.fromDateLabel)
         val toDateLabel = view.findViewById<TextView>(R.id.toDateLabel)
-        areaSelectLabel.text = "Selec an area"
-        fromDateLabel.text = "From"
-        toDateLabel.text = "To"
+        areaSearchLabel.text = getString(R.string.areaSearchLabel)
+        fromDateLabel.text = getString(R.string.fromDateLabel)
+        toDateLabel.text = getString(R.string.toDateLabel)
 
 
 
@@ -147,7 +177,7 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
         fromDateEditText.setOnClickListener { v -> clickDatePicker(v, fromDateEditText, context, from) }
         toDateEditText.setOnClickListener { v -> clickDatePicker(v, toDateEditText, context, to)}
 
-        dialogAreaSelect.setPositiveButton("Search") { dialog, whichButton -> var placeHolder = 123}
+        dialogAreaSelect.setPositiveButton(getString(R.string.defaultSearchHint)) { dialog, whichButton -> var placeHolder = 123}
         var dialog = dialogAreaSelect.create()
 
         dialog.setOnShowListener{
@@ -160,11 +190,11 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
                 if ( fromDateString == "" || toDateString == ""){
                     validDates = false
                     if (fromDateString == ""){
-                        dispayToast(context, "Please select a date from", Toast.LENGTH_LONG)
+                        dispayToast(context, getString(R.string.errorFromDate), Toast.LENGTH_LONG)
                         fromDateEditText.performClick()
                     }
                     else{
-                        dispayToast(context, "Please select a date to", Toast.LENGTH_LONG)
+                        dispayToast(context, getString(R.string.errorToDate), Toast.LENGTH_LONG)
                         toDateEditText.performClick()
                     }
                 }
@@ -172,7 +202,7 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
                 val selectedTo = SimpleDateFormat("yyyy-MM-dd").parse(toDateString)
                 if (selectedFrom > selectedTo) {
                     validDates = false
-                    dispayToast(context, "Invalid time period!", Toast.LENGTH_LONG)
+                    dispayToast(context, getString(R.string.invalidTimePeriod), Toast.LENGTH_LONG)
 
                 }
 
@@ -181,7 +211,7 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
                         selectedFrom.time -= 1000 * 60 * 60 * 24
                     }
                     HistoryViewmodel().handleSearh(context, selectedFrom, selectedTo, this, this.mapFrag)
-                    dispayToast(context, "Loading data...", Toast.LENGTH_SHORT)
+                    dispayToast(context, getString(R.string.loadingData), Toast.LENGTH_SHORT)
                     dialog.dismiss()
                 }
 

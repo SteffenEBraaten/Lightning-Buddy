@@ -44,16 +44,15 @@ class HistoryViewmodel : ViewModel(){
                     if (!data.isNullOrEmpty()){
                         val ualfs = UalfUtil.createUalfs(data)
                         if (!ualfs.isNullOrEmpty()) {
-                            Log.e("test", " $ualfs")
-                            act.dispayToast(context,"Generating lightning...", Toast.LENGTH_SHORT)
-                            Log.e("MAP FRAG", "${mapFrag?.toString()}")
+                            act.dispayToast(context, act.getString(R.string.generateLightning), Toast.LENGTH_SHORT)
+//                            Log.e("MAP FRAG", "${mapFrag?.toString()}")
 //                            mapFrag?.plotLightning(ualfs)
                             HistoryViewmodel.recentData.postValue(ualfs)
-                            act.dispayToast(context,"Done!", Toast.LENGTH_SHORT)
+                            act.dispayToast(context,act.getString(R.string.done), Toast.LENGTH_SHORT)
                         }
                     }
                     else{
-                        act.dispayToast(context, "There was no data for this place/period, please try again!", Toast.LENGTH_LONG)
+                        act.dispayToast(context, act.getString(R.string.noDataForPeriod), Toast.LENGTH_LONG)
                     }
                 }
             }

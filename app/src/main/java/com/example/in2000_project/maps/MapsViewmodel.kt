@@ -19,12 +19,12 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
-public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewModel(){
+class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewModel(){
     companion object Data {
         val recentData = MutableLiveData<ArrayList<UalfUtil.Ualf>>() //observe this and update UI on change
     }
 
-    public fun getRecentApiData(){
+    fun getRecentApiData(){
         GlobalScope.launch{
             try {
                 val data = MapRepository().getMetLightningData()
@@ -94,22 +94,22 @@ public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewMode
     }
 
 
-    public fun saveRecentData(ualfs: ArrayList<UalfUtil.Ualf>) {
+    fun saveRecentData(ualfs: ArrayList<UalfUtil.Ualf>) {
         val sharedPrefEditor = this.sharedPref.edit()
 
         sharedPrefEditor.putString("recentData", Gson().toJson(ualfs))
         sharedPrefEditor.apply()
     }
 
-    public fun updateRecentData(){
+    fun updateRecentData(){
         setRecentData(getSavedRecentData())
     }
 
-    public fun setRecentData(data: ArrayList<UalfUtil.Ualf>?){
+    fun setRecentData(data: ArrayList<UalfUtil.Ualf>?){
         MapsViewmodel.recentData.postValue(data)
     }
 
-    public fun getSavedRecentData(): ArrayList<UalfUtil.Ualf>? {
+    fun getSavedRecentData(): ArrayList<UalfUtil.Ualf>? {
         val jsonList = this.sharedPref.getString("recentData", null)
         if(jsonList.isNullOrEmpty()) return null
 
@@ -118,7 +118,7 @@ public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewMode
 }
 
 @Suppress("UNCHECKED_CAST")
-public class MapsViewmodelFactory(private val sharedPref: SharedPreferences) : ViewModelProvider.Factory {
+class MapsViewmodelFactory(private val sharedPref: SharedPreferences) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return MapsViewmodel(sharedPref) as T
     }
