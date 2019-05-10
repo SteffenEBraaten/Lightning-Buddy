@@ -65,6 +65,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private var savedMarkersList: MutableSet<SavedMarkers>? = null
     private var sharedPrefs: SharedPreferences? = null
     private var prevSearchMarker: Marker? = null
+    private lateinit var activeCircle: Circle
 
     data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
@@ -73,6 +74,16 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var coRoutine: Job
     //Milliseconds
     private var refreshRate: Long = 5 * 60 * 1000
+    
+    //Callback for setting radius fragment
+    internal lateinit var callback: OnSetRadiusListener
+    
+    fun setOnRadiusListener(callback: OnSetRadiusListener) {
+        this.callback = callback
+    }
+    interface OnSetRadiusListener {
+        fun onSetRadiusCall()
+    }
 
 
     //Factory method for creating new map fragment
@@ -181,21 +192,16 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
         prevMark?.marker = googleMap.addMarker(MarkerOptions().position(position).draggable(true))
 
-        val setRadiusFragment: RadiusFragment = RadiusFragment()
-        var inputArguments: Bundle = Bundle()
-        inputArguments.putString("defaultProgress", "10")
-        inputArguments.putString("max", "800")
-        inputArguments.putString("buttonText", resources.getString(R.string.save))
-        inputArguments.putString("measure", resources.getString(R.string.km))
-        inputArguments.putString("bodyText", resources.getString(R.string.marker_radius_text))
-        setRadiusFragment.arguments = inputArguments
+        //Set the radius fragment
+        callback.onSetRadiusCall()
 
-        fragmentManager?.beginTransaction()?.add(R.id.main_relative, setRadiusFragment)?.commit()
+
 
         //radius is in meters. Currently set to 10km
         var radius: Double = 10000.0
         var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
             .fillColor(Color.argb(150, 146, 184, 244)))
+        activeCircle = circle
         //The zoom level is kind of tricky if you change the radius
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
         Log.d("Fragment map", "Marker added")

@@ -8,14 +8,17 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
+import android.util.Log
 import com.example.in2000_project.*
 import com.example.in2000_project.utils.UalfUtil
 
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFragment.OnRadiusChangeListener {
     private lateinit var viewModel: MapsViewmodel
+    private var radiusFragment: RadiusFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,37 @@ class MainActivity : BaseActivity() {
                 "Map Fragment").commit()
         }
     }
+    override fun onAttachFragment(fragment: Fragment) {
+        if (fragment is MapFragment) {
+            fragment.setOnRadiusListener(this)
+        }
+        if (fragment is RadiusFragment) {
+            fragment.setOnRadiusChangeListener(this)
+        }
+    }
+    override fun onSetRadiusCall() {
+        if (radiusFragment != null) {
+            Log.d("Main", "Removing last radius fragment")
+            supportFragmentManager.beginTransaction().remove(radiusFragment as RadiusFragment).commit()
+        }
+        val setRadiusFragment: RadiusFragment = RadiusFragment()
+        radiusFragment = setRadiusFragment
+        var inputArguments: Bundle = Bundle()
+        inputArguments.putString("min", "10")
+        inputArguments.putString("max", "800")
+        inputArguments.putString("buttonText", resources.getString(R.string.save))
+        inputArguments.putString("measure", resources.getString(R.string.km))
+        inputArguments.putString("bodyText", resources.getString(R.string.marker_radius_text))
+        setRadiusFragment.arguments = inputArguments
+        Log.d("Main", "Adding new radius fragment")
+        supportFragmentManager.beginTransaction().add(R.id.main_relative, setRadiusFragment).commit()
+        attachBackButton()
+    }
+
+    override fun onRadiusChanged(radius: Int) {
+        Log.d("Main", "Radius updated: $radius")
+    }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelId: String = "Default"

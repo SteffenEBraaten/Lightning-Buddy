@@ -11,19 +11,24 @@ import android.view.FocusFinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
 import com.example.in2000_project.BaseActivity
 import com.example.in2000_project.R
 
 class RadiusFragment: Fragment() {
     private lateinit var fragment: View
-    private var defaultProgress: String? = null
+    private var min: String? = null
     private var max: String? = null
     private var buttonText: String? = null
 
+    internal lateinit var callback: OnRadiusChangeListener
+
+    fun setOnRadiusChangeListener(callback: OnRadiusChangeListener) {
+        this.callback = callback
+    }
+    interface OnRadiusChangeListener {
+        fun onRadiusChanged(radius: Int)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragment = inflater.inflate(R.layout.set_radius_fragment, container, false)
@@ -43,8 +48,8 @@ class RadiusFragment: Fragment() {
             max = arguments?.getString("max")
             seekbar.max = Integer.parseInt(max)
 
-            defaultProgress = arguments?.getString("defaultProgress")
-            seekbar.progress = Integer.parseInt(defaultProgress)
+            min = arguments?.getString("min")
+            seekbar.progress = Integer.parseInt(min)
 
             buttonText = arguments?.getString("buttonText")
             fragment.findViewById<Button>(R.id.save_button).text = buttonText
@@ -66,10 +71,18 @@ class RadiusFragment: Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (editText.text.toString() != "") {
-                    seekbar.progress = Integer.parseInt(editText.text.toString())
-                    editText.setSelection(editText.text.length)
-
-        }
+                    if (Integer.parseInt(editText.text.toString()) < 10) {
+                        editText.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+                            Toast.makeText(activity,"Radius can not be less than $min", Toast.LENGTH_SHORT).show()
+                            seekbar.progress = Integer.parseInt(editText.text.toString())
+                            editText.setSelection(editText.text.length)
+                        }
+                    } else {
+                        seekbar.progress = Integer.parseInt(editText.text.toString())
+                        editText.setSelection(editText.text.length)
+                        callback.onRadiusChanged(Integer.parseInt(editText.text.toString()))
+                    }
+                }
 
             }
 
@@ -80,7 +93,13 @@ class RadiusFragment: Fragment() {
         editText.setText(seekbar.progress.toString())
         seekbar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                editText.setText(progress.toString())
+                val minInt: Int = Integer.parseInt(min)
+                if (progress < minInt) {
+                    seekBar?.progress = minInt
+                } else {
+                    editText.setText(progress.toString())
+                }
+                callback.onRadiusChanged(Integer.parseInt(editText.text.toString()))
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {

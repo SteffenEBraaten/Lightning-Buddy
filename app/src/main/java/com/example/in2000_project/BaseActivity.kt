@@ -118,7 +118,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     private fun startRadiusFragment(item: MenuItem) {
         var setRadiusFragment: RadiusFragment = RadiusFragment()
         var inputArguments: Bundle = Bundle()
-        inputArguments.putString("defaultProgress", "0")
+        inputArguments.putString("min", "0")
         inputArguments.putString("max", "1000")
         inputArguments.putString("buttonText", resources.getString(R.string.set))
         inputArguments.putString("measure", resources.getString(R.string.meter))
