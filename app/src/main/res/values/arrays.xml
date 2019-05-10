@@ -1,8 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="languages">
-        <item>English</item>
-        <item>Norsk</item>
+    <string-array name="lightningDataFrequency">
+        <item>0</item>
+        <item>1</item>
+        <item>5</item>
+        <item>15</item>
+        <item>30</item>
     </string-array>
 
+    <string-array name="defualtAreaChoices">
+        <item>
+            {
+                name: All,
+                lat: 62.116681,
+                long: 16.121960,
+                radius: 8000000.0
+            }
+        </item>
+        <item>
+            {
+                name: Oslo,
+                lat: 59.9139,
+                long: 10.7522,
+                radius: 1000000.0
+            }
+        </item>
+        <item>
+            {
+                name: Bergen,
+                lat: 60.3913,
+                long: 5.3221,
+                radius: 1000000.0
+            }
+        </item>
+        <item>
+            {
+                name: Stockholm,
+                lat: 59.3293,
+                long: 18.0686,
+                radius: 1000000.0
+            }
+        </item>
+        <item>
+            {
+                name: Gothenburg,
+                lat: 57.7089,
+                long: 11.9746,
+                radius: 1000000.0
+            }
+        </item>
+        <item>
+            {
+                name: Copenhagen,
+                lat: 55.6761,
+                long: 12.5683,
+                radius: 1000000.0
+            }
+        </item>
+        <item>
+            {
+                name: Helsinki,
+                lat: 60.1699,
+                long: 24.9384,
+                radius: 1000000.0
+            }
+        </item>
+    </string-array>
 </resources>

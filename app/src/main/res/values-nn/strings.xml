@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="resetSettingsMessage">Alle lagra felt vil bli sletta og innstillingar vil bli tilbakestilt. Vil du
+        fortsetja?
+    </string>
+    <string name="hello_blank_fragment">Hei blanke fragment</string>
+    <string name="dark_mode">Mørk modus</string>
+    <string name="general">Generelt</string>
+    <string name="use_Location">Bruk min lokasjon</string>
+    <string name="notifications">Varslingar</string>
+    <string name="allow_Notifications">Tillat varslingar</string>
+    <string name="vibrate">Vibrering</string>
+    <string name="about">Om</string>
+    <string name="termsOfServiceTitle">Vilkår for bruk</string>
+    <string name="reset">Tilbakestill</string>
+    <string name="cancel">Avbryt</string>
+    <string name="accept">Eg aksepterer</string>
+    <string name="decline">Eg avslår</string>
+    <string name="invalidEmail">Ugyldig e-post</string>
+    <string name="ok">Ok</string>
+    <string name="email">E-mail</string>
+    <string name="settings">Innstillingar</string>
+    <string name="map">Kart</string>
+    <string name="menu">Meny</string>
+    <string name="every">Hvert</string>
+    <string name="dataUpdateFrequency">Data oppdaterings frekvens</string>
+    <string name="noUpdates">Ingen oppdateringar</string>
+    <string name="minutes">minutt</string>
+    <string name="done">Ferdig</string>
+    <string name="next">Neste</string>
+    <string name="skip">Hopp over</string>
+    <string name="slider1_Title">Velkommen til Lightning Buddy!</string>
+    <string name="slider1_description">No vil du kunna sjå der lynnedslag slår ned i nærleiken av deg! På kartet kan
+        du\n sjå lynnedslag som har slått ned dei siste 24 timane.
+    </string>
+    <string name="slider2_Title">Bli varsla om lynnedslag!</string>
+    <string name="slider2_description">Bruk kartet for å setja stader du vil bli varsla om viss lyn slår ned i området
+        slik at du kan forhalda deg trygg og informert!\nDu kan og justera radiusen rundt posisjonen din for der du vil
+        bli varsla om lynnedslag.
+    </string>
+    <string name="slider3_Title">Hjelp oss med å gjera appen endå betre!</string>
+    <string name="slider3_description">I innstillingar kan du gi oss tilbakemelding på appen vår. Din tilbakemelding kan
+        hjelpa oss å gjera appen eneda betre og dermed gjera brukaropplevinga di betre!
+    </string>
+    <string name="save">Lagra</string>
+
+
+    <!--Lighning History-->
+    <string name="lightningHistory">Lyn Historie</string>
+    <string name="defaultSearchHint">Søk</string>
+    <string name="areaSearchLabel">Vel et område</string>
+    <string name="fromDateLabel">Frå Dato</string>
+    <string name="toDateLabel">Til Dato</string>
+    <string name="errorFromDate">Ver vennleg og vel en dato frå</string>
+    <string name="errorToDate">Ver vennleg og vel en dato til</string>
+    <string name="invalidTimePeriod">Invalid time period!</string>
+    <string name="loadingData">Laster data...</string>
+    <string name="generateLightning">Genererer lyn...</string>
+    <string name="noDataForPeriod">Det var inkje data for vald periode/område, ver vennleg og prøv igjen!</string>
+
+    <string name="notification_title">Nytt lyn oppdaga</string>
+    <string name="notification_content">Nytt lyn oppdage på:</string>
+
+</resources>

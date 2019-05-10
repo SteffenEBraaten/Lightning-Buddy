@@ -1,17 +1,86 @@
 <resources>
-    <string name="app_name">IN2000_Project</string>
+    <string name="app_name" translatable="false">Lightning Buddy</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="email"/>
-    <string name="language"/>
-    <string name="resetSettingsMessage">
-        All saved ares will be deleted and settings will be restored to default, continue?
+
+    <!-- API KEYS -->
+    <string name="Maps_API" translatable="false">AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc</string>
+
+
+    <string name="emailValue" translatable="false"/>
+    <string name="language" translatable="false"/>
+    <string name="resetSettingsMessage">All saved areas will be deleted and settings will be restored to default. \nDo
+        you wish to continue?
     </string>
-    <string name="termsOfService">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    <string name="termsOfService" translatable="false">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua.
         Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
         Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </string>
+    <string name="lightningDataFrequency" translatable="false">5</string>
+
+    <string name="en" translatable="false">English</string>
+    <string name="no" translatable="false">Norsk</string>
+
+    <string name="dark_mode">Dark mode</string>
+    <string name="general">General</string>
+    <string name="use_Location">Use my location</string>
+    <string name="notifications">Notifications</string>
+    <string name="allow_Notifications">Allow notifications</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="about">About</string>
+    <string name="termsOfServiceTitle">Terms of service</string>
+    <string name="reset">Reset</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">I accept</string>
+    <string name="decline">I decline</string>
+    <string name="invalidEmail">Invalid email</string>
+    <string name="ok">Ok</string>
+    <string name="email">Email</string>
+    <string name="menu">Menu</string>
+    <string name="map">Map</string>
+    <string name="settings">Settings</string>
+    <string name="every">Every</string>
+    <string name="minutes">minutes</string>
+    <string name="dataUpdateFrequency">Data update frequency</string>
+    <string name="noUpdates">No updates</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="slider1_Title">Welcome to Ligtning Buddy!</string>
+    <string name="slider1_description">
+        Now, you will be able to see where lightning storms are happening close to you! Check out the map for
+        lightning strikes that have struck in the last 24 hours.
+    </string>
+    <string name="slider2_Title">Get notified about lightning strikes!</string>
+    <string name="slider2_description">
+        Use the map and set location where you would like to get notified about lightning storms so that you can remain
+        safe and informed! You can also adjust the radius around your location for where would like to get notified.
+    </string>
+    <string name="slider3_Title">Help us make the app even better!</string>
+    <string name="slider3_description">
+        In the settings panel you can send us feedback on our app. This will help us making the app even better
+        and by that we can increase your user experience!
+    </string>
+    <string name="save">Save</string>
+    <string name="notification_title">New lightning detected</string>
+    <string name="notification_content">New lightning detected at:</string>
+
+
+    <!--Lighning History-->
+    <string name="lightningHistory">Lightning History</string>
+    <string name="defaultSearchHint">Search</string>
+    <string name="areaSearchLabel">Select an area</string>
+    <string name="fromDateLabel">From date</string>
+    <string name="toDateLabel">To date</string>
+    <string name="errorFromDate">Please select a date from</string>
+    <string name="errorToDate">Please select a date to</string>
+    <string name="invalidTimePeriod">Invalid time period!</string>
+    <string name="loadingData">Loading data...</string>
+    <string name="generateLightning">Generating lightning...</string>
+    <string name="noDataForPeriod">There was no data for this place/period, please try again!</string>
+    <!---->
 </resources>

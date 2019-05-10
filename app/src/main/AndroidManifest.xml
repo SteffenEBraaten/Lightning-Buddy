@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.example.in2000_project">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.in2000_project">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
             android:allowBackup="true"
@@ -12,22 +16,48 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Settings.SettingsActivity">
-        </activity>
-        <activity android:name=".Maps.MainActivity">
+            tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".intro.IntroActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!--Google maps API key-->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc"/>
+        <activity
+                android:name=".LightningHistory.LightningHistoryActivity"
+                android:theme="@style/AppTheme"/>
 
+        <activity
+                android:name=".settings.SettingsActivity"
+                android:theme="@style/AppTheme"
+                tools:ignore="InnerclassSeparator"/>
+        <activity
+                android:name=".maps.MainActivity"
+                android:theme="@style/AppTheme"
+                tools:ignore="ExtraText,InnerclassSeparator">
+        </activity> <!-- Google maps API key -->
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc"/>
+
+        <receiver
+                android:name=".alarm.AutoStart"
+                tools:ignore="InnerclassSeparator">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+                android:name=".alarm.Alarm"
+                android:process=":remote"
+                tools:ignore="InnerclassSeparator"/>
+
+        <service
+                android:name=".alarm.AlarmService"
+                android:enabled="true"
+                tools:ignore="InnerclassSeparator"/>
     </application>
 
 </manifest>
