@@ -82,5 +82,6 @@
     <string name="loadingData">Loading data...</string>
     <string name="generateLightning">Generating lightning...</string>
     <string name="noDataForPeriod">There was no data for this place/period, please try again!</string>
+    <string name="Close">Close</string>
     <!---->
 </resources>
