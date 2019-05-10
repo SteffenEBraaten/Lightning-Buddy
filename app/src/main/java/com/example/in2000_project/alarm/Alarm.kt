@@ -55,27 +55,78 @@ class Alarm : BroadcastReceiver() {
                 location: Location? ->
                     Log.e("BACKGROUND LOC", "${location}")
                     if (location != null) {
-                        val intent = Intent(this.context, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK }
-//                        context.startActivity(intent)
-                        val pendingIntent: PendingIntent = PendingIntent.getActivity(this.context, 0, intent, 0)
 
-                        var notBuilder = NotificationCompat
-                                            .Builder(this.context, "Default")
-                                            .setSmallIcon(R.drawable.lightning_symbol)
-                                            .setContentTitle("New lightning")
-                                            .setContentText("${location.longitude}  ${location.latitude}")
-                                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                                            .setContentIntent(pendingIntent)
-                                            .setAutoCancel(true)
+                        //HARDCODED NOTIFICATION RADIUS
+                        //SHOULD GET FROM SHAREDPREFERENCES
+                        val radius = 5000
+                        val area = radius * radius
 
-                        with(NotificationManagerCompat.from(context)) {
-                            notify(1, notBuilder.build())
-                        }
+
+                        val queryLocations: ArrayList<LatLng> = getQueryLocations(location, radius)
+                        LocalLightningChecker().getLocalLightning(this.context, queryLocations)
+
+//                        val intent = Intent(this.context, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK }
+//                        val pendingIntent: PendingIntent = PendingIntent.getActivity(this.context, 0, intent, 0)
+//
+//                        var notBuilder = NotificationCompat
+//                                            .Builder(this.context, "Default")
+//                                            .setSmallIcon(R.drawable.lightning_symbol)
+//                                            .setContentTitle("New lightning")
+//                                            .setContentText("${location.longitude}  ${location.latitude}")
+//                                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                                            .setContentIntent(pendingIntent)
+//                                            .setAutoCancel(true)
+//
+//                        with(NotificationManagerCompat.from(context)) {
+//                            notify(1, notBuilder.build())
+//                        }
                     }
         }
 
         wl.release()
     }
+
+    private fun getQueryLocations(currentLocation: Location, radius: Int): ArrayList<LatLng> {
+        val locations = ArrayList<LatLng>()
+        locations.add(LatLng(currentLocation.latitude, currentLocation.longitude))
+        val numPoint: Int = radius / 1000
+
+        val startLat = currentLocation.latitude
+        val startLong = currentLocation.longitude
+
+        //North
+        for (i in 1..numPoint){
+            val newLocation = LatLng(startLat + meterToLatitue(1000) * i, startLong)
+            locations.add(newLocation)
+        }
+        //South
+
+        for (i in 1..numPoint){
+            val newLocation = LatLng(startLat - meterToLatitue(1000) * i, startLong)
+            locations.add(newLocation)
+        }
+        //West
+        for (i in 1..numPoint){
+            val newLocation = LatLng(startLat, startLong + meterToLongtitude(1000, startLat) * i)
+            locations.add(newLocation)
+        }
+        //East
+        for (i in 1..numPoint){
+            val newLocation = LatLng(startLat, startLong - meterToLongtitude(1000, startLat) * i)
+            locations.add(newLocation)
+        }
+        return locations
+    }
+
+    private fun meterToLatitue(m: Int): Double{
+        return (m / 111111).toDouble()
+    }
+
+    private fun meterToLongtitude(m: Int, lat: Double): Double{
+        return (m / (111111 *Math.cos(lat)))
+    }
+
+
 
     private fun inspectRecentData() {
         val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
