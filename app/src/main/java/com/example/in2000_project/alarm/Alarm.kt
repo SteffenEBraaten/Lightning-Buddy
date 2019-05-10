@@ -41,6 +41,7 @@ class Alarm : BroadcastReceiver() {
         Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
         wl.release()
     }
+
     private fun inspectRecentData() {
         val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         var savedMarkersList: MutableSet<MapFragment.SavedMarkers>? = null
