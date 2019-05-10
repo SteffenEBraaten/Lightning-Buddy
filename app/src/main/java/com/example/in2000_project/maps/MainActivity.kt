@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
+import android.util.Log
 import com.example.in2000_project.*
 import com.example.in2000_project.utils.UalfUtil
 
@@ -25,6 +26,7 @@ class MainActivity : BaseActivity() {
         darkMode()
         super.setAlarm()
         super.setDrawer()
+
         createNotificationChannel()
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().add(R.id.content_frame, MapFragment.newInstance(),
@@ -48,6 +50,7 @@ class MainActivity : BaseActivity() {
 
         }
     }
+  
     private fun darkMode(){
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
