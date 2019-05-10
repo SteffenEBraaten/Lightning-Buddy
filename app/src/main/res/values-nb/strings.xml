@@ -43,6 +43,22 @@
         kunne hjelpe oss å gjøre appen eneda bedre og dermed gjøre din brukeropplevelse bedre!
     </string>
     <string name="save">Lagre</string>
+
+
+    <!--Lighning History-->
+    <string name="lightningHistory">Lyn Historie</string>
+    <string name="defaultSearchHint">Søk</string>
+    <string name="areaSearchLabel">Velg et område</string>
+    <string name="fromDateLabel">Fra Dato</string>
+    <string name="toDateLabel">Til Dato</string>
+    <string name="errorFromDate">Vennligst velg en dato fra</string>
+    <string name="errorToDate">Vennligst velg en dato til</string>
+    <string name="invalidTimePeriod">Ugyldig tidsperiode!</string>
+    <string name="loadingData">Laster data...</string>
+    <string name="generateLightning">Genererer lyn...</string>
+    <string name="noDataForPeriod">Det var ingen data om valgt område/periode, vennligst prøv igjen!</string>
+
     <string name="notification_title">Nytt lyn oppdaget</string>
     <string name="notification_content">Nytt lyn oppdaget på:</string>
+
 </resources>

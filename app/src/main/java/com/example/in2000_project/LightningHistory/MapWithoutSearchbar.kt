@@ -99,10 +99,16 @@ class MapWithoutSearchbar() : OnMapReadyCallback, PlaceSelectionListener, Fragme
                                 CameraUpdateFactory
                                     .newLatLngZoom(LatLng(newFocus.latitude, newFocus.longitude), zoomLevel))
 
-            ualfList?.forEach {
-                val newLocation = LatLng(it.lat, it.long)
-                val newInfo = InfoWindowData(it.date, it.lat, it.long)
-                setMarkerLightning(newLocation, newInfo)
+//            ualfList?.forEach {
+//                val newLocation = LatLng(it.lat, it.long)
+//                val newInfo = InfoWindowData(it.date, it.lat, it.long)
+//                setMarkerLightning(newLocation, newInfo)
+//            }
+            for (i in ualfList!!.indices) {
+                val ualf = ualfList[i]
+                val newLocation = LatLng(ualf.lat, ualf.long)
+                val newInfo = InfoWindowData(ualf.date, ualf.lat, ualf.long)
+                setMarkerLightning(newLocation, newInfo, i.toFloat())
             }
         }
 
@@ -128,11 +134,15 @@ class MapWithoutSearchbar() : OnMapReadyCallback, PlaceSelectionListener, Fragme
 //        Math.pow(2, zoom) = 156543.03392 * Math.cos(lat * Math.PI / 180) * maxLength / km
     }
 
-    private fun setMarkerLightning(location: LatLng, info: InfoWindowData) {
+    private fun setMarkerLightning(location: LatLng, info: InfoWindowData, zIndex: Float) {
 
-        val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
-            .icon(BitmapDescriptorFactory
-                .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
+        val marker: Marker = googleMap.addMarker(MarkerOptions()
+                                                    .position(location)
+                                                    .icon(BitmapDescriptorFactory.fromBitmap(
+                                                                                    resizeMapIcon("lightning_symbol", 40, 130))
+                                                    )
+                                                    .zIndex(zIndex)
+                                                )
         this.historyMarkers.add(marker)
         marker.tag = info
 
