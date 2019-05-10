@@ -42,6 +42,7 @@ class Alarm : BroadcastReceiver() {
 
         wl.release()
     }
+
     private fun inspectRecentData() {
         val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         var savedMarkersList: MutableSet<MapFragment.SavedMarkers>? = null

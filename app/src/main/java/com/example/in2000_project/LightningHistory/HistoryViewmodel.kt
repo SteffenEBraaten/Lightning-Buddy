@@ -44,6 +44,7 @@ class HistoryViewmodel : ViewModel(){
                     if (!data.isNullOrEmpty()){
                         val ualfs = UalfUtil.createUalfs(data)
                         if (!ualfs.isNullOrEmpty()) {
+                            Log.e("test", " $ualfs")
                             act.dispayToast(context,"Generating lightning...", Toast.LENGTH_SHORT)
                             Log.e("MAP FRAG", "${mapFrag?.toString()}")
 //                            mapFrag?.plotLightning(ualfs)

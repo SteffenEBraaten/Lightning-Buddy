@@ -45,7 +45,6 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
     var mapFrag: MapWithoutSearchbar? = null
     var calendar: Calendar = Calendar.getInstance()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -65,8 +64,8 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
         Log.e("Default Markers", markers.toString())
 
         val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", null)
-        if (jsonLinkedList != null) {
-            val savedMarkersList: Array<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<MapFragment.SavedMarkers>>(){}.type)
+        if (!jsonLinkedList.isNullOrEmpty()) {
+            val savedMarkersList: Array<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<SavedMarkers>>(){}.type)
             val offset = spinnerList.size
             for (i in savedMarkersList.indices){
                 markers.put(i + offset, savedMarkersList[i])
