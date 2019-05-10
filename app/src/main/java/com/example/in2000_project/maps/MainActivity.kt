@@ -1,7 +1,12 @@
 package com.example.in2000_project.maps
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
@@ -21,42 +26,31 @@ class MainActivity : BaseActivity() {
         darkMode()
         super.setAlarm()
         super.setDrawer()
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction().add(R.id.content_frame, MapFragment.newInstance(),
-//                "Map Fragment").commit()
-//        }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        if (supportFragmentManager.findFragmentByTag("Map Fragment") == null){
+        createNotificationChannel()
+        if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().add(R.id.content_frame, MapFragment.newInstance(),
                 "Map Fragment").commit()
         }
     }
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelId: String = "Default"
+            val channelName: CharSequence = "Default channel"
+            val importance: Int = NotificationManager.IMPORTANCE_HIGH
 
-    override fun onPause() {
-        super.onPause()
-        val fragment = supportFragmentManager.findFragmentByTag("Map Fragment")
-        Log.e("MainAkt", "Removing: ${fragment}")
-        if (fragment != null){
-            Log.e("MainAct", "Removing map frag")
-            supportFragmentManager.beginTransaction().remove(fragment).commit()
-            Log.e("MainAct", "Frag removed: ${supportFragmentManager.findFragmentByTag("Map Fragment")}")
+            val notificationChannel: NotificationChannel = NotificationChannel(channelId, channelName, importance)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.YELLOW
+            notificationChannel.enableVibration(true)
+
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(notificationChannel)
+
         }
     }
-
-    override fun onStop() {
-        super.onStop()
-        val fragment = supportFragmentManager.findFragmentByTag("Map Fragment")
-        Log.e("MainAkt", "Removing: ${fragment}")
-        if (fragment != null){
-            Log.e("MainAct", "Removing map frag")
-            supportFragmentManager.beginTransaction().remove(fragment).commit()
-            Log.e("MainAct", "Frag removed: ${supportFragmentManager.findFragmentByTag("Map Fragment")}")
-        }
-    }
-
+  
     private fun darkMode(){
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
