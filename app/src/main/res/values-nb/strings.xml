@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IN2000_Project</string>
     <string name="resetSettingsMessage">Alle lagrede felter vil bli slettet og innstillinger vil bli tilbakestilt. Vil
         du fortsette?
     </string>
@@ -30,7 +29,7 @@
     <string name="done">Ferdig</string>
     <string name="next">Neste</string>
     <string name="skip">Hopp over</string>
-    <string name="slider1_Title">Velkommen til appname!</string>
+    <string name="slider1_Title">Velkommen til Lightning Buddy!</string>
     <string name="slider1_description">Nå vil du kunne se hvor lynnedslag slår ned i nærheten av deg! På kartet kan du
         se lynnedslag som har slått ned de siste 24 timene.
     </string>
@@ -44,4 +43,22 @@
         kunne hjelpe oss å gjøre appen eneda bedre og dermed gjøre din brukeropplevelse bedre!
     </string>
     <string name="save">Lagre</string>
+
+
+    <!--Lighning History-->
+    <string name="lightningHistory">Lyn Historie</string>
+    <string name="defaultSearchHint">Søk</string>
+    <string name="areaSearchLabel">Velg et område</string>
+    <string name="fromDateLabel">Fra Dato</string>
+    <string name="toDateLabel">Til Dato</string>
+    <string name="errorFromDate">Vennligst velg en dato fra</string>
+    <string name="errorToDate">Vennligst velg en dato til</string>
+    <string name="invalidTimePeriod">Ugyldig tidsperiode!</string>
+    <string name="loadingData">Laster data...</string>
+    <string name="generateLightning">Genererer lyn...</string>
+    <string name="noDataForPeriod">Det var ingen data om valgt område/periode, vennligst prøv igjen!</string>
+
+    <string name="notification_title">Nytt lyn oppdaget</string>
+    <string name="notification_content">Nytt lyn oppdaget på:</string>
+
 </resources>
