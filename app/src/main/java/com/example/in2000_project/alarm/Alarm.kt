@@ -6,13 +6,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.PowerManager
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.ContextCompat.getSystemService
+import android.support.v4.content.ContextCompat.startActivities
 import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
@@ -22,6 +25,8 @@ import com.example.in2000_project.maps.MapFragment
 import com.example.in2000_project.maps.MapsViewmodel
 import com.example.in2000_project.maps.MapsViewmodelFactory
 import com.example.in2000_project.utils.UalfUtil
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -38,7 +43,37 @@ class Alarm : BroadcastReceiver() {
         wl.acquire(60 * 1000L /*10 minutes*/)
         MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
         inspectRecentData()
-        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
+//        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
+
+        if (ActivityCompat.checkSelfPermission(context,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        }
+        val flc = LocationServices.getFusedLocationProviderClient(context)
+        flc.lastLocation.addOnSuccessListener {
+                location: Location? ->
+                    Log.e("BACKGROUND LOC", "${location}")
+                    if (location != null) {
+                        val intent = Intent(this.context, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK }
+//                        context.startActivity(intent)
+                        val pendingIntent: PendingIntent = PendingIntent.getActivity(this.context, 0, intent, 0)
+
+                        var notBuilder = NotificationCompat
+                                            .Builder(this.context, "Default")
+                                            .setSmallIcon(R.drawable.lightning_symbol)
+                                            .setContentTitle("New lightning")
+                                            .setContentText("${location.longitude}  ${location.latitude}")
+                                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                            .setContentIntent(pendingIntent)
+                                            .setAutoCancel(true)
+
+                        with(NotificationManagerCompat.from(context)) {
+                            notify(1, notBuilder.build())
+                        }
+                    }
+        }
+
         wl.release()
     }
 
@@ -110,7 +145,7 @@ class Alarm : BroadcastReceiver() {
 
 
     fun setAlarm(context: Context, minutes: Int) {
-
+        this.context = context
         val alarmUp = PendingIntent.getBroadcast(
             context, 0,
             Intent(context, Alarm::class.java),
@@ -129,7 +164,8 @@ class Alarm : BroadcastReceiver() {
         am.setRepeating(
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis(),
-            (1000 * 60 * minutes).toLong(),
+//            (1000 * 60 * minutes).toLong(),
+            (minutes).toLong(),
             pi
         )
     }
