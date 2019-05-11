@@ -59,6 +59,7 @@ class Alarm : BroadcastReceiver() {
                         //SHOULD GET FROM SHAREDPREFERENCES
                         val radius = 10000
                         LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                        LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
                     }
         }
 
