@@ -55,76 +55,17 @@ class Alarm : BroadcastReceiver() {
                 location: Location? ->
                     Log.e("BACKGROUND LOC", "${location}")
                     if (location != null) {
-
                         //HARDCODED NOTIFICATION RADIUS
                         //SHOULD GET FROM SHAREDPREFERENCES
-                        val radius = 5000
-                        val area = radius * radius
-
-
-                        val queryLocations: ArrayList<LatLng> = getQueryLocations(location, radius)
-                        LocalLightningChecker().getLocalLightning(this.context, queryLocations)
-
-//                        val intent = Intent(this.context, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK }
-//                        val pendingIntent: PendingIntent = PendingIntent.getActivity(this.context, 0, intent, 0)
-//
-//                        var notBuilder = NotificationCompat
-//                                            .Builder(this.context, "Default")
-//                                            .setSmallIcon(R.drawable.lightning_symbol)
-//                                            .setContentTitle("New lightning")
-//                                            .setContentText("${location.longitude}  ${location.latitude}")
-//                                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//                                            .setContentIntent(pendingIntent)
-//                                            .setAutoCancel(true)
-//
-//                        with(NotificationManagerCompat.from(context)) {
-//                            notify(1, notBuilder.build())
-//                        }
+                        val radius = 10000
+                        LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
                     }
         }
 
         wl.release()
     }
 
-    private fun getQueryLocations(currentLocation: Location, radius: Int): ArrayList<LatLng> {
-        val locations = ArrayList<LatLng>()
-        locations.add(LatLng(currentLocation.latitude, currentLocation.longitude))
-        val numPoint: Int = radius / 1000
 
-        val startLat = currentLocation.latitude
-        val startLong = currentLocation.longitude
-
-        //North
-        for (i in 1..numPoint){
-            val newLocation = LatLng(startLat + meterToLatitue(1000) * i, startLong)
-            locations.add(newLocation)
-        }
-        //South
-
-        for (i in 1..numPoint){
-            val newLocation = LatLng(startLat - meterToLatitue(1000) * i, startLong)
-            locations.add(newLocation)
-        }
-        //West
-        for (i in 1..numPoint){
-            val newLocation = LatLng(startLat, startLong + meterToLongtitude(1000, startLat) * i)
-            locations.add(newLocation)
-        }
-        //East
-        for (i in 1..numPoint){
-            val newLocation = LatLng(startLat, startLong - meterToLongtitude(1000, startLat) * i)
-            locations.add(newLocation)
-        }
-        return locations
-    }
-
-    private fun meterToLatitue(m: Int): Double{
-        return (m / 111111).toDouble()
-    }
-
-    private fun meterToLongtitude(m: Int, lat: Double): Double{
-        return (m / (111111 *Math.cos(lat)))
-    }
 
 
 
@@ -132,7 +73,7 @@ class Alarm : BroadcastReceiver() {
         val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         var savedMarkersList: MutableSet<MapFragment.SavedMarkers>? = null
 
-        val jsonLinkedList = sharedPrefs!!.getString("SavedMarkers", null)
+        val jsonLinkedList = sharedPrefs.getString("SavedMarkers", null)
         if (jsonLinkedList != null) {
             savedMarkersList = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<MapFragment.SavedMarkers>>(){}.type)
             Log.d("Alarm", "Saved markers retrieved")
@@ -142,14 +83,14 @@ class Alarm : BroadcastReceiver() {
             Log.d("Alarm", "No saved markers")
             savedMarkersList = mutableSetOf()
         }
-        var notificationId = 0
+        val notificationId = 0
         if (!savedMarkersList.isNullOrEmpty()) {
             val recentData: ArrayList<UalfUtil.Ualf>? = MapsViewmodel.recentData.value
             recentData?.forEach {
                 val latitude: Double = it.lat
                 val longitude: Double = it.long
 
-                val newLocation: Location = Location("")
+                val newLocation = Location("")
                 newLocation.latitude = latitude
                 newLocation.longitude = longitude
 
@@ -158,13 +99,13 @@ class Alarm : BroadcastReceiver() {
                     val savedLongitude: Double = it.longitude
                     val savedRadius: Double = it.radius
 
-                    val savedLocation: Location = Location("")
+                    val savedLocation = Location("")
                     savedLocation.latitude = savedLatitude
                     savedLocation.longitude = savedLongitude
                     if (savedLocation.distanceTo(newLocation) <= savedRadius) {
                         Log.d("ALFY", "Notification")
-                        var notification: NotificationCompat.Builder? = buildNotification(newLocation)
-                        var notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(context)
+                        val notification: NotificationCompat.Builder? = buildNotification(newLocation)
+                        val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(context)
                         notificationManager.notify(notificationId, notification!!.build())
 
                     }
@@ -178,7 +119,7 @@ class Alarm : BroadcastReceiver() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        var notification = NotificationCompat.Builder(context, "Default")
+        val notification = NotificationCompat.Builder(context, "Default")
             .setSmallIcon(R.drawable.lightning_symbol)
             .setContentTitle(context.getString(R.string.notification_title))
             .setContentText(
