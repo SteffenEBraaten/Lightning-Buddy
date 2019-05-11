@@ -19,11 +19,13 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.support.v7.preference.PreferenceManager
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.in2000_project.BaseActivity
+import com.example.in2000_project.LightningHistory.LightningHistoryActivity
 import com.example.in2000_project.R
 import com.example.in2000_project.utils.UalfUtil
 import com.example.in2000_project.utils.WeatherDataUtil
@@ -49,7 +51,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
-
+import kotlin.math.log
 
 
 class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
@@ -65,7 +67,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private var savedMarkersList: MutableSet<SavedMarkers>? = null
     private var sharedPrefs: SharedPreferences? = null
     private var prevSearchMarker: Marker? = null
-    private lateinit var activeCircle: Circle
+    lateinit var activeCircle: Circle
 
     data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
@@ -82,7 +84,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         this.callback = callback
     }
     interface OnSetRadiusListener {
-        fun onSetRadiusCall()
+        fun onSetRadiusCall(circle: Circle)
     }
 
 
@@ -192,38 +194,52 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
         prevMark?.marker = googleMap.addMarker(MarkerOptions().position(position).draggable(true))
 
-        //Set the radius fragment
-        callback.onSetRadiusCall()
-
-
-
         //radius is in meters. Currently set to 10km
         var radius: Double = 10000.0
-        var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
+        activeCircle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
             .fillColor(Color.argb(150, 146, 184, 244)))
-        activeCircle = circle
+
         //The zoom level is kind of tricky if you change the radius
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
         Log.d("Fragment map", "Marker added")
 
+        //Set the radius fragment
+        callback.onSetRadiusCall(activeCircle)
+
         googleMap.setOnMarkerDragListener(object: GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker?) {
-                circle.center = marker?.position
+                activeCircle.center = marker?.position
             }
 
             override fun onMarkerDragEnd(marker: Marker?) {
-               circle.center = marker?.position
+               activeCircle.center = marker?.position
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker?.position, 11.1.toFloat()))
                 Log.d("Fragment map", "Marker moved")
             }
 
             override fun onMarkerDrag(marker: Marker?) {
-                circle.center = marker?.position
+                activeCircle.center = marker?.position
             }
         })
-        prevMark?.circle = circle
+        prevMark?.circle = activeCircle
         Log.d("Fragment map", "Returning marker")
         return prevMark
+    }
+    fun updateRadius(radius: Int, circle: Circle) {
+        circle.radius = radius.toDouble() * 1000
+        var zoomLevel: Float = calcZoomLevel(circle.center.latitude, radius.toDouble())
+        Log.d("Zoom level", "Zoom level = $zoomLevel")
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoomLevel))
+        //TODO: Fiks zoomen.
+
+    }
+    private fun calcZoomLevel(lat: Double, radius: Double): Float{
+        var displayMetrics = DisplayMetrics()
+        (activity as MainActivity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+        var maxLength = Math.min(height, width)
+        return log(156543.03392 * Math.cos(lat * Math.PI / 180) * maxLength/ radius * 2, 2.0).toFloat()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -76,7 +76,6 @@ class Alarm : BroadcastReceiver() {
                     savedLocation.latitude = savedLatitude
                     savedLocation.longitude = savedLongitude
                     if (savedLocation.distanceTo(newLocation) <= savedRadius) {
-                        Log.d("ALFY", "Notification")
                         var notification: NotificationCompat.Builder? = buildNotification(newLocation)
                         var notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(context)
                         notificationManager.notify(notificationId, notification!!.build())

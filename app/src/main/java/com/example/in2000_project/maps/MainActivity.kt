@@ -14,11 +14,14 @@ import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import com.example.in2000_project.*
 import com.example.in2000_project.utils.UalfUtil
+import com.google.android.gms.maps.model.Circle
 
 
 class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFragment.OnRadiusChangeListener {
     private lateinit var viewModel: MapsViewmodel
     private var radiusFragment: RadiusFragment? = null
+    private lateinit var mapFragment: MapFragment
+    private lateinit var activeCircle: Circle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,17 +39,19 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
     }
     override fun onAttachFragment(fragment: Fragment) {
         if (fragment is MapFragment) {
+            mapFragment = fragment
             fragment.setOnRadiusListener(this)
         }
         if (fragment is RadiusFragment) {
             fragment.setOnRadiusChangeListener(this)
         }
     }
-    override fun onSetRadiusCall() {
+    override fun onSetRadiusCall(circle: Circle) {
         if (radiusFragment != null) {
             Log.d("Main", "Removing last radius fragment")
             supportFragmentManager.beginTransaction().remove(radiusFragment as RadiusFragment).commit()
         }
+        activeCircle = circle
         val setRadiusFragment: RadiusFragment = RadiusFragment()
         radiusFragment = setRadiusFragment
         var inputArguments: Bundle = Bundle()
@@ -62,7 +67,8 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
     }
 
     override fun onRadiusChanged(radius: Int) {
-        Log.d("Main", "Radius updated: $radius")
+        mapFragment.updateRadius(radius, activeCircle)
+
     }
 
     private fun createNotificationChannel() {
