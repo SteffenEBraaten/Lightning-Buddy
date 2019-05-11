@@ -63,7 +63,7 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
         setRadiusFragment.arguments = inputArguments
         Log.d("Main", "Adding new radius fragment")
         supportFragmentManager.beginTransaction().add(R.id.main_relative, setRadiusFragment).commit()
-        attachBackButton()
+        attachCancelButton(setRadiusFragment)
     }
 
     override fun onRadiusChanged(radius: Int) {
