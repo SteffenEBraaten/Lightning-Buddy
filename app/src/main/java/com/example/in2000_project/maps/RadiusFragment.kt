@@ -38,8 +38,25 @@ class RadiusFragment: Fragment() {
         parseArguments(argumentsBundle, seekbar, editText)
         setEditTextValue(editText, seekbar)
         setSeekBarValue(editText, seekbar)
+        setButtonlListener()
         return fragment
     }
+
+    private fun setButtonlListener() {
+        val button = fragment.findViewById<Button>(R.id.save_button)
+        if (buttonText.equals("Save")) {
+            button.setOnClickListener {
+                //TODO: Handle save click
+            }
+        } else if (buttonText.equals("Set")) {
+            button.setOnClickListener {
+                //TODO: Handle set click
+            }
+        } else {
+            Log.e("Radius fragment", "Button text argument not recognized")
+        }
+    }
+
     private fun parseArguments(arguments: Bundle?, seekbar: SeekBar, editText: EditText) {
         try {
             val measure = arguments?.getString("measure")

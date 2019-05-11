@@ -199,8 +199,10 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         activeCircle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
             .fillColor(Color.argb(150, 146, 184, 244)))
 
+        //For some reason I have to multiply by 10 to get the correct zoom level
+        val zoomLevel = calcZoomLevel(activeCircle.center.latitude, radius * 10)
         //The zoom level is kind of tricky if you change the radius
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoomLevel))
         Log.d("Fragment map", "Marker added")
 
         //Set the radius fragment
@@ -227,13 +229,14 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     }
     fun updateRadius(radius: Int, circle: Circle) {
         circle.radius = radius.toDouble() * 1000
-        var zoomLevel: Float = calcZoomLevel(circle.center.latitude, radius.toDouble())
+        //For some reason I have to multiply by 10 to get the correct zoom
+        var zoomLevel: Float = calcZoomLevel(circle.center.latitude, circle.radius * 10)
         Log.d("Zoom level", "Zoom level = $zoomLevel")
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoomLevel))
-        //TODO: Fiks zoomen.
 
     }
     private fun calcZoomLevel(lat: Double, radius: Double): Float{
+        Log.d("Alfy", "$radius")
         var displayMetrics = DisplayMetrics()
         (activity as MainActivity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         val height = displayMetrics.heightPixels
