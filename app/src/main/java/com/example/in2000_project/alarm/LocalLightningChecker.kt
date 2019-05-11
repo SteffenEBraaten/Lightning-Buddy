@@ -111,8 +111,8 @@ class LocalLightningChecker {
                     val notBuilder = NotificationCompat
                         .Builder(context, "Default")
                         .setSmallIcon(R.drawable.lightning_symbol)
-                        .setContentTitle("Lightning forcast")
-                        .setContentText("${tempData!!.symbol!!.id} is forcasted in your current area!")
+                        .setContentTitle(R.string.notificationForecastTitle.toString())
+                        .setContentText("${tempData!!.symbol!!.id} "+  R.string.localForecastNotificationContent + "${tempData!!.from}!")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)

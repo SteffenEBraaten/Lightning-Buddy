@@ -157,8 +157,8 @@ class Alarm : BroadcastReceiver() {
         am.setRepeating(
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis(),
-//            (1000 * 60 * minutes).toLong(),
-            (minutes).toLong(),
+            (1000 * 60 * minutes).toLong(),
+//            (minutes).toLong(),
             pi
         )
     }

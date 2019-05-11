@@ -69,6 +69,8 @@
     <string name="notification_title">New lightning detected</string>
     <string name="notification_content">New lightning detected at:</string>
     <string name="localNotificationContent">High chance of lightning in your local area!</string>
+    <string name="notificationForecastTitle">Lightning forecast</string>
+    <string name="localForecastNotificationContent">is expected in your local area at  </string>
 
 
     <!--Lighning History-->
