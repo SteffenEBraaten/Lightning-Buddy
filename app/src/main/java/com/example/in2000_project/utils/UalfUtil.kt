@@ -33,7 +33,6 @@ public abstract class UalfUtil{
                         lineData[4].toInt(), lineData[5].toInt(), lineData[6].toInt()
                     )
                     ualfs.add(Ualf(idCount++, date, lineData[8].toDouble(), lineData[9].toDouble(), lineData[10].toInt(), lineData[18].toDouble(), lineData[19].toDouble()))
-//                    ualfs.add(Ualf(idCount++, date, lineData[8].toDouble(), lineData[9].toDouble()))
                 }catch (e : Exception){
                     Log.e("Ualf util error", e.toString())
                 }
