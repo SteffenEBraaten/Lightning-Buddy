@@ -11,6 +11,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.preference.PreferenceManager
+import android.util.Log
 import com.example.in2000_project.LightningHistory.LightningHistoryActivity
 import com.example.in2000_project.alarm.AlarmService
 import com.example.in2000_project.maps.*
@@ -54,7 +55,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                 )
     }
 
-    private fun setToolbar(title: String, navImg: Int?) {
+    protected fun setToolbar(title: String, navImg: Int?) {
         this.toolbar = findViewById(R.id.my_toolbar)
         this.toolbar.title = title
         if (navImg != null) {
@@ -79,6 +80,9 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         this.toolbar.setNavigationOnClickListener {
             supportFragmentManager.beginTransaction().remove(fragment).commit()
             setDrawer()
+            val mapFragment: MapFragment =
+                supportFragmentManager.findFragmentByTag("Map Fragment") as MapFragment
+            mapFragment.clearMap()
         }
     }
 

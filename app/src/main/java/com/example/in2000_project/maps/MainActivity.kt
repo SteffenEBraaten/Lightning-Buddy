@@ -75,7 +75,6 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
     override fun onRadiusChanged(radius: Int, buttonText: String) {
         mapFragment.updateRadius(radius, activeCircle)
     }
-
     override fun setRadiusCircle(radius: Int) {
         activeCircle = mapFragment.circleOnUser(radius)
     }
