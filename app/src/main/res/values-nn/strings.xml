@@ -62,5 +62,7 @@
     <string name="notification_content">Nytt lyn oppdage på:</string>
     <string name="localNotificationContent">Høg fare for lyn i det lokale området ditt!</string>
     <string name="Close">Lukk</string>
+    <string name="notificationForecastTitle">Nytt lyn oppdaga</string>
+    <string name="localForecastNotificationContent">er forventa i det lokale området ditt </string>
 
 </resources>
