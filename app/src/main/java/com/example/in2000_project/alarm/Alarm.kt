@@ -55,11 +55,16 @@ class Alarm : BroadcastReceiver() {
                 location: Location? ->
                     Log.e("BACKGROUND LOC", "${location}")
                     if (location != null) {
-                        //HARDCODED NOTIFICATION RADIUS
-                        //SHOULD GET FROM SHAREDPREFERENCES
-                        val radius = 10000
-                        LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
-                        LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                        val sharedPrefs: SharedPreferences =
+                            PreferenceManager.getDefaultSharedPreferences(context)
+                        val radius = sharedPrefs.getInt("UserRadius", 0)
+                        if (radius != 0) {
+                            Log.d("User radius", "User radius = $radius")
+                            LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                            LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                        } else {
+                            Log.d("User radius", "User's radius config either not set or set to 0.")
+                        }
                     }
         }
 
