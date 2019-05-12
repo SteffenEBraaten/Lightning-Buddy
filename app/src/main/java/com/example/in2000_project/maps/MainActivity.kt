@@ -2,7 +2,6 @@ package com.example.in2000_project.maps
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.Color
@@ -12,16 +11,18 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
 import android.util.Log
+import android.widget.Toast
 import com.example.in2000_project.*
-import com.example.in2000_project.utils.UalfUtil
 import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.Marker
 
 
-class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFragment.OnRadiusChangeListener {
+class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFragment.OnRadiusFragmentChangeListener {
     private lateinit var viewModel: MapsViewmodel
     private var radiusFragment: RadiusFragment? = null
     private lateinit var mapFragment: MapFragment
     private lateinit var activeCircle: Circle
+    private lateinit var currentMarker: Marker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +47,17 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
             fragment.setOnRadiusChangeListener(this)
         }
     }
-    override fun onSetRadiusCall(circle: Circle) {
+    override fun onSetRadiusCall(circle: Circle, marker: Marker) {
         if (radiusFragment != null) {
             Log.d("Main", "Removing last radius fragment")
-            supportFragmentManager.beginTransaction().remove(radiusFragment as RadiusFragment).commit()
+            supportFragmentManager
+                .beginTransaction()
+                .remove(radiusFragment as RadiusFragment)
+                .commit()
         }
         activeCircle = circle
+        currentMarker = marker
+
         val setRadiusFragment: RadiusFragment = RadiusFragment()
         radiusFragment = setRadiusFragment
         var inputArguments: Bundle = Bundle()
@@ -68,7 +74,14 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
 
     override fun onRadiusChanged(radius: Int) {
         mapFragment.updateRadius(radius, activeCircle)
+    }
 
+    override fun onSaveClicked() {
+        supportFragmentManager
+            .beginTransaction()
+            .remove(radiusFragment as RadiusFragment)
+            .commit()
+        mapFragment.saveMarker(activeCircle, currentMarker)
     }
 
     private fun createNotificationChannel() {

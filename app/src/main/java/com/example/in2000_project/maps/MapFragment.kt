@@ -84,7 +84,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         this.callback = callback
     }
     interface OnSetRadiusListener {
-        fun onSetRadiusCall(circle: Circle)
+        fun onSetRadiusCall(circle: Circle, marker: Marker)
     }
 
 
@@ -207,7 +207,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         Log.d("Fragment map", "Marker added")
 
         //Set the radius fragment
-        callback.onSetRadiusCall(activeCircle)
+        callback.onSetRadiusCall(activeCircle, prevMark!!.marker!!)
 
         googleMap.setOnMarkerDragListener(object: GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker?) {
@@ -237,7 +237,6 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     }
     private fun calcZoomLevel(lat: Double, radius: Double): Float{
-        Log.d("Alfy", "$radius")
         var displayMetrics = DisplayMetrics()
         (activity as MainActivity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         val height = displayMetrics.heightPixels
@@ -340,6 +339,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         val resizedBitmap: Bitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false)
         return resizedBitmap
     }
+    public fun saveMarker(circle: Circle, marker: Marker) {
+        markersList.add(MarkerWithCircle(marker, circle))
+        Log.d("Fragment map", "markersList size: " + markersList.size)
+        Toast.makeText(activity, "Marker saved", Toast.LENGTH_SHORT).show()
+    }
+
     private fun persistentSave() {
         for (entry: MarkerWithCircle in markersList) {
             var position: LatLng? = entry.marker?.position

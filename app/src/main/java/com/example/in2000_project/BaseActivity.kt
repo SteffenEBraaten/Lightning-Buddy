@@ -13,10 +13,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.preference.PreferenceManager
 import com.example.in2000_project.LightningHistory.LightningHistoryActivity
 import com.example.in2000_project.alarm.AlarmService
-import com.example.in2000_project.maps.MainActivity
-import com.example.in2000_project.maps.MapsViewmodel
-import com.example.in2000_project.maps.MapsViewmodelFactory
-import com.example.in2000_project.maps.RadiusFragment
+import com.example.in2000_project.maps.*
 import com.example.in2000_project.settings.SettingsActivity
 
 

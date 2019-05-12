@@ -1,18 +1,15 @@
 package com.example.in2000_project.maps
 
-import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.FocusFinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.example.in2000_project.BaseActivity
 import com.example.in2000_project.R
 
 class RadiusFragment: Fragment() {
@@ -21,13 +18,14 @@ class RadiusFragment: Fragment() {
     private var max: String? = null
     private var buttonText: String? = null
 
-    internal lateinit var callback: OnRadiusChangeListener
+    internal lateinit var callback: OnRadiusFragmentChangeListener
 
-    fun setOnRadiusChangeListener(callback: OnRadiusChangeListener) {
+    fun setOnRadiusChangeListener(callback: OnRadiusFragmentChangeListener) {
         this.callback = callback
     }
-    interface OnRadiusChangeListener {
+    interface OnRadiusFragmentChangeListener {
         fun onRadiusChanged(radius: Int)
+        fun onSaveClicked()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -38,15 +36,15 @@ class RadiusFragment: Fragment() {
         parseArguments(argumentsBundle, seekbar, editText)
         setEditTextValue(editText, seekbar)
         setSeekBarValue(editText, seekbar)
-        setButtonlListener()
+        setButtonListener()
         return fragment
     }
 
-    private fun setButtonlListener() {
+    private fun setButtonListener() {
         val button = fragment.findViewById<Button>(R.id.save_button)
         if (buttonText.equals("Save")) {
             button.setOnClickListener {
-                //TODO: Handle save click
+                callback.onSaveClicked()
             }
         } else if (buttonText.equals("Set")) {
             button.setOnClickListener {
