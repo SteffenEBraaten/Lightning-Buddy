@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
+import android.support.v7.preference.PreferenceManager
 import com.example.in2000_project.R
 import com.example.in2000_project.maps.MainActivity
 import kotlinx.android.synthetic.main.activity_intro.*
@@ -22,7 +24,7 @@ class IntroActivity : AppCompatActivity() {
     private val slider3 = SliderFragment()
 
     lateinit var prefrence : SharedPreferences
-    private val intro_flag = "Intro"
+    private val intro_flag = "termsOfService"
 
     lateinit var adapter: MyPageAdapter
     lateinit var activity: Activity
@@ -31,10 +33,11 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
-        prefrence = getSharedPreferences("FirstTimeIntro", Context.MODE_PRIVATE)
+        prefrence = PreferenceManager.getDefaultSharedPreferences(this)
+
         activity = this
 
-        if(!prefrence.getBoolean(intro_flag, true)){
+        if(prefrence.getBoolean(intro_flag, false)){
             startActivity(Intent(activity, MainActivity::class.java))
             finish()
         }
@@ -69,8 +72,9 @@ class IntroActivity : AppCompatActivity() {
 
         // Initializing btn_skip
         intro_btn_skip.setOnClickListener {
-            goToMainActivity()
+            openDialog()
         }
+
         intro_viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
             }
@@ -83,7 +87,7 @@ class IntroActivity : AppCompatActivity() {
                 if (p0 == adapter.sliderList.size - 1) {
                     intro_btn_next.text = getText(R.string.done)
                     intro_btn_next.setOnClickListener{
-                        goToMainActivity()
+                        openDialog()
                     }
                 }
                 else {
@@ -115,14 +119,56 @@ class IntroActivity : AppCompatActivity() {
         })
     }
 
+    private fun openDialog(){
+        val alert = binaryAlertDialogCreator(
+            getString(R.string.termsOfServiceTitle),
+            getString(R.string.termsOfService),
+            getString(R.string.accept),
+            getString(R.string.decline),
+            ::acceptTermsAgreement,
+            ::declineTermsAgreement)
+
+        alert.show()
+    }
+
     // Takes user to MainActivity and sets flag to false
     private fun goToMainActivity(){
         startActivity(Intent(activity, MainActivity::class.java))
         finish()
-        val editor = prefrence.edit()
-        editor.putBoolean(intro_flag, false)
-        editor.apply()
+        setTermsAgreement(true)
     }
+
+    private fun acceptTermsAgreement(){
+        goToMainActivity()
+    }
+
+    private fun declineTermsAgreement(){
+        setTermsAgreement(false)
+    }
+
+    private fun setTermsAgreement(value : Boolean){
+        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        sharedPrefsEditor.putBoolean(intro_flag, value)
+        sharedPrefsEditor.apply()
+    }
+
+    private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog {
+        val alertBuilder = AlertDialog.Builder(this as Context)
+        alertBuilder.setTitle(title)
+        alertBuilder.setMessage(message)
+
+        alertBuilder.setPositiveButton(posBtn) { dialog, _ ->
+            pos()
+            dialog.dismiss()
+        }
+        alertBuilder.setNegativeButton(negBtn) { dialog, _ ->
+            neg()
+            dialog.dismiss()
+        }
+
+        return alertBuilder.create()
+    }
+
 
     class MyPageAdapter(manager : FragmentManager) : FragmentPagerAdapter(manager) {
 

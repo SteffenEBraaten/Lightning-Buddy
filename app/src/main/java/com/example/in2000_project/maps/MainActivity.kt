@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
 import android.util.Log
-import android.widget.Toast
 import com.example.in2000_project.*
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.Marker
@@ -32,6 +31,7 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
         darkMode()
         super.setAlarm()
         super.setDrawer()
+
         createNotificationChannel()
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().add(R.id.content_frame, MapFragment.newInstance(),
@@ -114,6 +114,7 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
 
         }
     }
+  
     private fun darkMode(){
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)

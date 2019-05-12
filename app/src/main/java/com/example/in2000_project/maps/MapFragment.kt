@@ -69,11 +69,18 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private var prevSearchMarker: Marker? = null
     lateinit var activeCircle: Circle
 
-    data class SavedMarkers(var latitude: Double, var longitude: Double, var radius: Double)
+    data class SavedMarkers(var name: String,
+                            var latitude: Double,
+                            var longitude: Double,
+                            var radius: Double) {
+        constructor(lat: Double, long: Double, r: Double) :
+                this("defaultName", lat, long, r)
+
+    }
     data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
 
     private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>
-    private lateinit var coRoutine: Job
+    private var coRoutine: Job? = null
     //Milliseconds
     private var refreshRate: Long = 5 * 60 * 1000
     
@@ -148,6 +155,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+        this.googleMap.uiSettings.isZoomControlsEnabled = true
         Log.d("Fragment map", "Map ready")
         MapsViewmodel.recentData.observe(this, changeObserver)
         coRoutine = GlobalScope.launch{
@@ -361,6 +369,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     }
 
     private fun persistentSave() {
+        Log.e("Persistent Save", "Saving")
         for (entry: MarkerWithCircle in markersList) {
             var position: LatLng? = entry.marker?.position
             var radius: Double? = entry.circle?.radius
@@ -400,7 +409,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         super.onDestroy()
         Log.d("Fragment Map", "Destroy")
         persistentSave()
-        coRoutine.cancel()
+        coRoutine?.cancel()
     }
 
     override fun onDetach() {

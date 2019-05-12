@@ -58,13 +58,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun attachEvents(){
         val termsOfService = findPreference("termsOfService")
         termsOfService?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val alert = binaryAlertDialogCreator(
+            val alert = unaryAlertDialogCreator(
                 getString(R.string.termsOfServiceTitle),
                 getString(R.string.termsOfService),
-                getString(R.string.accept),
-                getString(R.string.decline),
-                ::acceptTermsAgreement,
-                ::declineTermsAgreement)
+                getString(R.string.Close),
+                {})
 
             alert.show()
             true
@@ -141,20 +139,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         return pattern.matcher(email).matches()
     }
 
-    private fun acceptTermsAgreement(){
-        setTermsAgreement(true)
-    }
-
-    private fun declineTermsAgreement(){
-        setTermsAgreement(false)
-    }
-
-    private fun setTermsAgreement(value : Boolean){
-        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-        sharedPrefsEditor.putBoolean("termsOfService", value)
-        sharedPrefsEditor.apply()
-    }
-
     private fun resetSettings() {
         val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
         sharedPrefsEditor.putBoolean("useLocation", true)
@@ -170,7 +154,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
 
-    private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog{
+    private fun unaryAlertDialogCreator(title : String, message : String, posBtn : String, pos : () -> Unit) : AlertDialog{
+        val alertBuilder = AlertDialog.Builder(this.context as Context)
+        alertBuilder.setTitle(title)
+        alertBuilder.setMessage(message)
+
+        alertBuilder.setPositiveButton(posBtn) { dialog, _ ->
+            pos()
+            dialog.dismiss()
+        }
+
+        return alertBuilder.create()
+    }
+
+
+    private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog {
         val alertBuilder = AlertDialog.Builder(this.context as Context)
         alertBuilder.setTitle(title)
         alertBuilder.setMessage(message)
