@@ -68,7 +68,9 @@
     <string name="user_radius_text">For å motta notifikasjoner når du er på vei inn i et område hvor det er meldt lyn, venligst sett radiusen du ønsker å bli notifiser i.</string>
 
     <string name="localNotificationContent">Høy fare for lyn i det lokale området ditt!</string>
+    <string name="Close">Lukk</string>
     <string name="notificationForecastTitle">Nytt lyn forventet</string>
     <string name="localForecastNotificationContent">er forventet i det lokale området ditt </string>
+    <string name="giveFeedback">Gi tilbakemelding</string>
 
 </resources>

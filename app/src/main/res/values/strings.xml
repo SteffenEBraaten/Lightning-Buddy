@@ -113,4 +113,7 @@
     <string name="noDataForPeriod">There was no data for this place/period, please try again!</string>
     <string name="Close">Close</string>
     <string name="radius" translatable="false">Radius</string>
+
+    <string name="giveFeedback">Give feedback</string>
+
 </resources>

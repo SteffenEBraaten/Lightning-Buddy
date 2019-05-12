@@ -68,6 +68,7 @@
     <string name="marker_radius_text">Sett radiusen for området du ønsker å bli notifisert om lyn i.</string>
 
     <string name="localNotificationContent">Høg fare for lyn i det lokale området ditt!</string>
+    <string name="Close">Lukk</string>
     <string name="notificationForecastTitle">Nytt lyn oppdaga</string>
     <string name="localForecastNotificationContent">er forventa i det lokale området ditt </string>
 

@@ -4,6 +4,7 @@ package com.example.in2000_project.settings
 import android.util.Patterns
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -13,6 +14,7 @@ import android.support.v7.preference.PreferenceManager
 import android.widget.Toast
 import com.example.in2000_project.R
 import android.support.v7.app.AppCompatDelegate
+import android.util.Log
 import com.example.in2000_project.alarm.AlarmService
 
 
@@ -104,6 +106,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
             refreshFragment()
             true
         }
+
+        preferenceScreen.findPreference("giveFeedback").setOnPreferenceClickListener {
+            emailFeedback()
+            true
+        }
+    }
+
+    private fun emailFeedback(){
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, "lightningbuddy.feedback@gmail.com")
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Feedback")
+        startActivity(intent)
     }
 
     private fun setAlarm(){
