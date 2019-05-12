@@ -104,14 +104,9 @@ class Alarm : BroadcastReceiver() {
                     savedLocation.latitude = savedLatitude
                     savedLocation.longitude = savedLongitude
                     if (savedLocation.distanceTo(newLocation) <= savedRadius) {
-<<<<<<< HEAD
-                        var notification: NotificationCompat.Builder? = buildNotification(newLocation)
-                        var notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(context)
-=======
-                        Log.d("ALFY", "Notification")
                         val notification: NotificationCompat.Builder? = buildNotification(newLocation)
                         val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(context)
->>>>>>> test
+
                         notificationManager.notify(notificationId, notification!!.build())
 
                     }
