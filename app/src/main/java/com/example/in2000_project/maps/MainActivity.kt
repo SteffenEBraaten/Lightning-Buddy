@@ -72,8 +72,12 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
         attachCancelButton(setRadiusFragment)
     }
 
-    override fun onRadiusChanged(radius: Int) {
+    override fun onRadiusChanged(radius: Int, buttonText: String) {
         mapFragment.updateRadius(radius, activeCircle)
+    }
+
+    override fun setRadiusCircle(radius: Int) {
+        activeCircle = mapFragment.circleOnUser(radius)
     }
 
     override fun onSaveClicked() {
@@ -82,6 +86,16 @@ class MainActivity : BaseActivity(), MapFragment.OnSetRadiusListener, RadiusFrag
             .remove(radiusFragment as RadiusFragment)
             .commit()
         mapFragment.saveMarker(activeCircle, currentMarker)
+        setDrawer()
+        mapFragment.clearMap()
+    }
+    override fun onSetClicked(fragment: RadiusFragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .remove(fragment)
+            .commit()
+        setDrawer()
+        mapFragment.clearMap()
     }
 
     private fun createNotificationChannel() {

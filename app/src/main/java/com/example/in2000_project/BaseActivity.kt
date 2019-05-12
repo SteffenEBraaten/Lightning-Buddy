@@ -64,7 +64,6 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     protected fun attachBackButton(){
-        //TODO: navigate back to previous activity or home
         setToolbar(getString(R.string.app_name), R.drawable.ic_arrow_back_black_24dp)
         this.toolbar.setNavigationOnClickListener{
             val intent = Intent(this, MainActivity::class.java)

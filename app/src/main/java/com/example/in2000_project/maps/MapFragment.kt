@@ -287,6 +287,21 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         autocompleteFragment.setOnPlaceSelectedListener(this)
 
     }
+    public fun circleOnUser(radius: Int): Circle {
+        val position = LatLng(lastLocation.latitude, lastLocation.longitude)
+        activeCircle = googleMap
+            .addCircle(CircleOptions()
+                .center(position)
+                .radius(radius.toDouble())
+                .strokeColor(Color.BLUE)
+                .fillColor(Color.argb(150, 146, 184, 244)))
+        //For some reason I have to multiply by 10 to get the correct zoom level
+        val zoomLevel = calcZoomLevel(activeCircle.center.latitude, radius.toDouble() * 10)
+        //The zoom level is kind of tricky if you change the radius
+        googleMap.animateCamera(CameraUpdateFactory
+            .newLatLngZoom(activeCircle.center, zoomLevel))
+        return activeCircle
+    }
     override fun onPlaceSelected(place: Place) {
         prevSearchMarker?.remove()
         Log.d("Fragment map", "Moving to $place")
@@ -358,6 +373,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             Log.d("Fragment map", "Markers saved")
             prefEditor?.apply()
         }
+    }
+    public fun clearMap() {
+        googleMap.clear()
     }
 
     override fun onPause() {
