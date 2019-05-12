@@ -59,6 +59,7 @@ class Alarm : BroadcastReceiver() {
                         //SHOULD GET FROM SHAREDPREFERENCES
                         val radius = 10000
                         LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                        LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
                     }
         }
 
@@ -156,8 +157,8 @@ class Alarm : BroadcastReceiver() {
         am.setRepeating(
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis(),
-//            (1000 * 60 * minutes).toLong(),
-            (minutes).toLong(),
+            (1000 * 60 * minutes).toLong(),
+//            (minutes).toLong(),
             pi
         )
     }
