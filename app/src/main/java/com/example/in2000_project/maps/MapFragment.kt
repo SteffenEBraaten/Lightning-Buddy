@@ -202,7 +202,8 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         //For some reason I have to multiply by 10 to get the correct zoom level
         val zoomLevel = calcZoomLevel(activeCircle.center.latitude, radius * 10)
         //The zoom level is kind of tricky if you change the radius
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoomLevel))
+        googleMap.animateCamera(CameraUpdateFactory
+            .newLatLngZoom(activeCircle.center, zoomLevel))
         Log.d("Fragment map", "Marker added")
 
         //Set the radius fragment
