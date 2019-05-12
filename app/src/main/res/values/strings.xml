@@ -92,6 +92,12 @@
     <string name="notificationForecastTitle">Lightning forecast</string>
     <string name="localForecastNotificationContent">is expected in your local area at  </string>
 
+    <!--Radius fragment-->
+    <string name="meter">meters</string>
+    <string name="user_radius_text">To receive notifications when you are about to enter a location with forecasted lightning storms in the near future, please set the radius you wish to be notified in.</string>
+    <string name="set">Set</string>
+    <string name="km" translatable="false">km</string>
+    <string name="marker_radius_text">Set the radius for the location you wish to to be notified about lightning in.</string>
 
     <!--Lighning History-->
     <string name="lightningHistory">Lightning History</string>
@@ -106,6 +112,8 @@
     <string name="generateLightning">Generating lightning...</string>
     <string name="noDataForPeriod">There was no data for this place/period, please try again!</string>
     <string name="Close">Close</string>
+    <string name="radius" translatable="false">Radius</string>
+
     <string name="giveFeedback">Give feedback</string>
-    <!---->
+
 </resources>

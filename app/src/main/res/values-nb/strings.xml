@@ -60,6 +60,13 @@
 
     <string name="notification_title">Nytt lyn oppdaget</string>
     <string name="notification_content">Nytt lyn oppdaget på:</string>
+
+    <string name="radius">Radius</string>
+    <string name="meter">meter</string>
+    <string name="set">Sett</string>
+    <string name="marker_radius_text">Sett radiusen for området du ønsker å bli notifisert om lyn i.</string>
+    <string name="user_radius_text">For å motta notifikasjoner når du er på vei inn i et område hvor det er meldt lyn, venligst sett radiusen du ønsker å bli notifiser i.</string>
+
     <string name="localNotificationContent">Høy fare for lyn i det lokale området ditt!</string>
     <string name="Close">Lukk</string>
     <string name="notificationForecastTitle">Nytt lyn forventet</string>
