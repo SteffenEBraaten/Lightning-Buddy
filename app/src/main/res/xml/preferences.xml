@@ -42,6 +42,8 @@
         <Preference android:title="@string/termsOfServiceTitle"
                     android:defaultValue="false"
                     android:key="termsOfService"/>
+        <Preference android:title="@string/giveFeedback"
+                    android:key="giveFeedback"/>
         <Preference android:title="@string/reset"
                     android:key="resetSettings"/>
     </PreferenceCategory>
