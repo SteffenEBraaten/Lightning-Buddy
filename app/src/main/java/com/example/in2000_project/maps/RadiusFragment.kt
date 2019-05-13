@@ -68,7 +68,7 @@ class RadiusFragment: Fragment() {
         val value = Integer.parseInt(fragmentEditText.text.toString())
         prefEditor.putInt("UserRadius", value)
         prefEditor.apply()
-        Toast.makeText(activity, "Notification radius set", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, getString(R.string.notificationRadiusSet), Toast.LENGTH_SHORT).show()
         Log.d("Radius fragment","User radius for notification set to $value")
     }
     private fun parseArguments(arguments: Bundle?, seekbar: SeekBar, editText: EditText) {
@@ -107,7 +107,7 @@ class RadiusFragment: Fragment() {
                 if (editText.text.toString() != "") {
                     if (Integer.parseInt(editText.text.toString()) < 10) {
                         editText.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-                            Toast.makeText(activity,"Radius can not be less than $min", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity,getString(R.string.radiusNotLessThan) + " $min", Toast.LENGTH_SHORT).show()
                             seekbar.progress = Integer.parseInt(editText.text.toString())
                             editText.setSelection(editText.text.length)
                         }

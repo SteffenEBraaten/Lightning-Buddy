@@ -8,7 +8,7 @@
 
         <item
                 android:id="@+id/drawercontent_lightninghistory"
-                android:title="LightningHistory"/>
+                android:title="@string/lightningHistory"/>
         <item
                 android:id="@+id/drawercontent_set_radius"
                 android:icon="@drawable/ic_priority_high_black_24dp"

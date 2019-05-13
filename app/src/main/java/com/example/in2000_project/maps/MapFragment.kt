@@ -1,9 +1,9 @@
 package com.example.in2000_project.maps
 
 import android.Manifest
+import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.support.v7.preference.PreferenceManager
@@ -24,11 +23,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.example.in2000_project.BaseActivity
-import com.example.in2000_project.LightningHistory.LightningHistoryActivity
 import com.example.in2000_project.R
 import com.example.in2000_project.utils.UalfUtil
-import com.example.in2000_project.utils.WeatherDataUtil
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -44,13 +40,11 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.activity_settings.*
 import java.util.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import kotlin.math.log
 
 
@@ -77,7 +71,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                 this("defaultName", lat, long, r)
 
     }
-    data class MarkerWithCircle(var marker: Marker?, var circle: Circle?)
+    data class MarkerWithCircle(var marker: Marker?, var circle: Circle?, var name: String?)
 
     private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>
     private var coRoutine: Job? = null
@@ -188,7 +182,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                 , MY_PERMISSIONS_REQUEST_ACCESS_LOCATION)
         }
 
-        var prevMarker: MarkerWithCircle? = MarkerWithCircle(null, null)
+        var prevMarker: MarkerWithCircle? = MarkerWithCircle(null,null, null)
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
                 Log.d("Fragment map", "Map clicked at posistion $position")
@@ -241,7 +235,8 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         //For some reason I have to multiply by 10 to get the correct zoom
         var zoomLevel: Float = calcZoomLevel(circle.center.latitude, circle.radius * 10)
         Log.d("Zoom level", "Zoom level = $zoomLevel")
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoomLevel))
+        googleMap.animateCamera(CameraUpdateFactory
+            .newLatLngZoom(LatLng(circle.center.latitude, circle.center.longitude), zoomLevel))
 
     }
     private fun calcZoomLevel(lat: Double, radius: Double): Float{
@@ -363,17 +358,45 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         return resizedBitmap
     }
     public fun saveMarker(circle: Circle, marker: Marker) {
-        markersList.add(MarkerWithCircle(marker, circle))
-        Log.d("Fragment map", "markersList size: " + markersList.size)
-        Toast.makeText(activity, "Marker saved", Toast.LENGTH_SHORT).show()
+        triggerAlertDialogName(circle, marker)
+    }
+
+    public fun triggerAlertDialogName(circle: Circle, marker: Marker) {
+        val dialogNameInput = AlertDialog.Builder(context)
+        val view = layoutInflater.inflate(R.layout.dialog_input_name_savemarker, null)
+        dialogNameInput.setView(view)
+
+        val descriptionText = view.findViewById<TextView>(R.id.markerName)
+        val nameEditText = view.findViewById<EditText>(R.id.markerEditText)
+        descriptionText.text = getString(R.string.saveMarkerDescText)
+
+        dialogNameInput.setPositiveButton(getString(R.string.save)) {
+            dialog, whichButton -> var placeholder = 123
+        }
+        var dialog = dialogNameInput.create()
+        dialog.setOnShowListener {
+            val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            addButton.setOnClickListener {
+                if (nameEditText.text.toString() != "") {
+                    markersList.add(MarkerWithCircle(marker, circle, nameEditText.text.toString()))
+                    Log.d("Fragment map", "markersList size: " + markersList.size)
+                    dialog.dismiss()
+                    Toast.makeText(activity, getString(R.string.markerSaved), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, getString(R.string.wrongInputMarkerSave), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        dialog.show()
     }
 
     private fun persistentSave() {
         Log.e("Persistent Save", "Saving")
         for (entry: MarkerWithCircle in markersList) {
+            val name: String = entry.name!!
             var position: LatLng? = entry.marker?.position
             var radius: Double? = entry.circle?.radius
-            savedMarkersList?.add(SavedMarkers(position!!.latitude, position.longitude, radius!!))
+            savedMarkersList?.add(SavedMarkers(name, position!!.latitude, position.longitude, radius!!))
         }
 
         markersList?.run {

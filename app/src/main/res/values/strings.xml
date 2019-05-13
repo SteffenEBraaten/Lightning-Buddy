@@ -117,5 +117,10 @@
     <string name="giveFeedback">Give feedback</string>
     <string name="call_for_help">Call for help</string>
     <string name="police_phone">tel:112</string>
+    <string name="wrongInputMarkerSave">Saved marker name can not be empty</string>
+    <string name="notificationRadiusSet">Notification radius set</string>
+    <string name="radiusNotLessThan">Radius can not be less than</string>
+    <string name="markerSaved">Marker saved</string>
+    <string name="saveMarkerDescText">Marker name:</string>
 
 </resources>
