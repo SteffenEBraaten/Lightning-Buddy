@@ -241,7 +241,8 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         //For some reason I have to multiply by 10 to get the correct zoom
         var zoomLevel: Float = calcZoomLevel(circle.center.latitude, circle.radius * 10)
         Log.d("Zoom level", "Zoom level = $zoomLevel")
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoomLevel))
+        googleMap.animateCamera(CameraUpdateFactory
+            .newLatLngZoom(LatLng(circle.center.latitude, circle.center.longitude), zoomLevel))
 
     }
     private fun calcZoomLevel(lat: Double, radius: Double): Float{
