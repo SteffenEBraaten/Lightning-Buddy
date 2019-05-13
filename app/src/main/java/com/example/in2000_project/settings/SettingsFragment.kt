@@ -116,7 +116,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun emailFeedback(){
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, "lightningbuddy.feedback@gmail.com")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("lightningbuddy.feedback@gmail.com"))
         intent.putExtra(Intent.EXTRA_SUBJECT,"Feedback")
         startActivity(intent)
     }
