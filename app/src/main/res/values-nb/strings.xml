@@ -72,5 +72,7 @@
     <string name="notificationForecastTitle">Nytt lyn forventet</string>
     <string name="localForecastNotificationContent">er forventet i det lokale området ditt </string>
     <string name="giveFeedback">Gi tilbakemelding</string>
+    <string name="saveMarkerDescText">Markør navn:</string>
+    <string name="wrongInputMarkerSave">Lagret markør sitt navn kan ikke være tomt</string>
 
 </resources>
