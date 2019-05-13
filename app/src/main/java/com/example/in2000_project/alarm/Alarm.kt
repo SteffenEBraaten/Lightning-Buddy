@@ -57,7 +57,7 @@ class Alarm : BroadcastReceiver() {
                     if (location != null) {
                         val sharedPrefs: SharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
-                        val radius = sharedPrefs.getInt("UserRadius", 0)
+                        val radius = sharedPrefs.getInt("UserRadius", 1000)
                         if (radius != 0) {
                             Log.d("User radius", "User radius = $radius")
                             LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
