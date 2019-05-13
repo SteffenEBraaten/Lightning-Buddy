@@ -43,10 +43,36 @@
         kunne hjelpe oss å gjøre appen eneda bedre og dermed gjøre din brukeropplevelse bedre!
     </string>
     <string name="save">Lagre</string>
+    <string name="termsOfService">
+        Vilkår og betingelser\n
 
+        Disse vilkårene og betingelsene ("Vilkår", "Avtale") er en avtale mellom Mobilapplikasjonsutvikler ("Mobilapplikasjonsutvikler", "oss", "vi" eller "våre") og deg ("bruker", "deg" eller "din"). Denne avtalen beskriver de generelle vilkårene for bruken av Lightning Buddy-mobilapplikasjonen og eventuelle produkter eller tjenester (samlet, "Mobilapplikasjon" eller "Tjenester").
+
+        \n\nSikkerhetskopiering\n
+
+        Vi er ikke ansvarlige for innhold som ligger i mobilapplikasjonen. I intet tilfelle skal vi holdes ansvarlig for eventuelle tap av innhold. Det er ditt eget ansvar å opprettholde riktig sikkerhetskopiering av innholdet ditt. Til tross for det foregående, ved enkelte anledninger og under visse omstendigheter, med absolutt ingen forpliktelse, kan vi muligens gjenopprette noen eller alle dataene dine som har blitt slettet fra en viss dato og tid når vi kan ha sikkerhetskopiert data til våre egne formål. Vi garanterer ikke at dataene du trenger, vil være tilgjengelige.
+
+        \n\nLinker til andre mobile applikasjoner\n
+
+        Selv om denne mobilapplikasjonen kan lenke til andre mobilapplikasjoner, betyr det ikke, direkte eller indirekte, noen godkjenning, forening, sponsing, godkjenning eller tilknytning til et koblet mobilprogram, med mindre det er spesifikt angitt her. Vi er ikke ansvarlige for å undersøke eller evaluere, og vi garanterer ikke tilbud om, noen bedrifter eller enkeltpersoner eller innholdet i deres mobile applikasjoner. Vi påtar oss intet ansvar eller ansvar for handlinger, produkter, tjenester og innhold fra andre tredjeparter. Du bør nøye gjennomgå de juridiske utsagnene og andre vilkår for bruk av mobilapplikasjoner som du får tilgang til via en lenke fra denne mobilapplikasjonen. Din kobling til andre mobile applikasjoner utenfor nettstedet er på egen risiko.
+
+        \n\nEndringer\n
+
+        Vi forbeholder oss retten til å endre denne avtalen eller dens retningslinjer knyttet til mobilapplikasjonen eller -tjenestene når som helst, som er effektive når du sender inn en oppdatert versjon av denne avtalen i mobilapplikasjonen. Når vi gjør det, sender vi deg en e-post for å varsle deg. Fortsatt bruk av mobilapplikasjonen etter slike endringer skal utgjøre samtykke til slike endringer. Politikken ble opprettet med https://www.WebsitePolicies.com
+
+        \n\nGodkjenning av disse vilkårene\n
+
+        Du bekrefter at du har lest denne avtalen og godtar alle vilkårene og betingelsene. Ved å bruke mobilapplikasjonen eller dets tjenester, godtar du å være bundet av denne avtalen. Hvis du ikke godtar å overholde vilkårene i denne avtalen, har du ikke rett til å bruke eller få tilgang til mobilapplikasjonen og dets tjenester.
+
+        \n\nKontakt oss\n
+
+        Hvis du har spørsmål om denne avtalen, vennligst kontakt oss.
+
+        \n\nDette dokumentet ble sist oppdatert 11. mai 2019
+    </string>
 
     <!--Lighning History-->
-    <string name="lightningHistory">Lyn Historie</string>
+    <string name="lightningHistory">Historisk lyn</string>
     <string name="defaultSearchHint">Søk</string>
     <string name="areaSearchLabel">Velg et område</string>
     <string name="fromDateLabel">Fra Dato</string>
@@ -72,5 +98,7 @@
     <string name="notificationForecastTitle">Nytt lyn forventet</string>
     <string name="localForecastNotificationContent">er forventet i det lokale området ditt </string>
     <string name="giveFeedback">Gi tilbakemelding</string>
+    <string name="call_for_help">Ring etter hjelp</string>
+    <string name="police_phone">tel:112</string>
 
 </resources>

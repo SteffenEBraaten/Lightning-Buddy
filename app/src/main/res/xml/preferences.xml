@@ -7,10 +7,6 @@
     <PreferenceCategory android:title="@string/general">
         <SwitchPreference
                 android:defaultValue="false"
-                android:title="@string/use_Location"
-                android:key="useLocation"/>
-        <SwitchPreference
-                android:defaultValue="false"
                 android:title="@string/dark_mode"
                 android:key="darkMode"/>
     </PreferenceCategory>
@@ -20,12 +16,7 @@
                 android:defaultValue="true"
                 android:title="@string/allow_Notifications"
                 android:key="allowNotifications"/>
-        <EditTextPreference
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/email"
-                android:key="email"
-                android:summary="@string/email"/>
+
         <SwitchPreference
                 android:defaultValue="true"
                 android:title="@string/vibrate"
@@ -48,4 +39,5 @@
                     android:key="resetSettings"/>
     </PreferenceCategory>
     <Preference/>
+
 </PreferenceScreen>
