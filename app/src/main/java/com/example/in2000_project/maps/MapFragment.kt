@@ -380,7 +380,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                     markersList.add(MarkerWithCircle(marker, circle, nameEditText.text.toString()))
                     Log.d("Fragment map", "markersList size: " + markersList.size)
                     dialog.dismiss()
-                    Toast.makeText(activity, "Marker saved", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, getString(R.string.markerSaved), Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(context, getString(R.string.wrongInputMarkerSave), Toast.LENGTH_SHORT).show()
                 }
