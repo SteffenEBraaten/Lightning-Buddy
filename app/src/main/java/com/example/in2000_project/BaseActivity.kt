@@ -1,5 +1,6 @@
 package com.example.in2000_project
 
+import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
@@ -107,6 +108,11 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             R.id.drawercontent_settings -> startActivity(Intent(this, SettingsActivity::class.java))
             R.id.drawercontent_set_radius -> {
                 startRadiusFragment(item)
+            }
+            R.id.test3 -> {
+                val viewModel = ViewModelProviders.of(this, MapsViewmodelFactory(getPrefs())).get(
+                    MapsViewmodel::class.java)
+                viewModel.getDummyData(5)
             }
             R.id.drawercontent_lightninghistory -> startActivity(Intent(this, LightningHistoryActivity::class.java))
 
