@@ -121,7 +121,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         inputArguments.putString("min", "0")
         inputArguments.putString("max", "1000")
         inputArguments.putString("buttonText", resources.getString(R.string.set))
-        inputArguments.putString("measure", resources.getString(R.string.meter))
+        inputArguments.putString("measure", resources.getString(R.string.km))
         inputArguments.putString("bodyText", resources.getString(R.string.user_radius_text))
         setRadiusFragment.arguments = inputArguments
 

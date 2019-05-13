@@ -61,7 +61,6 @@
     <string name="notification_title">Nytt lyn oppdaget</string>
     <string name="notification_content">Nytt lyn oppdaget på:</string>
 
-    <string name="radius">Radius</string>
     <string name="meter">meter</string>
     <string name="set">Sett</string>
     <string name="marker_radius_text">Sett radiusen for området du ønsker å bli notifisert om lyn i.</string>
@@ -72,5 +71,9 @@
     <string name="notificationForecastTitle">Nytt lyn forventet</string>
     <string name="localForecastNotificationContent">er forventet i det lokale området ditt </string>
     <string name="giveFeedback">Gi tilbakemelding</string>
+    <string name="saveMarkerDescText">Markør navn:</string>
+    <string name="wrongInputMarkerSave">Lagret markør sitt navn kan ikke være tomt</string>
+    <string name="markerSaved">Markør lagret</string>
+    <string name="radiusNotLessThan">Radius kan ikke være mindre enn</string>
 
 </resources>

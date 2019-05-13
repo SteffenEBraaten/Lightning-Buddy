@@ -115,5 +115,10 @@
     <string name="radius" translatable="false">Radius</string>
 
     <string name="giveFeedback">Give feedback</string>
+    <string name="saveMarkerDescText">Marker name:</string>
+    <string name="wrongInputMarkerSave">Saved marker name can not be empty</string>
+    <string name="markerSaved">Marker saved</string>
+    <string name="notificationRadiusSet">Notification radius set</string>
+    <string name="radiusNotLessThan">Radius can not be less than</string>
 
 </resources>
