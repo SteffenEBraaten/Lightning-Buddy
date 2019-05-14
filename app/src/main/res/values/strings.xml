@@ -13,7 +13,7 @@
     <string name="resetSettingsMessage">All saved areas will be deleted and settings will be restored to default. \nDo
         you wish to continue?
     </string>
-    <string name="termsOfService" translatable="false">
+    <string name="termsOfService">
         Terms and conditions\n
 
         These terms and conditions ("Terms", "Agreement") are an agreement between Mobile Application Developer ("Mobile Application Developer", "us", "we" or "our") and you ("User", "you" or "your"). This Agreement sets forth the general terms and conditions of your use of the Lightning Buddy mobile application and any of its products or services (collectively, "Mobile Application" or "Services").
@@ -112,13 +112,15 @@
     <string name="generateLightning">Generating lightning...</string>
     <string name="noDataForPeriod">There was no data for this place/period, please try again!</string>
     <string name="Close">Close</string>
-    <string name="radius" translatable="false">Radius</string>
+    <string name="radius">Radius</string>
 
     <string name="giveFeedback">Give feedback</string>
-    <string name="saveMarkerDescText">Marker name:</string>
+    <string name="call_for_help">Call for help</string>
+    <string name="police_phone">tel:112</string>
     <string name="wrongInputMarkerSave">Saved marker name can not be empty</string>
-    <string name="markerSaved">Marker saved</string>
     <string name="notificationRadiusSet">Notification radius set</string>
     <string name="radiusNotLessThan">Radius can not be less than</string>
+    <string name="markerSaved">Marker saved</string>
+    <string name="saveMarkerDescText">Marker name:</string>
 
 </resources>

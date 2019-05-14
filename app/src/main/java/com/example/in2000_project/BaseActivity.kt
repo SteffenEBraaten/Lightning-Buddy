@@ -24,10 +24,8 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     private lateinit var drawer: DrawerLayout
 
     data class Settings(
-        val useLocation: Boolean,
         val darkMode: Boolean,
         val allowNotifications: Boolean,
-        val email: String,
         val vibrate: Boolean,
         val termsOfService: Boolean
     )
@@ -46,10 +44,8 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     protected fun getSettings() : Settings{
         val sharedPrefs = getPrefs()
         return Settings(
-                    useLocation = sharedPrefs.getBoolean("useLocation", false),
                     darkMode = sharedPrefs.getBoolean("darkMode", false),
                     allowNotifications = sharedPrefs.getBoolean("allowNotifications", true),
-                    email = sharedPrefs.getString("email", "") as String,
                     vibrate = sharedPrefs.getBoolean("vibrate", true),
                     termsOfService = sharedPrefs.getBoolean("termsOfService", false)
                 )

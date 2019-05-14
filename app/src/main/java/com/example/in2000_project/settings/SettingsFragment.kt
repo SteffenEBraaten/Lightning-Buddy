@@ -48,8 +48,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setSummaries() {
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
-        val email = sharedPrefs.getString("email", "")
-        preferenceScreen.findPreference("email").summary = email
         var lightningDataFrequency = sharedPrefs.getString("lightningDataFrequency", "5")
 
         if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = getString(R.string.noUpdates)
@@ -80,18 +78,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                  ::resetSettings,
                  {})
             alert.show()
-            true
-        }
-
-        preferenceScreen.findPreference("email").setOnPreferenceChangeListener { preference, value ->
-            if(value == "" || isValidEmail(value as String)){
-                refreshFragment()
-            }else{
-                val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-                sharedPrefsEditor.putString(preference.key, "")
-                sharedPrefsEditor.apply()
-                Toast.makeText(activity, getString(R.string.invalidEmail), Toast.LENGTH_SHORT).show()
-            }
             true
         }
 
@@ -147,11 +133,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         startActivity(Intent(activity, SettingsActivity::class.java))
         activity!!.overridePendingTransition(R.anim.alpha_enter,R.anim.alpha_exit)
         activity!!.finish()
-    }
-
-    private fun isValidEmail(email : String) : Boolean{
-        val pattern = Patterns.EMAIL_ADDRESS
-        return pattern.matcher(email).matches()
     }
 
     private fun resetSettings() {
