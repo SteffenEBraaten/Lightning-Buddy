@@ -139,7 +139,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
         sharedPrefsEditor.putBoolean("allowNotifications", true)
         sharedPrefsEditor.putString("SavedMarkers", "")
-        sharedPrefsEditor.putBoolean("vibrate", true)
         sharedPrefsEditor.putString("lightningDataFrequency", "5")
         sharedPrefsEditor.putBoolean("darkMode", false)
         sharedPrefsEditor.apply()
