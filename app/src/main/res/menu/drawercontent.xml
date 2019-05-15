@@ -8,10 +8,11 @@
 
         <item
                 android:id="@+id/drawercontent_lightninghistory"
+                android:icon="@drawable/ic_lightning_history"
                 android:title="@string/lightningHistory"/>
         <item
                 android:id="@+id/drawercontent_set_radius"
-                android:icon="@drawable/ic_priority_high_black_24dp"
+                android:icon="@drawable/ic_set_radius"
                 android:title="@string/radius"/>
 
         <item

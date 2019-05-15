@@ -42,17 +42,17 @@ class IntroActivity : AppCompatActivity() {
             finish()
         }
 
-        slider1.setPath(R.drawable.lightning_symbol)
+        slider1.setPath(R.drawable.ic_app_icon_intro)
         slider1.setTitle(getString(R.string.slider1_Title))
         slider1.setContent(getString(R.string.slider1_description))
 
 
-        slider2.setPath(R.drawable.lightning_symbol)
+        slider2.setPath(R.drawable.ic_intro_slide_2)
         slider2.setTitle(getString(R.string.slider2_Title))
         slider2.setContent(getString(R.string.slider2_description))
 
 
-        slider3.setPath(R.drawable.lightning_symbol)
+        slider3.setPath(R.drawable.ic_intro_slide_3)
         slider3.setTitle(getString(R.string.slider3_Title))
         slider3.setContent(getString(R.string.slider3_description))
 
@@ -75,6 +75,7 @@ class IntroActivity : AppCompatActivity() {
             openDialog()
         }
 
+        // Lets us slide through the sliderFragments that are stored in the sliderList
         intro_viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
             }
@@ -85,19 +86,20 @@ class IntroActivity : AppCompatActivity() {
             override fun onPageSelected(p0: Int) {
                 // We're at the last page
                 if (p0 == adapter.sliderList.size - 1) {
-                    intro_btn_next.text = getText(R.string.done)
                     intro_btn_next.setOnClickListener{
                         openDialog()
                     }
                 }
                 else {
-                    // There is a next
+                    // There are more pages left
                     //intro_btn_next.text = getText(R.string.next)
                     intro_btn_next.setOnClickListener {
                         intro_viewPager.currentItem++
                     }
                 }
-                // Change the progressbar color
+                // Change the progressbar color and if the user has come to the last
+                // slide the "next" button turns to "done". If the user slides from
+                // the last page (2) we set the text to "next"
                 when(intro_viewPager.currentItem) {
                     0 ->{
                         intro_progress_1.setTextColor(Color.BLACK)
@@ -108,11 +110,13 @@ class IntroActivity : AppCompatActivity() {
                         intro_progress_1.setTextColor(Color.GRAY)
                         intro_progress_2.setTextColor(Color.BLACK)
                         intro_progress_3.setTextColor(Color.GRAY)
+                        intro_btn_next.text = getText(R.string.next)
                     }
                     2 -> {
                         intro_progress_1.setTextColor(Color.GRAY)
                         intro_progress_2.setTextColor(Color.GRAY)
                         intro_progress_3.setTextColor(Color.BLACK)
+                        intro_btn_next.text = getText(R.string.done)
                     }
                 }
             }

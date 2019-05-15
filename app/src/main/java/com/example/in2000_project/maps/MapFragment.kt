@@ -335,7 +335,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         Log.d("Fragment map", "Setting marker at $location")
         val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
-                .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
+                .fromBitmap(resizeMapIcon("ic_lightning_symbol", 150, 150))))
             Handler().postDelayed({
                 marker.remove()
             }, duration)
