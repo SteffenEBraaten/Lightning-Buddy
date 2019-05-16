@@ -8,12 +8,12 @@
 
         <item   android:icon="@drawable/ic_history_black_24dp"
                 android:id="@+id/drawercontent_lightninghistory"
+                android:icon="@drawable/ic_lightning_history"
                 android:title="@string/lightningHistory"/>
         <item
                 android:id="@+id/drawercontent_set_radius"
-                android:icon="@drawable/ic_priority_high_black_24dp"
+                android:icon="@drawable/ic_set_radius"
                 android:title="@string/radius"/>
-
         <item
                 android:id="@+id/drawercontent_settings"
                 android:icon="@drawable/ic_settings_applications_black_24dp"
