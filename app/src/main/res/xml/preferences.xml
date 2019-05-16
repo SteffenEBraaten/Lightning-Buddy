@@ -26,16 +26,17 @@
                 android:title="@string/email"
                 android:key="email"
                 android:summary="@string/email"/>
-        <SwitchPreference
-                android:defaultValue="true"
-                android:title="@string/vibrate"
-                android:key="vibrate"/>
         <ListPreference
                 android:defaultValue="5"
                 android:title="@string/dataUpdateFrequency"
                 android:entries="@array/lightningDataFrequency"
                 android:entryValues="@array/lightningDataFrequency"
                 android:key="lightningDataFrequency"/>
+        <Preference
+                android:title="Silent mode"
+                android:defaultValue="false"
+                android:key="silentMode"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/about">

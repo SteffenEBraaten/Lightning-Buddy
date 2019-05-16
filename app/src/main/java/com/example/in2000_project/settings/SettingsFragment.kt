@@ -14,6 +14,18 @@ import android.widget.Toast
 import com.example.in2000_project.R
 import android.support.v7.app.AppCompatDelegate
 import com.example.in2000_project.alarm.AlarmService
+import android.app.TimePickerDialog
+import android.view.LayoutInflater
+import android.widget.*
+import kotlinx.android.synthetic.main.dialog_set_start_and_end_time.view.*
+import java.text.SimpleDateFormat
+import java.util.*
+import android.content.SharedPreferences
+
+
+
+
+
 
 
 
@@ -53,6 +65,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = getString(R.string.noUpdates)
         else lightningDataFrequency = getString(R.string.every) + " " + lightningDataFrequency + " " + getString(R.string.minutes)
         preferenceScreen.findPreference("lightningDataFrequency").summary = lightningDataFrequency
+
+        val sharedPrefs1: SharedPreferences = context!!.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
+        val fromTime = sharedPrefs1.getString("fromTime", "")
+        val toTime = sharedPrefs1.getString("toTime", "")
+        var string = "From " + fromTime + " to " + toTime
+        if(fromTime != "" && toTime != "") {
+            if(fromTime > toTime){
+                string = "From " + fromTime + " to next day " + toTime
+                preferenceScreen.findPreference("silentMode").summary = string
+            }
+            else preferenceScreen.findPreference("silentMode").summary = string
+        }
+        else string = "No time has been set"
+        preferenceScreen.findPreference("silentMode").summary = string
+
     }
 
     private fun attachEvents(){
@@ -101,7 +128,93 @@ class SettingsFragment : PreferenceFragmentCompat() {
             reStart()
             true
         }
+
+        val silent = findPreference("silentMode")
+        silent?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_set_start_and_end_time, null)
+            val builder = AlertDialog.Builder(context!!).setView(dialogView)
+            val alertDialog = builder.show()
+
+            val fromTimeEditText = dialogView.findViewById<EditText>(R.id.fromTime)
+            val toTimeEditText = dialogView.findViewById<EditText>(R.id.toTime)
+
+            fromTimeEditText.setOnClickListener {
+                val c = Calendar.getInstance()
+                val timeSetListener = TimePickerDialog.OnTimeSetListener{_, hour, minute ->
+                    c.set(Calendar.HOUR_OF_DAY, hour)
+                    c.set(Calendar.MINUTE, minute)
+                    fromTimeEditText.setText(SimpleDateFormat("HH : mm").format(c.time))
+
+                }
+                TimePickerDialog(this.context, timeSetListener, c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE), true ).show()
+            }
+
+            toTimeEditText.setOnClickListener {
+                val c = Calendar.getInstance()
+                val timeSetListener = TimePickerDialog.OnTimeSetListener{_, hour, minute ->
+                    c.set(Calendar.HOUR_OF_DAY, hour)
+                    c.set(Calendar.MINUTE, minute)
+                    toTimeEditText.setText(SimpleDateFormat("HH : mm").format(c.time))
+
+
+                }
+                TimePickerDialog(this.context, timeSetListener, c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE), true ).show()
+            }
+
+                dialogView.add_Button.setOnClickListener {
+                    var validDates  = true
+                    val fromTimeString = fromTimeEditText.text.toString()
+                    val toTimeString = toTimeEditText.text.toString()
+                    var string = "From " + fromTimeString + " to " + toTimeString
+
+                    if (fromTimeString == "" || toTimeString == ""){
+                        validDates = false
+                        if (fromTimeString == "" && toTimeString == ""){
+                            validDates = true
+                            string = "No time has been set"
+                            preferenceScreen.findPreference("silentMode").summary = string
+
+                        }
+                        else if(fromTimeString == ""){
+                            Toast.makeText(context, "Please select time from", Toast.LENGTH_LONG).show()
+                            fromTimeEditText.performClick()
+                        }
+                        else{
+                            Toast.makeText(context, "Please select time to", Toast.LENGTH_LONG).show()
+                            toTimeEditText.performClick()
+                        }
+                    }
+
+                    if(fromTimeString == toTimeString && fromTimeString != ""){
+                        validDates = false
+                        Toast.makeText(context, "Invalid time period", Toast.LENGTH_LONG).show()
+                        fromTimeEditText.performClick()
+                    }
+
+                    if(validDates) {
+                        alertDialog.dismiss()
+                        if(fromTimeString > toTimeString){
+                            string = "From " + fromTimeString + " to next day " + toTimeString
+                            preferenceScreen.findPreference("silentMode").summary = string
+                            Toast.makeText(context, "The notifications will not be pushed from " + fromTimeString + " to next day " + toTimeString, Toast.LENGTH_LONG).show()
+                        }
+                        else{
+                            preferenceScreen.findPreference("silentMode").summary = string
+                            Toast.makeText(context, "The notifications will not be pushed from " + fromTimeString + " to " + toTimeString, Toast.LENGTH_LONG).show()
+                        }
+
+                        val sharedPrefs: SharedPreferences = this.context!!.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
+                        val sharedPrefsEditor = sharedPrefs.edit()
+                        sharedPrefsEditor.putString("fromTime", fromTimeString)
+                        sharedPrefsEditor.putString("toTime", toTimeString)
+                        sharedPrefsEditor.apply()
+                    }
+                }
+            true
+        }
     }
+
+
 
     private fun setAlarm(){
         val serviceIntent = Intent(this.activity, AlarmService::class.java)
@@ -155,10 +268,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         sharedPrefsEditor.putBoolean("useLocation", true)
         sharedPrefsEditor.putBoolean("allowNotifications", true)
         sharedPrefsEditor.putString("email", "")
-        sharedPrefsEditor.putBoolean("vibrate", true)
         sharedPrefsEditor.putString("lightningDataFrequency", "5")
         sharedPrefsEditor.putBoolean("darkMode", false)
         sharedPrefsEditor.apply()
+
+        val sharedPrefs: SharedPreferences = this.context!!.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
+        val sharedPrefsEditor1 = sharedPrefs.edit()
+        sharedPrefsEditor1.putString("fromTime", "")
+        sharedPrefsEditor1.putString("toTime", "")
+        sharedPrefsEditor1.apply()
         refreshFragment()
         darkMode()
         reStart()

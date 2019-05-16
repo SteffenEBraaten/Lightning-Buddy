@@ -5,24 +5,45 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.PowerManager
 import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import com.example.in2000_project.maps.MapsViewmodel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Alarm : BroadcastReceiver() {
     private var frequency: Int = 0
 
     override fun onReceive(context: Context, intent: Intent) {
+        val sharedPrefs: SharedPreferences = context.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
+        val fromTime = sharedPrefs.getString("fromTime", "")
+        val toTime = sharedPrefs.getString("toTime", "")
+        val temp = SimpleDateFormat("HH : mm")
+        val currentTime = temp.format(Date())
 
         val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
         wl.acquire(60*1000L /*10 minutes*/)
         MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
-        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
 
-        wl.release()
+        if(fromTime != "" && toTime != ""){
+            if(fromTime < toTime){
+                if(currentTime > toTime || currentTime < fromTime){
+                    Toast.makeText(context, "Alarm !!!!!!!!!!" , Toast.LENGTH_LONG).show() // For example
+                    wl.release()
+                }
+            }
+            else if (fromTime > toTime){
+                if(currentTime > toTime && currentTime < fromTime){
+                    Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
+                    wl.release()
+                }
+            }
+        }
+        else  return
     }
 
 
