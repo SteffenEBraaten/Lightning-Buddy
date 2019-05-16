@@ -17,10 +17,6 @@
                 android:title="@string/allow_Notifications"
                 android:key="allowNotifications"/>
 
-        <SwitchPreference
-                android:defaultValue="true"
-                android:title="@string/vibrate"
-                android:key="vibrate"/>
         <ListPreference
                 android:defaultValue="5"
                 android:title="@string/dataUpdateFrequency"
