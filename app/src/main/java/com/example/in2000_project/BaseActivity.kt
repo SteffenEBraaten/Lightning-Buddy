@@ -47,7 +47,6 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     darkMode = sharedPrefs.getBoolean("darkMode", false),
                     allowNotifications = sharedPrefs.getBoolean("allowNotifications", true),
                     email = sharedPrefs.getString("email", "") as String,
-                    vibrate = sharedPrefs.getBoolean("vibrate", true),
                     termsOfService = sharedPrefs.getBoolean("termsOfService", false)
                 )
     }
