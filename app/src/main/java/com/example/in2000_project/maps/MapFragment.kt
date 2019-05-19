@@ -335,7 +335,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         Log.d("Fragment map", "Setting marker at $location")
         val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
-                .fromBitmap(resizeMapIcon("ic_lightning_symbol", 150, 150))))
+                .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
             Handler().postDelayed({
                 marker.remove()
             }, duration)
@@ -352,6 +352,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         return marker
     }
     private fun resizeMapIcon(iconName: String, width: Int, height: Int): Bitmap {
+        Log.e("test", "${resources.getIdentifier(iconName, "drawable", activity!!.packageName)}")
         val imageBitmap: Bitmap = BitmapFactory
             .decodeResource(resources, resources.getIdentifier(iconName, "drawable", activity!!.packageName))
         val resizedBitmap: Bitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false)
