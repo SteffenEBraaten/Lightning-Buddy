@@ -27,7 +27,6 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         val darkMode: Boolean,
         val allowNotifications: Boolean,
         val email: String,
-        val vibrate: Boolean,
         val termsOfService: Boolean
     )
 
