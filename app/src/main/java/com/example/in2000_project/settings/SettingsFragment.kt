@@ -148,15 +148,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
 
                 dialogView.add_Button.setOnClickListener {
-                    var validDates  = true
+                    var validTime  = true
                     val fromTimeString = fromTimeEditText.text.toString()
                     val toTimeString = toTimeEditText.text.toString()
                     var string = "From " + fromTimeString + " to " + toTimeString
 
                     if (fromTimeString == "" || toTimeString == ""){
-                        validDates = false
+                        validTime = false
                         if (fromTimeString == "" && toTimeString == ""){
-                            validDates = true
+                            validTime = true
                             string = "No time has been set"
                             preferenceScreen.findPreference("silentMode").summary = string
 
@@ -172,12 +172,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     }
 
                     if(fromTimeString == toTimeString && fromTimeString != ""){
-                        validDates = false
+                        validTime = false
                         Toast.makeText(context, "Invalid time period", Toast.LENGTH_LONG).show()
                         fromTimeEditText.performClick()
                     }
 
-                    if(validDates) {
+                    if(validTime) {
                         alertDialog.dismiss()
                         if(fromTimeString > toTimeString){
                             string = "From " + fromTimeString + " to next day " + toTimeString
