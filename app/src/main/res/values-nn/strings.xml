@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IN2000_Project</string>
     <string name="resetSettingsMessage">Alle lagra felt vil bli sletta og innstillingar vil bli tilbakestilt. Vil du
         fortsetja?
     </string>
@@ -27,4 +26,85 @@
     <string name="dataUpdateFrequency">Data oppdaterings frekvens</string>
     <string name="noUpdates">Ingen oppdateringar</string>
     <string name="minutes">minutt</string>
+    <string name="done">Ferdig</string>
+    <string name="next">Neste</string>
+    <string name="skip">Hopp over</string>
+    <string name="slider1_Title">Velkommen til Lightning Buddy!</string>
+    <string name="slider1_description">No vil du kunna sjå der lynnedslag slår ned i nærleiken av deg! På kartet kan
+        du\n sjå lynnedslag som har slått ned dei siste 24 timane.
+    </string>
+    <string name="slider2_Title">Bli varsla om lynnedslag!</string>
+    <string name="slider2_description">Bruk kartet for å setja stader du vil bli varsla om viss lyn slår ned i området
+        slik at du kan forhalda deg trygg og informert!\nDu kan og justera radiusen rundt posisjonen din for der du vil
+        bli varsla om lynnedslag.
+    </string>
+    <string name="slider3_Title">Hjelp oss med å gjera appen endå betre!</string>
+    <string name="slider3_description">I innstillingar kan du gi oss tilbakemelding på appen vår. Din tilbakemelding kan
+        hjelpa oss å gjera appen eneda betre og dermed gjera brukaropplevinga di betre!
+    </string>
+    <string name="save">Lagra</string>
+
+    <string name="termsOfService">
+        Vilkår og betingelser\n
+
+        Desse vilkåra og betingelsene ("Vilkår", "Avtale") er ein avtale mellom Mobilapplikasjonsutviklar ("Mobilapplikasjonsutviklar", "oss", "vi" eller "våre") og deg ("brukar", "deg" eller "din"). Denne avtalen beskriv dei generelle vilkåra for bruken av Lightning Buddy-mobilapplikasjonen og eventuelle produkt eller tenester (samla, "Mobilapplikasjon" eller "Tenester").
+
+        \n\nSikkerhetskopiering\n
+
+        Vi er ikkje ansvarlege for innhald som ligg i mobilapplikasjonen. I inkje tilfelle skal vi haldast ansvarleg for eventuelle tap av innhald. Det er ditt eige ansvar å halda oppe riktig sikkerhetskopiering av innhaldet ditt. Trass i det føregåande, ved enkelte høve og under visse omstende, med absolutt inga forplikting, kan vi kanskje retta opp igjen nokon eller alle dataa dine som har vorte sletta frå ein viss dato og tid når vi kan ha sikkerhetskopiert data til våre eigne formål. Vi garanterer ikkje at dataa du treng, vil vera tilgjengelege.
+
+        \n\nLinkar til andre mobile applikasjonar\n
+
+        Sjølv om denne mobilapplikasjonen kan lenkja til andre mobilapplikasjonar, betyr det ikkje, direkte eller indirekte, noka godkjenning, foreining, sponsing, godkjenning eller tilknyting til eit kopla mobilprogram, med mindre det er spesifikt angitt her. Vi er ikkje ansvarlege for å undersøka eller evaluera, og vi garanterer ikkje tilbod om, nokon bedrifter eller enkeltpersonar eller innhaldet i deira mobile applikasjonar. Vi påtar oss inkje ansvar eller ansvar for handlingar, produkt, tenester og innhald frå andre tredjepartar. Du bør nøya gjennomgå dei juridiske fråsegnene og andre vilkår for bruk av mobilapplikasjonar som du får tilgang til via ei lenkje frå denne mobilapplikasjonen. Koplinga di til andre mobile applikasjonar utanfor nettstaden er på eigen risiko.
+
+        \n\nEndringer\n
+
+        Vi reserverer for oss retten til å endra denne avtalen eller retningslinjene dens knytt til mobilapplikasjonen eller -tenestene når som helst, som er effektive når du sender inn ein oppdatert versjon av denne avtalen i mobilapplikasjonen. Når vi gjer det, sender vi deg ein e-post for å varsla deg. Framleis bruk av mobilapplikasjonen etter slike endringar skal utgjera samtykke til slike endringar. Politikken vart oppretta med https://www.WebsitePolicies.com
+
+        \n\nGodkjenning av desse vilkåra\n
+
+        Du stadfestar at du har lese denne avtalen og godtar alle vilkåra og betingelsene. Ved å bruka mobilapplikasjonen eller tenestene dets, godtar du å vera bunde av denne avtalen. Viss du ikkje godtar å overhalda vilkåra i denne avtalen, har du ikkje rett til å bruka eller få tilgang til mobilapplikasjonen og tenestene dets.
+
+        \n\nKontakt oss\n
+
+        Viss du har spørsmål om denne avtalen, vennlegast kontakt oss.
+
+        \n\nDette dokumentet vart sist oppdatert 11. mai 2019
+    </string>
+    <!--Lighning History-->
+    <string name="lightningHistory">Historisk lyn</string>
+    <string name="defaultSearchHint">Søk</string>
+    <string name="areaSearchLabel">Vel et område</string>
+    <string name="fromDateLabel">Frå Dato</string>
+    <string name="toDateLabel">Til Dato</string>
+    <string name="errorFromDate">Ver vennleg og vel en dato frå</string>
+    <string name="errorToDate">Ver vennleg og vel en dato til</string>
+    <string name="invalidTimePeriod">Invalid time period!</string>
+    <string name="loadingData">Laster data...</string>
+    <string name="generateLightning">Genererer lyn...</string>
+    <string name="noDataForPeriod">Det var inkje data for vald periode/område, ver vennleg og prøv igjen!</string>
+
+    <string name="notification_title">Nytt lyn oppdaga</string>
+    <string name="notification_content">Nytt lyn oppdage på:</string>
+
+    <string name="meter">meter</string>
+    <string name="set">Sett</string>
+    <string name="user_radius_text">For å få notifikasjonar når du er på veg inn i eit område der det er meldt lyn, venligst sett radiusen du ønsker å bli notifiser i.</string>
+    <string name="marker_radius_text">Sett radiusen for området du ønsker å bli notifisert om lyn i.</string>
+
+    <string name="localNotificationContent">Høg fare for lyn i det lokale området ditt!</string>
+    <string name="Close">Lukk</string>
+    <string name="notificationForecastTitle">Nytt lyn oppdaga</string>
+    <string name="localForecastNotificationContent">er forventa i det lokale området ditt </string>
+    <string name="giveFeedback">Gi tilbakemelding</string>
+    <string name="call_for_help">Ring etter hjelp</string>
+    <string name="police_phone">tel:112</string>
+    <string name="wrongInputMarkerSave">Lagra markør namnet sitt kan ikkje vera tomt</string>
+    <string name="markerSaved">Markør lagra</string>
+    <string name="radiusNotLessThan">Radius kan ikkje vera mindre enn</string>
+    <string name="saveMarkerDescText">Markør namn:</string>
+    <string name="notificationRadiusSet">Notifikasjonsradius sat</string>
+    <string name="radius">Radius</string>
+
+
 </resources>

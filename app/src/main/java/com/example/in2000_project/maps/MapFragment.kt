@@ -1,8 +1,11 @@
 package com.example.in2000_project.maps
 
 import android.Manifest
+import android.app.AlertDialog
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -15,11 +18,13 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.support.v7.preference.PreferenceManager
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.*
 import com.example.in2000_project.R
+import com.example.in2000_project.utils.UalfUtil
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -33,6 +38,14 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.util.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.math.log
 
 
 class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
@@ -43,6 +56,39 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     private lateinit var placesClient: PlacesClient
     private lateinit var viewModel : MapsViewmodel // use this to get data
 
+    private lateinit var rootView: View
+    private var markersList: LinkedList<MarkerWithCircle> = LinkedList()
+    private var savedMarkersList: MutableSet<SavedMarkers>? = null
+    private var sharedPrefs: SharedPreferences? = null
+    private var prevSearchMarker: Marker? = null
+    lateinit var activeCircle: Circle
+
+    data class SavedMarkers(var name: String,
+                            var latitude: Double,
+                            var longitude: Double,
+                            var radius: Double) {
+        constructor(lat: Double, long: Double, r: Double) :
+                this("defaultName", lat, long, r)
+
+    }
+    data class MarkerWithCircle(var marker: Marker?, var circle: Circle?, var name: String?)
+
+    private lateinit var changeObserver: Observer<ArrayList<UalfUtil.Ualf>>
+    private var coRoutine: Job? = null
+    //Milliseconds
+    private var refreshRate: Long = 5 * 60 * 1000
+    
+    //Callback for setting radius fragment
+    internal lateinit var callback: OnSetRadiusListener
+    
+    fun setOnRadiusListener(callback: OnSetRadiusListener) {
+        this.callback = callback
+    }
+    interface OnSetRadiusListener {
+        fun onSetRadiusCall(circle: Circle, marker: Marker)
+    }
+
+
     //Factory method for creating new map fragment
     companion object {
         fun newInstance(): MapFragment {
@@ -52,15 +98,27 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.map_fragment, parent, false)
+        Log.d("Fragment map", "Inflating map fragment")
+        rootView = inflater.inflate(R.layout.map_fragment, parent, false)
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity)
+        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("Fragment map", "Getting viewmodel for map")
         this.viewModel = ViewModelProviders.of(this.activity!!,
             MapsViewmodelFactory(PreferenceManager.getDefaultSharedPreferences(this.activity!!.baseContext))
         ).get(MapsViewmodel::class.java)
+        Log.d("Fragment map", "Successfully got viewmodel")
+
+        changeObserver = Observer<ArrayList<UalfUtil.Ualf>> { newLightning ->
+            newLightning?.forEach {
+                val newLocation = LatLng(it.lat, it.long)
+                setMarkerLightning(newLocation, refreshRate)
+            }
+        }
 
         mapsAPI = getString(R.string.Maps_API)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
@@ -71,18 +129,46 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
 
         Places.initialize(activity!!, mapsAPI)
         placesClient = Places.createClient(activity!!)
+
+        retrieveSavedMarkers()
+    }
+    private fun retrieveSavedMarkers() {
+        Log.d("Fragment map", "Retrieving saved markers from shared preferences")
+        val jsonLinkedList = sharedPrefs!!.getString("SavedMarkers", null)
+        if (jsonLinkedList != null) {
+            savedMarkersList = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<SavedMarkers>>(){}.type)
+            Log.d("Fragment map", "Saved markers retrieved")
+            Log.d("Fragment map", savedMarkersList.toString())
+        }
+        if (savedMarkersList == null) {
+            Log.d("Fragment map", "No saved markers")
+            savedMarkersList = mutableSetOf()
+        }
     }
 
-    val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
+    private val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+        this.googleMap.uiSettings.isZoomControlsEnabled = true
+        Log.d("Fragment map", "Map ready")
+        MapsViewmodel.recentData.observe(this, changeObserver)
+        coRoutine = GlobalScope.launch{
+            while (true) {
+                //viewModel.getRecentApiData()
+                viewModel.getRecentApiData()
+                Log.d("Refresh API", "API refreshed")
+                delay(refreshRate)
+            }
+        }
 
         //Make map style follow dark mode toggle
         val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val darkMode = defaultSharedPreferences.getBoolean("darkMode", false)
         if (darkMode) {
+            Log.d("Fragment map", "Map = darkmode")
             setMapStyle(false)
         } else {
+            Log.d("Fragment map", "Map = lightmode")
             setMapStyle(true)
         }
 
@@ -95,35 +181,71 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
                 , MY_PERMISSIONS_REQUEST_ACCESS_LOCATION)
         }
+
+        var prevMarker: MarkerWithCircle? = MarkerWithCircle(null,null, null)
         googleMap.setOnMapClickListener (object: GoogleMap.OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
-                addMarkerWithRadius(position!!, googleMap)
+                Log.d("Fragment map", "Map clicked at posistion $position")
+                prevMarker = addMarkerWithRadius(position!!, googleMap, prevMarker)
             }
         })
     }
-    private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap) {
-        googleMap.clear()
-        googleMap.addMarker(MarkerOptions().position(position).draggable(true))
+    private fun addMarkerWithRadius(position: LatLng, googleMap: GoogleMap, prevMark: MarkerWithCircle?): MarkerWithCircle? {
+        prevMark?.marker?.remove()
+        prevMark?.circle?.remove()
+
+        prevMark?.marker = googleMap.addMarker(MarkerOptions().position(position).draggable(true))
+
         //radius is in meters. Currently set to 10km
         var radius: Double = 10000.0
-        var circle: Circle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
+        activeCircle = googleMap.addCircle(CircleOptions().center(position).radius(radius).strokeColor(Color.BLUE)
             .fillColor(Color.argb(150, 146, 184, 244)))
+
+        //For some reason I have to multiply by 10 to get the correct zoom level
+        val zoomLevel = calcZoomLevel(activeCircle.center.latitude, radius * 10)
         //The zoom level is kind of tricky if you change the radius
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.1.toFloat()))
+        googleMap.animateCamera(CameraUpdateFactory
+            .newLatLngZoom(activeCircle.center, zoomLevel))
+        Log.d("Fragment map", "Marker added")
+
+        //Set the radius fragment
+        callback.onSetRadiusCall(activeCircle, prevMark!!.marker!!)
+
         googleMap.setOnMarkerDragListener(object: GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker?) {
-                circle.center = marker?.position
+                activeCircle.center = marker?.position
             }
 
             override fun onMarkerDragEnd(marker: Marker?) {
-               circle.center = marker?.position
+               activeCircle.center = marker?.position
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker?.position, 11.1.toFloat()))
+                Log.d("Fragment map", "Marker moved")
             }
 
             override fun onMarkerDrag(marker: Marker?) {
-                circle.center = marker?.position
+                activeCircle.center = marker?.position
             }
         })
+        prevMark?.circle = activeCircle
+        Log.d("Fragment map", "Returning marker")
+        return prevMark
+    }
+    fun updateRadius(radius: Int, circle: Circle) {
+        circle.radius = radius.toDouble() * 1000
+        //For some reason I have to multiply by 10 to get the correct zoom
+        var zoomLevel: Float = calcZoomLevel(circle.center.latitude, circle.radius * 10)
+        Log.d("Zoom level", "Zoom level = $zoomLevel")
+        googleMap.animateCamera(CameraUpdateFactory
+            .newLatLngZoom(LatLng(circle.center.latitude, circle.center.longitude), zoomLevel))
+
+    }
+    private fun calcZoomLevel(lat: Double, radius: Double): Float{
+        var displayMetrics = DisplayMetrics()
+        (activity as MainActivity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+        var maxLength = Math.min(height, width)
+        return log(156543.03392 * Math.cos(lat * Math.PI / 180) * maxLength/ radius * 2, 2.0).toFloat()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -133,10 +255,12 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                     if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
                         googleMap.isMyLocationEnabled = true
+                        Log.d("Fragment map", "Location permission granted")
                         setUpMap()
                     }
                 } else {
                     // Permission denied.
+                    Log.d("Fragment map", "Location permission denied")
                 }
             }
             else -> {
@@ -153,6 +277,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                     lastLocation = location
                     val currentLatLng = LatLng(location.latitude, location.longitude)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                    Log.d("Fragment map", "Current position: $currentLatLng")
                 }
             }
         }
@@ -165,12 +290,28 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         autocompleteFragment.setOnPlaceSelectedListener(this)
 
     }
+    public fun circleOnUser(radius: Int): Circle {
+        val position = LatLng(lastLocation.latitude, lastLocation.longitude)
+        activeCircle = googleMap
+            .addCircle(CircleOptions()
+                .center(position)
+                .radius(radius.toDouble())
+                .strokeColor(Color.BLUE)
+                .fillColor(Color.argb(150, 146, 184, 244)))
+        //For some reason I have to multiply by 10 to get the correct zoom level
+        val zoomLevel = calcZoomLevel(activeCircle.center.latitude, radius.toDouble() * 10)
+        //The zoom level is kind of tricky if you change the radius
+        googleMap.animateCamera(CameraUpdateFactory
+            .newLatLngZoom(activeCircle.center, zoomLevel))
+        return activeCircle
+    }
     override fun onPlaceSelected(place: Place) {
-        googleMap.clear()
+        prevSearchMarker?.remove()
+        Log.d("Fragment map", "Moving to $place")
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.viewport, 0))
         //Only run bellow part if latLng is not null
         place.latLng?.run {
-            googleMap.addMarker(MarkerOptions().position(place.latLng!!))
+            prevSearchMarker = googleMap.addMarker(MarkerOptions().position(place.latLng!!))
         }
     }
     override fun onError(status: Status) {
@@ -190,19 +331,114 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             ))
         }
     }
-    fun setMarkerLightning(location: LatLng) {
+    fun setMarkerLightning(location: LatLng, duration: Long) {
+        Log.d("Fragment map", "Setting marker at $location")
         val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
-                .fromBitmap(resizeMapIcon("lightning_icon_tmp", 150, 150))))
-        Handler().postDelayed({
-            marker.remove()
-        }, 5000)
+                .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
+            Handler().postDelayed({
+                marker.remove()
+            }, duration)
+    }
+    /*
+    Function overloading if the marker should not be removed after a given time.
+    Function returns the marker so caller can handle removal
+     */
+    fun setMarkerLightning(location: LatLng): Marker {
+        Log.d("Fragment map", "Setting marker at $location")
+        val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
+            .icon(BitmapDescriptorFactory
+                .fromBitmap(resizeMapIcon("lightning_symbol", 150, 150))))
+        return marker
     }
     private fun resizeMapIcon(iconName: String, width: Int, height: Int): Bitmap {
+        Log.e("test", "${resources.getIdentifier(iconName, "drawable", activity!!.packageName)}")
         val imageBitmap: Bitmap = BitmapFactory
             .decodeResource(resources, resources.getIdentifier(iconName, "drawable", activity!!.packageName))
         val resizedBitmap: Bitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false)
         return resizedBitmap
     }
+    public fun saveMarker(circle: Circle, marker: Marker) {
+        triggerAlertDialogName(circle, marker)
+    }
 
+    public fun triggerAlertDialogName(circle: Circle, marker: Marker) {
+        val dialogNameInput = AlertDialog.Builder(context)
+        val view = layoutInflater.inflate(R.layout.dialog_input_name_savemarker, null)
+        dialogNameInput.setView(view)
+
+        val descriptionText = view.findViewById<TextView>(R.id.markerName)
+        val nameEditText = view.findViewById<EditText>(R.id.markerEditText)
+        descriptionText.text = getString(R.string.saveMarkerDescText)
+
+        dialogNameInput.setPositiveButton(getString(R.string.save)) {
+            dialog, whichButton -> var placeholder = 123
+        }
+        var dialog = dialogNameInput.create()
+        dialog.setOnShowListener {
+            val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            addButton.setOnClickListener {
+                if (nameEditText.text.toString() != "") {
+                    markersList.add(MarkerWithCircle(marker, circle, nameEditText.text.toString()))
+                    Log.d("Fragment map", "markersList size: " + markersList.size)
+                    dialog.dismiss()
+                    Toast.makeText(activity, getString(R.string.markerSaved), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, getString(R.string.wrongInputMarkerSave), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        dialog.show()
+    }
+
+    private fun persistentSave() {
+        Log.e("Persistent Save", "Saving")
+        for (entry: MarkerWithCircle in markersList) {
+            val name: String = entry.name!!
+            var position: LatLng? = entry.marker?.position
+            var radius: Double? = entry.circle?.radius
+            savedMarkersList?.add(SavedMarkers(name, position!!.latitude, position.longitude, radius!!))
+        }
+
+        markersList?.run {
+            val prefEditor = sharedPrefs?.edit()
+            prefEditor?.putString("SavedMarkers", Gson().toJson(savedMarkersList))
+            Log.d("Fragment map", "Markers saved")
+            prefEditor?.apply()
+        }
+    }
+    public fun clearMap() {
+        googleMap.clear()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("Fragment Map", "Pause")
+        persistentSave()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("Fragment Map", "Stop")
+        persistentSave()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("Fragment Map", "View destroy")
+        persistentSave()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("Fragment Map", "Destroy")
+        persistentSave()
+        coRoutine?.cancel()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("Fragment Map", "Detach")
+        persistentSave()
+    }
 }
