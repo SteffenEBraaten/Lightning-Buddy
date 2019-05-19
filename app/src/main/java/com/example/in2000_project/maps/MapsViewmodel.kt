@@ -5,46 +5,113 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.SharedPreferences
 import android.util.Log
+import com.bumptech.glide.load.engine.executor.GlideExecutor.UncaughtThrowableStrategy.LOG
+import com.example.in2000_project.utils.DateUtil
 import com.example.in2000_project.utils.UalfUtil
+import com.example.in2000_project.utils.WeatherDataUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
+import kotlin.collections.ArrayList
 
-public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewModel(){
+class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewModel(){
+    companion object Data {
+        val recentData = MutableLiveData<ArrayList<UalfUtil.Ualf>>() //observe this and update UI on change
+    }
 
-    var recentData = MutableLiveData<ArrayList<UalfUtil.Ualf>>() //observe this and update UI on change
-
-    public fun getRecentApiData(){
+    fun getRecentApiData(){
         GlobalScope.launch{
-            val data = MapRepository().getMetLightningData()
-            if(!data.isNullOrEmpty()){
-                val ualfs = UalfUtil.createUalfs(data)
-                if(!ualfs.isNullOrEmpty()){
-                    setRecentData(ualfs)
-                    saveRecentData(ualfs)
+            try {
+                val data = MapRepository().getMetLightningData()
+                if (!data.isNullOrEmpty()) {
+                    val ualfs = UalfUtil.createUalfs(data)
+                    if (!ualfs.isNullOrEmpty()) {
+                        setRecentData(ualfs)
+                        saveRecentData(ualfs)
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e("getRecentApiData", "failed to update metLightning: $e")
             }
+
         }
+
+        GlobalScope.launch{
+            try {
+                val data = MapRepository().getMetLocationForecastData("60.10","9.58")
+                if(!data.isNullOrEmpty()){
+                    val weatherdata = WeatherDataUtil.createWeatherData(data)
+                    if(weatherdata.isNotEmpty()){
+                        Log.d("WEATHERDATA","NOT EMPTY:\n${Gson().toJson(weatherdata)}")
+                    }
+                }
+            }catch (e: Exception) {Log.e("getRecentApiData","failed to update metLocationForecast: $e")}
+        }
+    }
+    /*
+    For some reason it doubles whatever amount gets sent in. Can't seem to figure out why.
+    Due to time constraints I figure this is a feature not a bug XD
+    Also, it is not possible to display only 1 lightning...
+    */
+    public fun getDummyData(amount: Int) {
+        var dummyDataString = ""
+        for (x in 0 until amount) {
+            var date: Date = Date()
+            val dateFormatter: SimpleDateFormat = SimpleDateFormat("yyyy mm dd hh mm ss")
+            val dateString: String = dateFormatter.format(date)
+
+            dummyDataString += "0 "
+            dummyDataString += dateString
+            dummyDataString += " 0 "
+
+            val randomGenerator: Random = Random()
+            //Add location
+            val latMax: Double = 71.735
+            val latMin: Double = 57.7
+            val latitude: Double = latMin + (latMax - latMin) * randomGenerator.nextDouble()
+
+            val longMax: Double = 22.83
+            val longMin: Double = 3.85
+            val longitude: Double = longMin + (longMax - longMin) * randomGenerator.nextDouble()
+            Log.d("getDummmyData()", "Dummy data lat/lng: $latitude $longitude")
+
+            dummyDataString += latitude.toString()
+            dummyDataString += " " + longitude.toString()
+            dummyDataString += " 10 10 10 10 10 10 10.0 10.0 10.0 10.0"
+            Log.d("dummyDataString:", "$dummyDataString")
+            dummyDataString += "\n"
+        }
+        val ualfs = UalfUtil.createUalfs(dummyDataString)
+        if (!ualfs.isNullOrEmpty()) {
+            setRecentData(ualfs)
+            saveRecentData(ualfs)
+        }
+
+
     }
 
 
-    public fun saveRecentData(ualfs: ArrayList<UalfUtil.Ualf>) {
+    fun saveRecentData(ualfs: ArrayList<UalfUtil.Ualf>) {
         val sharedPrefEditor = this.sharedPref.edit()
 
         sharedPrefEditor.putString("recentData", Gson().toJson(ualfs))
         sharedPrefEditor.apply()
     }
 
-    public fun updateRecentData(){
+    fun updateRecentData(){
         setRecentData(getSavedRecentData())
     }
 
-    public fun setRecentData(data: ArrayList<UalfUtil.Ualf>?){
-        this.recentData.value = data ?: ArrayList()
+    fun setRecentData(data: ArrayList<UalfUtil.Ualf>?){
+        MapsViewmodel.recentData.postValue(data)
     }
 
-    public fun getSavedRecentData(): ArrayList<UalfUtil.Ualf>? {
+    fun getSavedRecentData(): ArrayList<UalfUtil.Ualf>? {
         val jsonList = this.sharedPref.getString("recentData", null)
         if(jsonList.isNullOrEmpty()) return null
 
@@ -53,7 +120,7 @@ public class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewMode
 }
 
 @Suppress("UNCHECKED_CAST")
-public class MapsViewmodelFactory(private val sharedPref: SharedPreferences) : ViewModelProvider.Factory {
+class MapsViewmodelFactory(private val sharedPref: SharedPreferences) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return MapsViewmodel(sharedPref) as T
     }

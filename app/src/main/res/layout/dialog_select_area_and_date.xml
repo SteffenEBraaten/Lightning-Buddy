@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:paddingHorizontal="22dp"
+		android:paddingTop="36dp">
+
+	<TextView
+		android:id="@+id/areaSelectLabel"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="TextView"
+		android:textSize="18dp"/>
+
+	<Spinner
+		android:id="@+id/areaSelect"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+			android:paddingTop="0dp"
+			android:layout_marginTop="0dp"
+			android:layout_marginBottom="6dp"/>
+
+	<TextView
+		android:id="@+id/fromDateLabel"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="TextView"
+		android:textSize="18dp"/>
+
+	<EditText
+		android:id="@+id/fromDate"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:ems="10"
+		android:inputType="date"
+		android:focusable="false"
+			android:layout_marginBottom="6dp"/>
+
+	<TextView
+		android:id="@+id/toDateLabel"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="TextView"
+		android:textSize="18dp"/>
+
+	<EditText
+		android:id="@+id/toDate"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:ems="10"
+		android:inputType="date"
+		android:focusable="false"/>
+</LinearLayout>

@@ -4,6 +4,7 @@ package com.example.in2000_project.settings
 import android.util.Patterns
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -13,6 +14,7 @@ import android.support.v7.preference.PreferenceManager
 import android.widget.Toast
 import com.example.in2000_project.R
 import android.support.v7.app.AppCompatDelegate
+import android.util.Log
 import com.example.in2000_project.alarm.AlarmService
 import android.app.TimePickerDialog
 import android.view.LayoutInflater
@@ -58,8 +60,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setSummaries() {
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
-        val email = sharedPrefs.getString("email", "")
-        preferenceScreen.findPreference("email").summary = email
         var lightningDataFrequency = sharedPrefs.getString("lightningDataFrequency", "5")
 
         if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = getString(R.string.noUpdates)
@@ -85,13 +85,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun attachEvents(){
         val termsOfService = findPreference("termsOfService")
         termsOfService?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val alert = binaryAlertDialogCreator(
+            val alert = unaryAlertDialogCreator(
                 getString(R.string.termsOfServiceTitle),
                 getString(R.string.termsOfService),
-                getString(R.string.accept),
-                getString(R.string.decline),
-                ::acceptTermsAgreement,
-                ::declineTermsAgreement)
+                getString(R.string.Close),
+                {})
 
             alert.show()
             true
@@ -107,18 +105,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                  ::resetSettings,
                  {})
             alert.show()
-            true
-        }
-
-        preferenceScreen.findPreference("email").setOnPreferenceChangeListener { preference, value ->
-            if(value == "" || isValidEmail(value as String)){
-                refreshFragment()
-            }else{
-                val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-                sharedPrefsEditor.putString(preference.key, "")
-                sharedPrefsEditor.apply()
-                Toast.makeText(activity, getString(R.string.invalidEmail), Toast.LENGTH_SHORT).show()
-            }
             true
         }
 
@@ -212,6 +198,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             true
         }
+
+        preferenceScreen.findPreference("lightningDataFrequency").setOnPreferenceChangeListener { _, _ ->
+            refreshFragment()
+            true
+        }
+
+        preferenceScreen.findPreference("giveFeedback").setOnPreferenceClickListener {
+            emailFeedback()
+            true
+        }
+    }
+
+    private fun emailFeedback(){
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("lightningbuddy.feedback@gmail.com"))
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Feedback")
+        startActivity(intent)
+
     }
 
 
@@ -244,30 +249,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         activity!!.finish()
     }
 
-    private fun isValidEmail(email : String) : Boolean{
-        val pattern = Patterns.EMAIL_ADDRESS
-        return pattern.matcher(email).matches()
-    }
-
-    private fun acceptTermsAgreement(){
-        setTermsAgreement(true)
-    }
-
-    private fun declineTermsAgreement(){
-        setTermsAgreement(false)
-    }
-
-    private fun setTermsAgreement(value : Boolean){
-        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-        sharedPrefsEditor.putBoolean("termsOfService", value)
-        sharedPrefsEditor.apply()
-    }
-
     private fun resetSettings() {
         val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-        sharedPrefsEditor.putBoolean("useLocation", true)
         sharedPrefsEditor.putBoolean("allowNotifications", true)
         sharedPrefsEditor.putString("email", "")
+        sharedPrefsEditor.putString("SavedMarkers", "")
         sharedPrefsEditor.putString("lightningDataFrequency", "5")
         sharedPrefsEditor.putBoolean("darkMode", false)
         sharedPrefsEditor.apply()
@@ -283,7 +269,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
 
-    private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog{
+    private fun unaryAlertDialogCreator(title : String, message : String, posBtn : String, pos : () -> Unit) : AlertDialog{
+        val alertBuilder = AlertDialog.Builder(this.context as Context)
+        alertBuilder.setTitle(title)
+        alertBuilder.setMessage(message)
+
+        alertBuilder.setPositiveButton(posBtn) { dialog, _ ->
+            pos()
+            dialog.dismiss()
+        }
+
+        return alertBuilder.create()
+    }
+
+
+    private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog {
         val alertBuilder = AlertDialog.Builder(this.context as Context)
         alertBuilder.setTitle(title)
         alertBuilder.setMessage(message)
