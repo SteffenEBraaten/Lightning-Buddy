@@ -1,31 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.in2000_project">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.example.in2000_project">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
-        <activity android:name=".settings.SettingsActivity"
-            tools:ignore="InnerclassSeparator"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".maps.MainActivity"
-            tools:ignore="ExtraText,InnerclassSeparator"
-            android:theme="@style/AppTheme">
-
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
@@ -59,29 +39,16 @@
                 tools:ignore="ExtraText,InnerclassSeparator">
         </activity> <!-- Google maps API key -->
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc"/>
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc"/>
 
-        <receiver android:name=".alarm.AutoStart"
-            tools:ignore="InnerclassSeparator">
-          
         <receiver
                 android:name=".alarm.AutoStart"
                 tools:ignore="InnerclassSeparator">
-
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-
-        <receiver android:process=":remote" android:name=".alarm.Alarm"
-            tools:ignore="InnerclassSeparator" />
-
-
-        <service android:name=".alarm.AlarmService"
-            android:enabled="true"
-            tools:ignore="InnerclassSeparator" />
-
         <receiver
                 android:name=".alarm.Alarm"
                 android:process=":remote"

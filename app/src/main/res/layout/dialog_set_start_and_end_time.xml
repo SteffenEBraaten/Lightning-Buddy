@@ -12,15 +12,16 @@
             android:gravity="center"
             android:layout_margin="10dp"
             android:textStyle="bold"
-            android:text="@string/set_time"
-            android:textSize="24sp" tools:text="Set time"/>
+            android:text="Set time"
+            android:textSize="24sp"
+            tools:text="Set time"/>
 
 
     <TextView
             android:id="@+id/fromTimeLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/start_time"
+            android:text="Start time"
             android:textSize="18dp"/>
 
     <EditText
