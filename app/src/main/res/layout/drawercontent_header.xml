@@ -9,10 +9,15 @@
               android:theme="@style/ThemeOverlay.AppCompat.Dark"
               android:orientation="vertical"
               android:gravity="bottom">
+
     <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:contentDescription="@string/logo"
-            android:background="@drawable/ic_app_icon_intro"/>
+            android:src="@drawable/ic_app_icon_intro"
+            android:scaleType="fitCenter"
+            android:cropToPadding="false"
+            android:paddingTop="10dp"
+            />
 
 </LinearLayout>
