@@ -26,7 +26,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     data class Settings(
         val darkMode: Boolean,
         val allowNotifications: Boolean,
-        val vibrate: Boolean,
+        val email: String,
         val termsOfService: Boolean
     )
 
@@ -46,7 +46,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         return Settings(
                     darkMode = sharedPrefs.getBoolean("darkMode", false),
                     allowNotifications = sharedPrefs.getBoolean("allowNotifications", true),
-                    vibrate = sharedPrefs.getBoolean("vibrate", true),
+                    email = sharedPrefs.getString("email", "") as String,
                     termsOfService = sharedPrefs.getBoolean("termsOfService", false)
                 )
     }
