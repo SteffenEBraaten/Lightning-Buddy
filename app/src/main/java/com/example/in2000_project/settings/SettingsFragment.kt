@@ -66,9 +66,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         else lightningDataFrequency = getString(R.string.every) + " " + lightningDataFrequency + " " + getString(R.string.minutes)
         preferenceScreen.findPreference("lightningDataFrequency").summary = lightningDataFrequency
 
-        val sharedPrefs1: SharedPreferences = context!!.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
-        val fromTime = sharedPrefs1.getString("fromTime", "")
-        val toTime = sharedPrefs1.getString("toTime", "")
+        val fromTime = sharedPrefs.getString("fromTime", "")
+        val toTime = sharedPrefs.getString("toTime", "")
         var string = "From " + fromTime + " to " + toTime
         if(fromTime != "" && toTime != "") {
             if(fromTime > toTime){
@@ -189,7 +188,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             Toast.makeText(context, "The notifications will not be pushed from " + fromTimeString + " to " + toTimeString, Toast.LENGTH_LONG).show()
                         }
 
-                        val sharedPrefs: SharedPreferences = this.context!!.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
+                        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
                         val sharedPrefsEditor = sharedPrefs.edit()
                         sharedPrefsEditor.putString("fromTime", fromTimeString)
                         sharedPrefsEditor.putString("toTime", toTimeString)
@@ -223,7 +222,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setAlarm(){
         val serviceIntent = Intent(this.activity, AlarmService::class.java)
-        val minutes = android.preference.PreferenceManager.getDefaultSharedPreferences(context).getString("lightningDataFrequency", "5")
+        val minutes = PreferenceManager.getDefaultSharedPreferences(context).getString("lightningDataFrequency", "5")
         serviceIntent.putExtra("minutes", minutes)
         this.activity!!.startService(serviceIntent)
     }
@@ -252,17 +251,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun resetSettings() {
         val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
         sharedPrefsEditor.putBoolean("allowNotifications", true)
-        sharedPrefsEditor.putString("email", "")
         sharedPrefsEditor.putString("SavedMarkers", "")
         sharedPrefsEditor.putString("lightningDataFrequency", "5")
         sharedPrefsEditor.putBoolean("darkMode", false)
+        sharedPrefsEditor.putString("fromTime", "")
+        sharedPrefsEditor.putString("toTime", "")
         sharedPrefsEditor.apply()
-
-        val sharedPrefs: SharedPreferences = this.context!!.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
-        val sharedPrefsEditor1 = sharedPrefs.edit()
-        sharedPrefsEditor1.putString("fromTime", "")
-        sharedPrefsEditor1.putString("toTime", "")
-        sharedPrefsEditor1.apply()
         refreshFragment()
         darkMode()
         reStart()
