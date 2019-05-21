@@ -49,55 +49,77 @@ class Alarm : BroadcastReceiver() {
 
         val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
-        wl.acquire(60 * 1000L /*10 minutes*/)
-        MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
-
-        inspectRecentData()
-//        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
-
-        if (ActivityCompat.checkSelfPermission(context,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-        }
-        val flc = LocationServices.getFusedLocationProviderClient(context)
-        flc.lastLocation.addOnSuccessListener {
-                location: Location? ->
-                    Log.e("BACKGROUND LOC", "${location}")
-                    if (location != null) {
-                        val sharedPrefs: SharedPreferences =
-                            PreferenceManager.getDefaultSharedPreferences(context)
-                        val radius = sharedPrefs.getInt("UserRadius", 1000)
-                        if (radius != 0) {
-                            Log.d("User radius", "User radius = $radius")
-                            LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
-                            LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
-                        } else {
-                            Log.d("User radius", "User's radius config either not set or set to 0.")
-                        }
-                    }
-        }
-
-
+        
         if(fromTime != "" && toTime != ""){
             if(fromTime < toTime){
                 if(currentTime > toTime || currentTime < fromTime){
-                    Toast.makeText(context, "Alarm !!!!!!!!!!" , Toast.LENGTH_LONG).show() // For example
-                    wl.release()
+                    wl.acquire(60 * 1000L /*10 minutes*/)
+                    MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+
+                    inspectRecentData()
+//        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
+
+                    if (ActivityCompat.checkSelfPermission(context,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MainActivity(),
+                            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+                    }
+                    val flc = LocationServices.getFusedLocationProviderClient(context)
+                    flc.lastLocation.addOnSuccessListener {
+                            location: Location? ->
+                        Log.e("BACKGROUND LOC", "${location}")
+                        if (location != null) {
+                            val sharedPrefs: SharedPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(context)
+                            val radius = sharedPrefs.getInt("UserRadius", 1000)
+                            if (radius != 0) {
+                                Log.d("User radius", "User radius = $radius")
+                                LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                            } else {
+                                Log.d("User radius", "User's radius config either not set or set to 0.")
+                            }
+                        }
+                    }
+
                 }
             }
             else if (fromTime > toTime){
                 if(currentTime > toTime && currentTime < fromTime){
-                    Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
-                    wl.release()
+                    wl.acquire(60 * 1000L /*10 minutes*/)
+                    MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+
+                    inspectRecentData()
+//        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
+
+                    if (ActivityCompat.checkSelfPermission(context,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MainActivity(),
+                            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+                    }
+                    val flc = LocationServices.getFusedLocationProviderClient(context)
+                    flc.lastLocation.addOnSuccessListener {
+                            location: Location? ->
+                        Log.e("BACKGROUND LOC", "${location}")
+                        if (location != null) {
+                            val sharedPrefs: SharedPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(context)
+                            val radius = sharedPrefs.getInt("UserRadius", 1000)
+                            if (radius != 0) {
+                                Log.d("User radius", "User radius = $radius")
+                                LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                            } else {
+                                Log.d("User radius", "User's radius config either not set or set to 0.")
+                            }
+                        }
+                    }
+
                 }
             }
         }
         else  return
     }
-
-
-
 
 
     private fun inspectRecentData() {
