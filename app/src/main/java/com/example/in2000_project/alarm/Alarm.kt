@@ -23,6 +23,8 @@ import com.example.in2000_project.R
 import com.example.in2000_project.maps.MainActivity
 import com.example.in2000_project.maps.MapFragment
 import com.example.in2000_project.maps.MapsViewmodel
+import java.text.SimpleDateFormat
+import java.util.*
 import com.example.in2000_project.maps.MapsViewmodelFactory
 import com.example.in2000_project.utils.UalfUtil
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -37,11 +39,19 @@ class Alarm : BroadcastReceiver() {
     private lateinit var context: Context
 
     override fun onReceive(context: Context, intent: Intent) {
+        val sharedPrefs: SharedPreferences = context.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
+        val fromTime = sharedPrefs.getString("fromTime", "")
+        val toTime = sharedPrefs.getString("toTime", "")
+        val temp = SimpleDateFormat("HH : mm")
+        val currentTime = temp.format(Date())
+
         this.context = context
+
         val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
         wl.acquire(60 * 1000L /*10 minutes*/)
         MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+
         inspectRecentData()
 //        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
 
@@ -68,7 +78,22 @@ class Alarm : BroadcastReceiver() {
                     }
         }
 
-        wl.release()
+
+        if(fromTime != "" && toTime != ""){
+            if(fromTime < toTime){
+                if(currentTime > toTime || currentTime < fromTime){
+                    Toast.makeText(context, "Alarm !!!!!!!!!!" , Toast.LENGTH_LONG).show() // For example
+                    wl.release()
+                }
+            }
+            else if (fromTime > toTime){
+                if(currentTime > toTime && currentTime < fromTime){
+                    Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
+                    wl.release()
+                }
+            }
+        }
+        else  return
     }
 
 
