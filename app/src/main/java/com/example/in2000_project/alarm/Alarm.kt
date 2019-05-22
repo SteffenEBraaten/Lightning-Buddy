@@ -42,7 +42,7 @@ class Alarm : BroadcastReceiver() {
     @SuppressLint("SimpleDateFormat")
     override fun onReceive(context: Context, intent: Intent) {
         val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        if(sharedPrefs.getBoolean("", true)){
+        if(sharedPrefs.getBoolean("allow_Notifications", true)){
             val fromTime = sharedPrefs.getString("fromTime", "")!!
             val toTime = sharedPrefs.getString("toTime", "")!!
             val temp = SimpleDateFormat("HH : mm")

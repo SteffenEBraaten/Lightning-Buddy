@@ -206,7 +206,6 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         //The zoom level is kind of tricky if you change the radius
         googleMap.animateCamera(CameraUpdateFactory
             .newLatLngZoom(activeCircle.center, zoomLevel))
-        Log.d("Fragment map", "Marker added")
 
         //Set the radius fragment
         callback.onSetRadiusCall(activeCircle, prevMark!!.marker!!)
@@ -226,7 +225,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                 activeCircle.center = marker?.position
             }
         })
-        prevMark?.circle = activeCircle
+        prevMark.circle = activeCircle
         Log.d("Fragment map", "Returning marker")
         return prevMark
     }
@@ -332,7 +331,6 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         }
     }
     fun setMarkerLightning(location: LatLng, duration: Long) {
-        Log.d("Fragment map", "Setting marker at $location")
         val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
                 .fromBitmap(resizeMapIcon("lightning_symbol", 40, 130))))
@@ -345,24 +343,21 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
     Function returns the marker so caller can handle removal
      */
     fun setMarkerLightning(location: LatLng): Marker {
-        Log.d("Fragment map", "Setting marker at $location")
         val marker: Marker = googleMap.addMarker(MarkerOptions().position(location)
             .icon(BitmapDescriptorFactory
                 .fromBitmap(resizeMapIcon("lightning_symbol", 40, 130))))
         return marker
     }
     private fun resizeMapIcon(iconName: String, width: Int, height: Int): Bitmap {
-        Log.e("test", "${resources.getIdentifier(iconName, "drawable", activity!!.packageName)}")
         val imageBitmap: Bitmap = BitmapFactory
             .decodeResource(resources, resources.getIdentifier(iconName, "drawable", activity!!.packageName))
-        val resizedBitmap: Bitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false)
-        return resizedBitmap
+        return Bitmap.createScaledBitmap(imageBitmap, width, height, false)
     }
-    public fun saveMarker(circle: Circle, marker: Marker) {
+    fun saveMarker(circle: Circle, marker: Marker) {
         triggerAlertDialogName(circle, marker)
     }
 
-    public fun triggerAlertDialogName(circle: Circle, marker: Marker) {
+    fun triggerAlertDialogName(circle: Circle, marker: Marker) {
         val dialogNameInput = AlertDialog.Builder(context)
         val view = layoutInflater.inflate(R.layout.dialog_input_name_savemarker, null)
         dialogNameInput.setView(view)
@@ -372,9 +367,9 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         descriptionText.text = getString(R.string.saveMarkerDescText)
 
         dialogNameInput.setPositiveButton(getString(R.string.save)) {
-            dialog, whichButton -> var placeholder = 123
+            _, _ ->
         }
-        var dialog = dialogNameInput.create()
+        val dialog = dialogNameInput.create()
         dialog.setOnShowListener {
             val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             addButton.setOnClickListener {
@@ -395,19 +390,19 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         Log.e("Persistent Save", "Saving")
         for (entry: MarkerWithCircle in markersList) {
             val name: String = entry.name!!
-            var position: LatLng? = entry.marker?.position
-            var radius: Double? = entry.circle?.radius
+            val position: LatLng? = entry.marker?.position
+            val radius: Double? = entry.circle?.radius
             savedMarkersList?.add(SavedMarkers(name, position!!.latitude, position.longitude, radius!!))
         }
 
-        markersList?.run {
+        markersList.run {
             val prefEditor = sharedPrefs?.edit()
             prefEditor?.putString("SavedMarkers", Gson().toJson(savedMarkersList))
             Log.d("Fragment map", "Markers saved")
             prefEditor?.apply()
         }
     }
-    public fun clearMap() {
+    fun clearMap() {
         googleMap.clear()
     }
 
