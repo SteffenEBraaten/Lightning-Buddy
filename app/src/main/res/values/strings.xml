@@ -8,8 +8,6 @@
     <string name="Maps_API" translatable="false">AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc</string>
 
 
-    <string name="emailValue" translatable="false"/>
-    <string name="language" translatable="false"/>
     <string name="resetSettingsMessage">All saved areas will be deleted and settings will be restored to default. \nDo
         you wish to continue?
     </string>
@@ -41,9 +39,6 @@
         \n\nThis document was last updated on May 11, 2019
     </string>
     <string name="lightningDataFrequency" translatable="false">5</string>
-
-    <string name="en" translatable="false">English</string>
-    <string name="no" translatable="false">Norsk</string>
 
     <string name="dark_mode">Dark mode</string>
     <string name="general">General</string>
