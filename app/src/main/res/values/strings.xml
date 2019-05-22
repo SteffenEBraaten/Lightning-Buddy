@@ -119,8 +119,13 @@
     <string name="set_time">Set time</string>
     <string name="end_time">End Time</string>
     <string name="start_time">Start Time</string>
-    <string name="ok2">OK</string>
-
+    <string name="from">from</string>
+    <string name="to">to</string>
+    <string name="toNextDay">to next day</string>
+    <string name="noTimeHasBeenSet">No time has been set</string>
+    <string name="pleaseSelectTimeFrom">Please select time from</string>
+    <string name="pleaseSelectTimeTo">Please select time to</string>
+    <string name="theNotificationsWillNotBePushedFrom">You will not receive notifications from</string>
 
 
 </resources>
