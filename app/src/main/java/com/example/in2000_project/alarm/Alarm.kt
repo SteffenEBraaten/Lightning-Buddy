@@ -81,6 +81,7 @@ class Alarm : BroadcastReceiver() {
                                 }
                             }
                         }
+
                         wl.release()
                     }
                 }
@@ -115,8 +116,38 @@ class Alarm : BroadcastReceiver() {
                     }
                 }
             }
+            else if(fromTime == "" && toTime == ""){
+                wl.acquire(60 * 1000L /*10 minutes*/)
+                MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+
+                inspectRecentData()
+
+                if (ActivityCompat.checkSelfPermission(context,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity(),
+                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+
+                }
+                val flc = LocationServices.getFusedLocationProviderClient(context)
+                flc.lastLocation.addOnSuccessListener {
+                        location: Location? ->
+                    Log.e("BACKGROUND LOC", "${location}")
+                    if (location != null) {
+                        val radius = sharedPrefs.getInt("UserRadius", 1000)
+                        if (radius != 0) {
+                            Log.d("User radius", "User radius = $radius")
+                            LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                            LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                        } else {
+                            Log.d("User radius", "User's radius config either not set or set to 0.")
+                        }
+                    }
+                }
+                wl.release()
+            }
         }
     }
+
 
 
     private fun inspectRecentData() {

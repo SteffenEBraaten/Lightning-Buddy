@@ -103,5 +103,17 @@
     <string name="police_phone">tel:112</string>
     <string name="radius">Radius</string>
     <string name="notificationRadiusSet">Notifikasjonsradius satt</string>
+    <string name="set_time">Sett tid</string>
+    <string name="end_time">Slutt tid</string>
+    <string name="start_time">Start tid</string>
+    <string name="from">fra</string>
+    <string name="to">til</string>
+    <string name="toNextDay">to next day</string>
+    <string name="noTimeHasBeenSet">Ingen tid er satt</string>
+    <string name="pleaseSelectTimeFrom">Vennligst velg tid fra</string>
+    <string name="pleaseSelectTimeTo">Vennligst velg tid til</string>
+    <string name="theNotificationsWillNotBePushedFrom">Du vil ikke motta notifikasjoner fra</string>
+
+
 
 </resources>
