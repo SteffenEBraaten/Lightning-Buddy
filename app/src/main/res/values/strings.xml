@@ -123,5 +123,9 @@
     <string name="markerSaved">Marker saved</string>
     <string name="saveMarkerDescText">Marker name:</string>
     <string name="logo">Logo</string>
+    <string name="set_time">Set time</string>
+    <string name="end_time">End Time</string>
+    <string name="start_time">Start time</string>
+    <string name="ok2">OK</string>
 
 </resources>

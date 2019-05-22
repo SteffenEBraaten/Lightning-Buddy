@@ -1,5 +1,6 @@
 package com.example.in2000_project.alarm
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.arch.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
@@ -38,88 +39,114 @@ class Alarm : BroadcastReceiver() {
     private var frequency: Int = 0
     private lateinit var context: Context
 
+    @SuppressLint("SimpleDateFormat")
     override fun onReceive(context: Context, intent: Intent) {
-        val sharedPrefs: SharedPreferences = context.getSharedPreferences("setTime", Context.MODE_MULTI_PROCESS)
-        val fromTime = sharedPrefs.getString("fromTime", "")
-        val toTime = sharedPrefs.getString("toTime", "")
-        val temp = SimpleDateFormat("HH : mm")
-        val currentTime = temp.format(Date())
+        val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        if(sharedPrefs.getBoolean("", true)){
+            val fromTime = sharedPrefs.getString("fromTime", "")!!
+            val toTime = sharedPrefs.getString("toTime", "")!!
+            val temp = SimpleDateFormat("HH : mm")
+            val currentTime = temp.format(Date())
 
-        this.context = context
+            this.context = context
 
-        val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
-        
-        if(fromTime != "" && toTime != ""){
-            if(fromTime < toTime){
-                if(currentTime > toTime || currentTime < fromTime){
-                    wl.acquire(60 * 1000L /*10 minutes*/)
-                    MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+            val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
 
-                    inspectRecentData()
-//        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
+            if(fromTime != "" && toTime != ""){
+                if(fromTime < toTime){
+                    if(currentTime > toTime || currentTime < fromTime){
+                        wl.acquire(60 * 1000L /*10 minutes*/)
+                        MapsViewmodel(sharedPrefs).getRecentApiData()
 
-                    if (ActivityCompat.checkSelfPermission(context,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MainActivity(),
-                            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-                    }
-                    val flc = LocationServices.getFusedLocationProviderClient(context)
-                    flc.lastLocation.addOnSuccessListener {
-                            location: Location? ->
-                        Log.e("BACKGROUND LOC", "${location}")
-                        if (location != null) {
-                            val sharedPrefs: SharedPreferences =
-                                PreferenceManager.getDefaultSharedPreferences(context)
-                            val radius = sharedPrefs.getInt("UserRadius", 1000)
-                            if (radius != 0) {
-                                Log.d("User radius", "User radius = $radius")
-                                LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
-                                LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
-                            } else {
-                                Log.d("User radius", "User's radius config either not set or set to 0.")
+                        inspectRecentData()
+
+                        if (ActivityCompat.checkSelfPermission(context,
+                                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(MainActivity(),
+                                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+                        }
+                        val flc = LocationServices.getFusedLocationProviderClient(context)
+                        flc.lastLocation.addOnSuccessListener {
+                                location: Location? ->
+                            Log.e("BACKGROUND LOC", "${location}")
+                            if (location != null) {
+                                val radius = sharedPrefs.getInt("UserRadius", 1000)
+                                if (radius != 0) {
+                                    Log.d("User radius", "User radius = $radius")
+                                    LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                    LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                } else {
+                                    Log.d("User radius", "User's radius config either not set or set to 0.")
+                                }
                             }
                         }
-                    }
 
+                        wl.release()
+                    }
+                }
+                else if (fromTime > toTime){
+                    if(currentTime > toTime && currentTime < fromTime){
+                        wl.acquire(60 * 1000L /*10 minutes*/)
+                        MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+
+                        inspectRecentData()
+
+                        if (ActivityCompat.checkSelfPermission(context,
+                                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(MainActivity(),
+                                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+                        }
+                        val flc = LocationServices.getFusedLocationProviderClient(context)
+                        flc.lastLocation.addOnSuccessListener {
+                                location: Location? ->
+                            Log.e("BACKGROUND LOC", "${location}")
+                            if (location != null) {
+                                val radius = sharedPrefs.getInt("UserRadius", 1000)
+                                if (radius != 0) {
+                                    Log.d("User radius", "User radius = $radius")
+                                    LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                    LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                } else {
+                                    Log.d("User radius", "User's radius config either not set or set to 0.")
+                                }
+                            }
+                        }
+                        wl.release()
+                    }
                 }
             }
-            else if (fromTime > toTime){
-                if(currentTime > toTime && currentTime < fromTime){
-                    wl.acquire(60 * 1000L /*10 minutes*/)
-                    MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+            else if(fromTime == "" && toTime == ""){
+                wl.acquire(60 * 1000L /*10 minutes*/)
+                MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
 
-                    inspectRecentData()
-//        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
+                inspectRecentData()
 
-                    if (ActivityCompat.checkSelfPermission(context,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MainActivity(),
-                            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-                    }
-                    val flc = LocationServices.getFusedLocationProviderClient(context)
-                    flc.lastLocation.addOnSuccessListener {
-                            location: Location? ->
-                        Log.e("BACKGROUND LOC", "${location}")
-                        if (location != null) {
-                            val sharedPrefs: SharedPreferences =
-                                PreferenceManager.getDefaultSharedPreferences(context)
-                            val radius = sharedPrefs.getInt("UserRadius", 1000)
-                            if (radius != 0) {
-                                Log.d("User radius", "User radius = $radius")
-                                LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
-                                LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
-                            } else {
-                                Log.d("User radius", "User's radius config either not set or set to 0.")
-                            }
+                if (ActivityCompat.checkSelfPermission(context,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity(),
+                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+                }
+                val flc = LocationServices.getFusedLocationProviderClient(context)
+                flc.lastLocation.addOnSuccessListener {
+                        location: Location? ->
+                    Log.e("BACKGROUND LOC", "${location}")
+                    if (location != null) {
+                        val radius = sharedPrefs.getInt("UserRadius", 1000)
+                        if (radius != 0) {
+                            Log.d("User radius", "User radius = $radius")
+                            LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                            LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                        } else {
+                            Log.d("User radius", "User's radius config either not set or set to 0.")
                         }
                     }
-
                 }
+                wl.release()
             }
         }
-        else  return
     }
+
 
 
     private fun inspectRecentData() {
