@@ -30,9 +30,7 @@
     <string name="next">Neste</string>
     <string name="skip">Hopp over</string>
     <string name="slider1_Title">Velkommen til Lightning Buddy!</string>
-    <string name="slider1_description">Nå vil du kunne se hvor lynnedslag slår ned i nærheten av deg! På kartet kan du
-        se lynnedslag som har slått ned de siste 24 timene.
-    </string>
+    <string name="slider1_description">Nå vil du kunne se hvor lynnedslag slår ned i nærheten av deg! På kartet kan du se et direktebilde av hvor nylige lynnedslag har slått ned.</string>
     <string name="slider2_Title">Bli varlset om lynnedslag!</string>
     <string name="slider2_description">Bruk kartet for å sette steder du vil bli varslet om hvis lyn slår ned i området
         slik at du kan forholde deg trygg og informert!\nDu kan også justere radiusen rundt din posisjon for hvor du vil

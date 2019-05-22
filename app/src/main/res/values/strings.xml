@@ -8,8 +8,6 @@
     <string name="Maps_API" translatable="false">AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc</string>
 
 
-    <string name="emailValue" translatable="false"/>
-    <string name="language" translatable="false"/>
     <string name="resetSettingsMessage">All saved areas will be deleted and settings will be restored to default. \nDo
         you wish to continue?
     </string>
@@ -42,9 +40,6 @@
     </string>
     <string name="lightningDataFrequency" translatable="false">5</string>
 
-    <string name="en" translatable="false">English</string>
-    <string name="no" translatable="false">Norsk</string>
-
     <string name="dark_mode">Dark mode</string>
     <string name="general">General</string>
     <string name="use_Location">Use my location</string>
@@ -71,10 +66,7 @@
     <string name="next">Next</string>
     <string name="done">Done</string>
     <string name="slider1_Title">Welcome to Ligtning Buddy!</string>
-    <string name="slider1_description">
-        Now, you will be able to see where lightning storms are happening close to you! Check out the map for
-        lightning strikes that have struck in the last 24 hours.
-    </string>
+    <string name="slider1_description">Now, you will be able to see where lightning storms are happening close to you! Check out the map for a live view of where all the most recent lightning strikes have struck.</string>
     <string name="slider2_Title">Get notified about lightning strikes!</string>
     <string name="slider2_description">
         Use the map and set location where you would like to get notified about lightning storms so that you can remain
@@ -122,6 +114,6 @@
     <string name="radiusNotLessThan">Radius can not be less than</string>
     <string name="markerSaved">Marker saved</string>
     <string name="saveMarkerDescText">Marker name:</string>
-    <string name="logo">Logo</string>
+    <string name="logo" translatable="false">Logo</string>
 
 </resources>
