@@ -103,6 +103,10 @@
     <string name="saveMarkerDescText">Markør namn:</string>
     <string name="notificationRadiusSet">Notifikasjonsradius sat</string>
     <string name="radius">Radius</string>
+    <string name="set_time">Sett tid</string>
+    <string name="end_time">Slutt tid</string>
+    <string name="start_time">Start tid</string>
+    <string name="ok2">OK</string>
 
 
 </resources>
