@@ -16,12 +16,6 @@
                 android:defaultValue="true"
                 android:title="@string/allow_Notifications"
                 android:key="allowNotifications"/>
-        <EditTextPreference
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/email"
-                android:key="email"
-                android:summary="@string/email"/>
         <ListPreference
                 android:defaultValue="5"
                 android:title="@string/dataUpdateFrequency"

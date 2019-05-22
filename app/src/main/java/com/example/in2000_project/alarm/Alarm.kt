@@ -126,6 +126,7 @@ class Alarm : BroadcastReceiver() {
                         android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity(),
                         arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+
                 }
                 val flc = LocationServices.getFusedLocationProviderClient(context)
                 flc.lastLocation.addOnSuccessListener {
@@ -199,7 +200,7 @@ class Alarm : BroadcastReceiver() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        val notification = NotificationCompat.Builder(context, "Default")
+        return NotificationCompat.Builder(context, "Default")
             .setSmallIcon(R.drawable.lightning_symbol)
             .setContentTitle(context.getString(R.string.notification_title))
             .setContentText(
@@ -212,7 +213,6 @@ class Alarm : BroadcastReceiver() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setDefaults(Notification.DEFAULT_ALL)
-        return notification
     }
 
 
