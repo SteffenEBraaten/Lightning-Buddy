@@ -45,7 +45,13 @@ import kotlin.collections.ArrayList
 import kotlin.math.log
 import kotlin.math.roundToInt
 
-data class InfoWindowData(val time: Date, val lat: Double, val long: Double)
+data class InfoWindowData(
+    val time: Date,
+    val lat: Double,
+    val long: Double,
+    val peakCurrent: Int,
+    val riseTime: Double,
+    val peakToZeroTIme: Double)
 
 
 class MapWithoutSearchbar() : OnMapReadyCallback, PlaceSelectionListener, Fragment() {
@@ -107,7 +113,12 @@ class MapWithoutSearchbar() : OnMapReadyCallback, PlaceSelectionListener, Fragme
             for (i in ualfList!!.indices) {
                 val ualf = ualfList[i]
                 val newLocation = LatLng(ualf.lat, ualf.long)
-                val newInfo = InfoWindowData(ualf.date, ualf.lat, ualf.long)
+                val newInfo = InfoWindowData(ualf.date,
+                                             ualf.lat,
+                                             ualf.long,
+                                             ualf.peakCurrent,
+                                             ualf.riseTime,
+                                             ualf.peakToZeroTime)
                 setMarkerLightning(newLocation, newInfo, i.toFloat())
             }
         }

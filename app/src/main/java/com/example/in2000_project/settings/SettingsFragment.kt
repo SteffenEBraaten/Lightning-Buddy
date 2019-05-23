@@ -1,9 +1,9 @@
 package com.example.in2000_project.settings
 
-
 import android.util.Patterns
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -13,19 +13,16 @@ import android.support.v7.preference.PreferenceManager
 import android.widget.Toast
 import com.example.in2000_project.R
 import android.support.v7.app.AppCompatDelegate
+import android.util.Log
 import com.example.in2000_project.alarm.AlarmService
+import android.app.TimePickerDialog
+import android.view.LayoutInflater
+import android.widget.*
+import kotlinx.android.synthetic.main.dialog_set_start_and_end_time.view.*
+import java.text.SimpleDateFormat
+import java.util.*
+import android.content.SharedPreferences
 
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- *
- */
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -46,25 +43,34 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setSummaries() {
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
-        val email = sharedPrefs.getString("email", "")
-        preferenceScreen.findPreference("email").summary = email
         var lightningDataFrequency = sharedPrefs.getString("lightningDataFrequency", "5")
 
         if(lightningDataFrequency!!.toInt() <= 0) lightningDataFrequency = getString(R.string.noUpdates)
         else lightningDataFrequency = getString(R.string.every) + " " + lightningDataFrequency + " " + getString(R.string.minutes)
         preferenceScreen.findPreference("lightningDataFrequency").summary = lightningDataFrequency
+
+        val fromTime = sharedPrefs.getString("fromTime", "")
+        val toTime = sharedPrefs.getString("toTime", "")
+        var string = getString(R.string.from) + " " + fromTime + " " + getString(R.string.to) + " " + toTime
+        if(fromTime != "" && toTime != "") {
+            if(fromTime > toTime){
+                string = getString(R.string.from) + " " + fromTime + " " + getString(R.string.toNextDay) + " " + toTime
+                preferenceScreen.findPreference("silentMode").summary = string
+            }
+            else preferenceScreen.findPreference("silentMode").summary = string
+        }
+        else string = getString(R.string.noTimeHasBeenSet)
+        preferenceScreen.findPreference("silentMode").summary = string
     }
 
     private fun attachEvents(){
         val termsOfService = findPreference("termsOfService")
         termsOfService?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val alert = binaryAlertDialogCreator(
+            val alert = unaryAlertDialogCreator(
                 getString(R.string.termsOfServiceTitle),
                 getString(R.string.termsOfService),
-                getString(R.string.accept),
-                getString(R.string.decline),
-                ::acceptTermsAgreement,
-                ::declineTermsAgreement)
+                getString(R.string.Close),
+                {})
 
             alert.show()
             true
@@ -74,24 +80,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         reset?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val alert = binaryAlertDialogCreator(
                 getString(R.string.reset),
-                 getString(R.string.resetSettingsMessage),
+                getString(R.string.resetSettingsMessage),
                 getString(R.string.reset),
                 getString(R.string.cancel),
-                 ::resetSettings,
-                 {})
+                ::resetSettings,
+                {})
             alert.show()
-            true
-        }
-
-        preferenceScreen.findPreference("email").setOnPreferenceChangeListener { preference, value ->
-            if(value == "" || isValidEmail(value as String)){
-                refreshFragment()
-            }else{
-                val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-                sharedPrefsEditor.putString(preference.key, "")
-                sharedPrefsEditor.apply()
-                Toast.makeText(activity, getString(R.string.invalidEmail), Toast.LENGTH_SHORT).show()
-            }
             true
         }
 
@@ -102,15 +96,113 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        val silent = findPreference("silentMode")
+        silent?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_set_start_and_end_time, null)
+            val builder = AlertDialog.Builder(context!!).setView(dialogView)
+            val alertDialog = builder.show()
+
+            val fromTimeEditText = dialogView.findViewById<EditText>(R.id.fromTime)
+            val toTimeEditText = dialogView.findViewById<EditText>(R.id.toTime)
+
+            fromTimeEditText.setOnClickListener {
+                val c = Calendar.getInstance()
+                val timeSetListener = TimePickerDialog.OnTimeSetListener{_, hour, minute ->
+                    c.set(Calendar.HOUR_OF_DAY, hour)
+                    c.set(Calendar.MINUTE, minute)
+                    fromTimeEditText.setText(SimpleDateFormat("HH : mm").format(c.time))
+
+                }
+                TimePickerDialog(this.context, timeSetListener, c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE), true ).show()
+            }
+
+            toTimeEditText.setOnClickListener {
+                val c = Calendar.getInstance()
+                val timeSetListener = TimePickerDialog.OnTimeSetListener{_, hour, minute ->
+                    c.set(Calendar.HOUR_OF_DAY, hour)
+                    c.set(Calendar.MINUTE, minute)
+                    toTimeEditText.setText(SimpleDateFormat("HH : mm").format(c.time))
+                }
+                TimePickerDialog(this.context, timeSetListener, c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE), true ).show()
+            }
+
+            dialogView.add_Button.setOnClickListener {
+                var validTime  = true
+                val fromTimeString = fromTimeEditText.text.toString()
+                val toTimeString = toTimeEditText.text.toString()
+                var string = getString(R.string.from) + " " + fromTimeString + " " + getString(R.string.to) + " " + toTimeString
+
+                if (fromTimeString == "" || toTimeString == ""){
+                    validTime = false
+                    if (fromTimeString == "" && toTimeString == ""){
+                        validTime = true
+                        string = getString(R.string.noTimeHasBeenSet)
+                        preferenceScreen.findPreference("silentMode").summary = string
+
+                    }
+                    else if(fromTimeString == ""){
+                        Toast.makeText(context, getString(R.string.pleaseSelectTimeFrom), Toast.LENGTH_LONG).show()
+                        fromTimeEditText.performClick()
+                    }
+                    else{
+                        Toast.makeText(context, getString(R.string.pleaseSelectTimeTo), Toast.LENGTH_LONG).show()
+                        toTimeEditText.performClick()
+                    }
+                }
+
+                if(fromTimeString == toTimeString && fromTimeString != ""){
+                    validTime = false
+                    Toast.makeText(context, getString(R.string.invalidTimePeriod), Toast.LENGTH_LONG).show()
+                    fromTimeEditText.performClick()
+                }
+
+                if(validTime) {
+                    alertDialog.dismiss()
+                    if(fromTimeString =="" && toTimeString == ""){
+                        Toast.makeText(context, getString(R.string.noTimeHasBeenSet), Toast.LENGTH_LONG).show()
+                    }
+                    if(fromTimeString > toTimeString){
+                        string = getString(R.string.from) + " " + fromTimeString + " " + getString(R.string.toNextDay) + " " + toTimeString
+                        preferenceScreen.findPreference("silentMode").summary = string
+                        Toast.makeText(context, getString(R.string.theNotificationsWillNotBePushedFrom) + " " + fromTimeString + " " + getString(R.string.toNextDay) + " " + toTimeString, Toast.LENGTH_LONG).show()
+                    }
+                    if(fromTimeString < toTimeString){
+                        preferenceScreen.findPreference("silentMode").summary = string
+                        Toast.makeText(context, getString(R.string.theNotificationsWillNotBePushedFrom) + " " + fromTimeString + " " + getString(R.string.toNextDay) + " " + toTimeString, Toast.LENGTH_LONG).show()
+                    }
+
+                    val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
+                    val sharedPrefsEditor = sharedPrefs.edit()
+                    sharedPrefsEditor.putString("fromTime", fromTimeString)
+                    sharedPrefsEditor.putString("toTime", toTimeString)
+                    sharedPrefsEditor.apply()
+                }
+            }
+            true
+        }
+
         preferenceScreen.findPreference("lightningDataFrequency").setOnPreferenceChangeListener { _, _ ->
             refreshFragment()
             true
         }
+
+        preferenceScreen.findPreference("giveFeedback").setOnPreferenceClickListener {
+            emailFeedback()
+            true
+        }
+    }
+
+    private fun emailFeedback(){
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("lightningbuddy.feedback@gmail.com"))
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Feedback")
+        startActivity(intent)
     }
 
     private fun setAlarm(){
         val serviceIntent = Intent(this.activity, AlarmService::class.java)
-        val minutes = android.preference.PreferenceManager.getDefaultSharedPreferences(context).getString("lightningDataFrequency", "5")
+        val minutes = PreferenceManager.getDefaultSharedPreferences(context).getString("lightningDataFrequency", "5")
         serviceIntent.putExtra("minutes", minutes)
         this.activity!!.startService(serviceIntent)
     }
@@ -136,33 +228,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         activity!!.finish()
     }
 
-    private fun isValidEmail(email : String) : Boolean{
-        val pattern = Patterns.EMAIL_ADDRESS
-        return pattern.matcher(email).matches()
-    }
-
-    private fun acceptTermsAgreement(){
-        setTermsAgreement(true)
-    }
-
-    private fun declineTermsAgreement(){
-        setTermsAgreement(false)
-    }
-
-    private fun setTermsAgreement(value : Boolean){
-        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-        sharedPrefsEditor.putBoolean("termsOfService", value)
-        sharedPrefsEditor.apply()
-    }
-
     private fun resetSettings() {
         val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this.context).edit()
-        sharedPrefsEditor.putBoolean("useLocation", true)
         sharedPrefsEditor.putBoolean("allowNotifications", true)
-        sharedPrefsEditor.putString("email", "")
-        sharedPrefsEditor.putBoolean("vibrate", true)
+        sharedPrefsEditor.putString("SavedMarkers", "")
         sharedPrefsEditor.putString("lightningDataFrequency", "5")
         sharedPrefsEditor.putBoolean("darkMode", false)
+        sharedPrefsEditor.putString("fromTime", "")
+        sharedPrefsEditor.putString("toTime", "")
         sharedPrefsEditor.apply()
         refreshFragment()
         darkMode()
@@ -170,7 +243,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
 
-    private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog{
+    private fun unaryAlertDialogCreator(title : String, message : String, posBtn : String, pos : () -> Unit) : AlertDialog{
+        val alertBuilder = AlertDialog.Builder(this.context as Context)
+        alertBuilder.setTitle(title)
+        alertBuilder.setMessage(message)
+
+        alertBuilder.setPositiveButton(posBtn) { dialog, _ ->
+            pos()
+            dialog.dismiss()
+        }
+
+        return alertBuilder.create()
+    }
+
+
+    private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog {
         val alertBuilder = AlertDialog.Builder(this.context as Context)
         alertBuilder.setTitle(title)
         alertBuilder.setMessage(message)

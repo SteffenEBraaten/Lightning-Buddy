@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
+import android.support.v7.preference.PreferenceManager
 import com.example.in2000_project.R
 import com.example.in2000_project.maps.MainActivity
 import kotlinx.android.synthetic.main.activity_intro.*
@@ -22,7 +24,7 @@ class IntroActivity : AppCompatActivity() {
     private val slider3 = SliderFragment()
 
     lateinit var prefrence : SharedPreferences
-    private val intro_flag = "Intro"
+    private val intro_flag = "termsOfService"
 
     lateinit var adapter: MyPageAdapter
     lateinit var activity: Activity
@@ -31,25 +33,26 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
-        prefrence = getSharedPreferences("FirstTimeIntro", Context.MODE_PRIVATE)
+        prefrence = PreferenceManager.getDefaultSharedPreferences(this)
+
         activity = this
 
-        if(!prefrence.getBoolean(intro_flag, true)){
+        if(prefrence.getBoolean(intro_flag, false)){
             startActivity(Intent(activity, MainActivity::class.java))
             finish()
         }
 
-        slider1.setPath(R.drawable.lightning_symbol)
+        slider1.setPath(R.drawable.ic_app_icon_intro)
         slider1.setTitle(getString(R.string.slider1_Title))
         slider1.setContent(getString(R.string.slider1_description))
 
 
-        slider2.setPath(R.drawable.lightning_symbol)
+        slider2.setPath(R.drawable.ic_intro_slide_2)
         slider2.setTitle(getString(R.string.slider2_Title))
         slider2.setContent(getString(R.string.slider2_description))
 
 
-        slider3.setPath(R.drawable.lightning_symbol)
+        slider3.setPath(R.drawable.ic_intro_slide_3)
         slider3.setTitle(getString(R.string.slider3_Title))
         slider3.setContent(getString(R.string.slider3_description))
 
@@ -69,8 +72,10 @@ class IntroActivity : AppCompatActivity() {
 
         // Initializing btn_skip
         intro_btn_skip.setOnClickListener {
-            goToMainActivity()
+            openDialog()
         }
+
+        // Lets us slide through the sliderFragments that are stored in the sliderList
         intro_viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
             }
@@ -81,19 +86,20 @@ class IntroActivity : AppCompatActivity() {
             override fun onPageSelected(p0: Int) {
                 // We're at the last page
                 if (p0 == adapter.sliderList.size - 1) {
-                    intro_btn_next.text = getText(R.string.done)
                     intro_btn_next.setOnClickListener{
-                        goToMainActivity()
+                        openDialog()
                     }
                 }
                 else {
-                    // There is a next
+                    // There are more pages left
                     //intro_btn_next.text = getText(R.string.next)
                     intro_btn_next.setOnClickListener {
                         intro_viewPager.currentItem++
                     }
                 }
-                // Change the progressbar color
+                // Change the progressbar color and if the user has come to the last
+                // slide the "next" button turns to "done". If the user slides from
+                // the last page (2) we set the text to "next"
                 when(intro_viewPager.currentItem) {
                     0 ->{
                         intro_progress_1.setTextColor(Color.BLACK)
@@ -104,25 +110,69 @@ class IntroActivity : AppCompatActivity() {
                         intro_progress_1.setTextColor(Color.GRAY)
                         intro_progress_2.setTextColor(Color.BLACK)
                         intro_progress_3.setTextColor(Color.GRAY)
+                        intro_btn_next.text = getText(R.string.next)
                     }
                     2 -> {
                         intro_progress_1.setTextColor(Color.GRAY)
                         intro_progress_2.setTextColor(Color.GRAY)
                         intro_progress_3.setTextColor(Color.BLACK)
+                        intro_btn_next.text = getText(R.string.done)
                     }
                 }
             }
         })
     }
 
+    private fun openDialog(){
+        val alert = binaryAlertDialogCreator(
+            getString(R.string.termsOfServiceTitle),
+            getString(R.string.termsOfService),
+            getString(R.string.accept),
+            getString(R.string.decline),
+            ::acceptTermsAgreement,
+            ::declineTermsAgreement)
+
+        alert.show()
+    }
+
     // Takes user to MainActivity and sets flag to false
     private fun goToMainActivity(){
         startActivity(Intent(activity, MainActivity::class.java))
         finish()
-        val editor = prefrence.edit()
-        editor.putBoolean(intro_flag, false)
-        editor.apply()
+        setTermsAgreement(true)
     }
+
+    private fun acceptTermsAgreement(){
+        goToMainActivity()
+    }
+
+    private fun declineTermsAgreement(){
+        setTermsAgreement(false)
+    }
+
+    private fun setTermsAgreement(value : Boolean){
+        val sharedPrefsEditor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        sharedPrefsEditor.putBoolean(intro_flag, value)
+        sharedPrefsEditor.apply()
+    }
+
+    private fun binaryAlertDialogCreator(title : String, message : String, posBtn : String, negBtn : String, pos : () -> Unit, neg : () -> Unit) : AlertDialog {
+        val alertBuilder = AlertDialog.Builder(this as Context)
+        alertBuilder.setTitle(title)
+        alertBuilder.setMessage(message)
+
+        alertBuilder.setPositiveButton(posBtn) { dialog, _ ->
+            pos()
+            dialog.dismiss()
+        }
+        alertBuilder.setNegativeButton(negBtn) { dialog, _ ->
+            neg()
+            dialog.dismiss()
+        }
+
+        return alertBuilder.create()
+    }
+
 
     class MyPageAdapter(manager : FragmentManager) : FragmentPagerAdapter(manager) {
 

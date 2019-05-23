@@ -47,7 +47,7 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        this.today = Calendar.getInstance().time
         val defaulAreaChoices = resources.getStringArray(R.array.defualtAreaChoices)
 //        Log.e("Spinner length", spinnerList.size.toString())
         for (i in defaulAreaChoices.indices){
@@ -66,50 +66,21 @@ class LightningHistoryActivity : BaseActivity(), AdapterView.OnItemSelectedListe
         if (jsonLinkedList != "") {
             val savedMarkersList: ArrayList<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableList<SavedMarkers>>(){}.type)
             val offset = spinnerList.size
+            Log.e("test","indices ${savedMarkersList.indices} ")
+            Log.e("test","list ${savedMarkersList} ")
             for (i in savedMarkersList.indices){
                 markers.put(i + offset, savedMarkersList[i])
                 spinnerList.add(savedMarkersList[i].name)
             }
-//            Log.e("HistoryAct", savedMarkersList.toString())
         }
-//        else{
-//            Log.e("HistoryAct", "No Saved markers")
-//        }
-
-
 
         setContentView(R.layout.activity_lightning_history)
         super.attachBackButton()
         var toolbar : Toolbar = findViewById(R.id.my_toolbar)
         toolbar.title = getString(R.string.lightningHistory)
 
-
-
-
-
         val searchbar = findViewById<SearchView>(R.id.select_area_and_date)
         searchbar.setOnClickListener { inflateDialog(this, this.from, this.to) }
-    }
-
-    override fun onResume() {
-        supportFragmentManager.beginTransaction().add(R.id.content_frame, MapWithoutSearchbar.newInstance(),
-            "mapWithoutSearchbar").commit()
-
-        this.today = Calendar.getInstance().time
-        val jsonLinkedList = getPrefs()!!.getString("SavedMarkers", null)
-        if (jsonLinkedList != null) {
-            val savedMarkersList: ArrayList<SavedMarkers> = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableList<SavedMarkers>>(){}.type)
-            val offset = spinnerList.size
-            for (i in savedMarkersList.indices){
-                markers.put(i + offset, savedMarkersList[i])
-                spinnerList.add(savedMarkersList[i].name)
-            }
-//            Log.e("HistoryAct", savedMarkersList.toString())
-        }
-//        else{
-//            Log.e("HistoryAct", "No Saved markers")
-//        }
-        super.onResume()
     }
 
     override fun onStart() {

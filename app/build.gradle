@@ -55,4 +55,5 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
     //kotlin reflection (type name)
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-}
+
+    testImplementation 'net.sf.kxml:kxml2:2.3.0'}

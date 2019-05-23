@@ -2,15 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-                android:id="@+id/test1"
-                android:icon="@drawable/ic_location_searching_black_24dp"
-                android:title="@string/map"/>
-        <item
                 android:id="@+id/drawercontent_lightninghistory"
-                android:title="LightningHistory"/>
+                android:icon="@drawable/ic_lightning_history"
+                android:title="@string/lightningHistory"/>
         <item
-                android:id="@+id/test3"
-                android:title="test3"/>
+                android:id="@+id/drawercontent_set_radius"
+                android:icon="@drawable/ic_set_radius"
+                android:title="@string/radius"/>
         <item
                 android:id="@+id/drawercontent_settings"
                 android:icon="@drawable/ic_settings_applications_black_24dp"

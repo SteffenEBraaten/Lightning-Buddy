@@ -82,6 +82,8 @@ class MapsViewmodel(private val sharedPref: SharedPreferences) : ViewModel(){
 
             dummyDataString += latitude.toString()
             dummyDataString += " " + longitude.toString()
+            dummyDataString += " 10 10 10 10 10 10 10.0 10.0 10.0 10.0"
+            Log.d("dummyDataString:", "$dummyDataString")
             dummyDataString += "\n"
         }
         val ualfs = UalfUtil.createUalfs(dummyDataString)

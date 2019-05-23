@@ -10,15 +10,12 @@ import kotlinx.android.synthetic.main.fragment_slider.*
 
 import com.example.in2000_project.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
- * A simple [Fragment] subclass.
- *
+ *  A fragment for the intro activity that let's us slide between fragments that
+ *  are stored. Is primarily used for the introActivity the first time the user
+ *  launches the app.
  */
+
 class SliderFragment : Fragment() {
 
     private var tempTitle : String = ""
@@ -49,6 +46,7 @@ class SliderFragment : Fragment() {
         tempContent = content
     }
 
+    // Sets the path to the image for the sliderFragment
     fun setPath(path : Int){
         tempPath = path
     }
