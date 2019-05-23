@@ -26,6 +26,7 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.PendingIntent.getActivity
 import android.content.Intent
+import java.net.SocketTimeoutException
 
 
 class HistoryViewmodel : ViewModel(){
@@ -39,23 +40,23 @@ class HistoryViewmodel : ViewModel(){
         CoroutineScope(Dispatchers.IO).launch {
             try {
 
-            val data = MapRepository().getFrostData(from, to)
-                withContext(Dispatchers.Main) {
-                    if (!data.isNullOrEmpty()){
-                        val ualfs = UalfUtil.createUalfs(data)
-                        if (!ualfs.isNullOrEmpty()) {
-                            act.dispayToast(context, act.getString(R.string.generateLightning), Toast.LENGTH_SHORT)
-//                            Log.e("MAP FRAG", "${mapFrag?.toString()}")
-//                            mapFrag?.plotLightning(ualfs)
-                            HistoryViewmodel.recentData.postValue(ualfs)
-                            act.dispayToast(context,act.getString(R.string.done), Toast.LENGTH_SHORT)
+                val data = MapRepository().getFrostData(from, to)
+                    withContext(Dispatchers.Main) {
+                        if (!data.isNullOrEmpty()){
+                            val ualfs = UalfUtil.createUalfs(data)
+                            if (!ualfs.isNullOrEmpty()) {
+                                act.dispayToast(context, act.getString(R.string.generateLightning), Toast.LENGTH_SHORT)
+    //                            Log.e("MAP FRAG", "${mapFrag?.toString()}")
+    //                            mapFrag?.plotLightning(ualfs)
+                                HistoryViewmodel.recentData.postValue(ualfs)
+                                act.dispayToast(context,act.getString(R.string.done), Toast.LENGTH_SHORT)
+                            }
+                        }
+                        else{
+                            act.dispayToast(context, act.getString(R.string.noDataForPeriod), Toast.LENGTH_LONG)
                         }
                     }
-                    else{
-                        act.dispayToast(context, act.getString(R.string.noDataForPeriod), Toast.LENGTH_LONG)
-                    }
                 }
-            }
 
             catch (e: NetworkErrorException){
                 withContext(Dispatchers.Main) {
@@ -64,6 +65,12 @@ class HistoryViewmodel : ViewModel(){
                         act.inflateDialog(context, from, to)
 
                     }
+                    Log.e("getHistoricalData", "failed to get historical data: $e")
+                }
+            }
+            catch(e: SocketTimeoutException){
+                withContext(Dispatchers.Main) {
+                    act.dispayToast(context,"Error: Request timed out, try another date", Toast.LENGTH_LONG)
                     Log.e("getHistoricalData", "failed to get historical data: $e")
                 }
             }

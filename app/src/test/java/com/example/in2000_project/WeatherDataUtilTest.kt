@@ -11,11 +11,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class WeatherDataUtilTest {
 
     private val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -41,7 +36,6 @@ class WeatherDataUtilTest {
 
     @Test
     fun testWeatherDataUtilMultiple(){
-
         val weatherData =
             "<weatherdata xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://api.met.no/weatherapi/locationforecast/1.9/schema\" created=\"2019-05-20T16:47:03Z\">\n" +
                     "<meta>\n" +

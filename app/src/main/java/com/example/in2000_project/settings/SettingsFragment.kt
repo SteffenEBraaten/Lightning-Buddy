@@ -1,6 +1,5 @@
 package com.example.in2000_project.settings
 
-
 import android.util.Patterns
 import android.content.Context
 import android.content.Intent
@@ -24,22 +23,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.content.SharedPreferences
 
-
-
-
-
-
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- *
- */
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -78,7 +61,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
         else string = getString(R.string.noTimeHasBeenSet)
         preferenceScreen.findPreference("silentMode").summary = string
-
     }
 
     private fun attachEvents(){
@@ -140,8 +122,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     c.set(Calendar.HOUR_OF_DAY, hour)
                     c.set(Calendar.MINUTE, minute)
                     toTimeEditText.setText(SimpleDateFormat("HH : mm").format(c.time))
-
-
                 }
                 TimePickerDialog(this.context, timeSetListener, c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE), true ).show()
             }
@@ -218,10 +198,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("lightningbuddy.feedback@gmail.com"))
         intent.putExtra(Intent.EXTRA_SUBJECT,"Feedback")
         startActivity(intent)
-
     }
-
-
 
     private fun setAlarm(){
         val serviceIntent = Intent(this.activity, AlarmService::class.java)
