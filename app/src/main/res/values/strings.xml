@@ -8,22 +8,37 @@
     <string name="Maps_API" translatable="false">AIzaSyB6a3H7qUxi-pXKneCVCmSgMr6vJwxn7Kc</string>
 
 
-    <string name="emailValue" translatable="false"/>
-    <string name="language" translatable="false"/>
     <string name="resetSettingsMessage">All saved areas will be deleted and settings will be restored to default. \nDo
         you wish to continue?
     </string>
-    <string name="termsOfService" translatable="false">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua.
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    <string name="termsOfService">
+        Terms and conditions\n
+
+        These terms and conditions ("Terms", "Agreement") are an agreement between Mobile Application Developer ("Mobile Application Developer", "us", "we" or "our") and you ("User", "you" or "your"). This Agreement sets forth the general terms and conditions of your use of the Lightning Buddy mobile application and any of its products or services (collectively, "Mobile Application" or "Services").
+
+        \n\nBackups\n
+
+        We are not responsible for Content residing in the Mobile Application. In no event shall we be held liable for any loss of any Content. It is your sole responsibility to maintain appropriate backup of your Content. Notwithstanding the foregoing, on some occasions and in certain circumstances, with absolutely no obligation, we may be able to restore some or all of your data that has been deleted as of a certain date and time when we may have backed up data for our own purposes. We make no guarantee that the data you need will be available.
+
+        \n\nLinks to other mobile applications\n
+
+        Although this Mobile Application may link to other mobile applications, we are not, directly or indirectly, implying any approval, association, sponsorship, endorsement, or affiliation with any linked mobile application, unless specifically stated herein. We are not responsible for examining or evaluating, and we do not warrant the offerings of, any businesses or individuals or the content of their mobile applications. We do not assume any responsibility or liability for the actions, products, services, and content of any other third-parties. You should carefully review the legal statements and other conditions of use of any mobile application which you access through a link from this Mobile Application. Your linking to any other off-site mobile applications is at your own risk.
+
+        \n\nChanges and amendments\n
+
+        We reserve the right to modify this Agreement or its policies relating to the Mobile Application or Services at any time, effective upon posting of an updated version of this Agreement in the Mobile Application. When we do, we will send you an email to notify you. Continued use of the Mobile Application after any such changes shall constitute your consent to such changes. Policy was created with https://www.WebsitePolicies.com
+
+        \n\nAcceptance of these terms\n
+
+        You acknowledge that you have read this Agreement and agree to all its terms and conditions. By using the Mobile Application or its Services you agree to be bound by this Agreement. If you do not agree to abide by the terms of this Agreement, you are not authorized to use or access the Mobile Application and its Services.
+
+        \n\nContacting us\n
+
+        If you have any questions about this Agreement, please contact us.
+
+        \n\nThis document was last updated on May 11, 2019
     </string>
     <string name="lightningDataFrequency" translatable="false">5</string>
-
-    <string name="en" translatable="false">English</string>
-    <string name="no" translatable="false">Norsk</string>
 
     <string name="dark_mode">Dark mode</string>
     <string name="general">General</string>
@@ -50,11 +65,8 @@
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="done">Done</string>
-    <string name="slider1_Title">Welcome to Ligtning Buddy!</string>
-    <string name="slider1_description">
-        Now, you will be able to see where lightning storms are happening close to you! Check out the map for
-        lightning strikes that have struck in the last 24 hours.
-    </string>
+    <string name="slider1_Title">Welcome to Lightning Buddy!</string>
+    <string name="slider1_description">Now, you will be able to see where lightning storms are happening close to you! Check out the map for a live view of where all the most recent lightning strikes have struck.</string>
     <string name="slider2_Title">Get notified about lightning strikes!</string>
     <string name="slider2_description">
         Use the map and set location where you would like to get notified about lightning storms so that you can remain
@@ -68,7 +80,16 @@
     <string name="save">Save</string>
     <string name="notification_title">New lightning detected</string>
     <string name="notification_content">New lightning detected at:</string>
+    <string name="localNotificationContent">High chance of lightning in your local area!</string>
+    <string name="notificationForecastTitle">Lightning forecast</string>
+    <string name="localForecastNotificationContent">is expected in your local area at  </string>
 
+    <!--Radius fragment-->
+    <string name="meter">meters</string>
+    <string name="user_radius_text">To receive notifications when you are about to enter a location with forecasted lightning storms in the near future, please set the radius you wish to be notified in.</string>
+    <string name="set">Set</string>
+    <string name="km" translatable="false">km</string>
+    <string name="marker_radius_text">Set the radius for the location you wish to to be notified about lightning in.</string>
 
     <!--Lighning History-->
     <string name="lightningHistory">Lightning History</string>
@@ -82,5 +103,29 @@
     <string name="loadingData">Loading data...</string>
     <string name="generateLightning">Generating lightning...</string>
     <string name="noDataForPeriod">There was no data for this place/period, please try again!</string>
-    <!---->
+    <string name="Close">Close</string>
+    <string name="radius">Radius</string>
+
+    <string name="giveFeedback">Give feedback</string>
+    <string name="call_for_help">Call for help</string>
+    <string name="police_phone">tel:112</string>
+    <string name="wrongInputMarkerSave">Saved marker name can not be empty</string>
+    <string name="notificationRadiusSet">Notification radius set</string>
+    <string name="radiusNotLessThan">Radius can not be less than</string>
+    <string name="markerSaved">Marker saved</string>
+    <string name="saveMarkerDescText">Marker name:</string>
+
+    <string name="logo" translatable="false">Logo</string>
+    <string name="set_time">Set time</string>
+    <string name="end_time">End Time</string>
+    <string name="start_time">Start Time</string>
+    <string name="from">from</string>
+    <string name="to">to</string>
+    <string name="toNextDay">to next day</string>
+    <string name="noTimeHasBeenSet">No time has been set</string>
+    <string name="pleaseSelectTimeFrom">Please select time from</string>
+    <string name="pleaseSelectTimeTo">Please select time to</string>
+    <string name="theNotificationsWillNotBePushedFrom">You will not receive notifications from</string>
+
+
 </resources>

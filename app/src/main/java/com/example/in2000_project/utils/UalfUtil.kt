@@ -4,9 +4,9 @@ import android.util.Log
 import java.util.*
 import kotlin.collections.ArrayList
 
-public abstract class UalfUtil{
+abstract class UalfUtil{
 
-    public data class Ualf(
+    data class Ualf(
         val id : Int,
         val date : Date,
         val lat : Double,
@@ -33,7 +33,6 @@ public abstract class UalfUtil{
                         lineData[4].toInt(), lineData[5].toInt(), lineData[6].toInt()
                     )
                     ualfs.add(Ualf(idCount++, date, lineData[8].toDouble(), lineData[9].toDouble(), lineData[10].toInt(), lineData[18].toDouble(), lineData[19].toDouble()))
-//                    ualfs.add(Ualf(idCount++, date, lineData[8].toDouble(), lineData[9].toDouble()))
                 }catch (e : Exception){
                     Log.e("Ualf util error", e.toString())
                 }

@@ -49,10 +49,6 @@ public class TestUtil{
 
             val ualfs = UalfUtil.createUalfs(data)
             if(ualfs.isNullOrEmpty()) return
-
-            for (ualf in ualfs){
-                Log.e("test", "test : $ualf")
-            }
         }
 
     }

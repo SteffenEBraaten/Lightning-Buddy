@@ -1,18 +1,22 @@
 package com.example.in2000_project.alarm
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.arch.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.PowerManager
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.ContextCompat.getSystemService
+import android.support.v4.content.ContextCompat.startActivities
 import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
@@ -20,8 +24,12 @@ import com.example.in2000_project.R
 import com.example.in2000_project.maps.MainActivity
 import com.example.in2000_project.maps.MapFragment
 import com.example.in2000_project.maps.MapsViewmodel
+import java.text.SimpleDateFormat
+import java.util.*
 import com.example.in2000_project.maps.MapsViewmodelFactory
 import com.example.in2000_project.utils.UalfUtil
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -31,22 +39,110 @@ class Alarm : BroadcastReceiver() {
     private var frequency: Int = 0
     private lateinit var context: Context
 
+    @SuppressLint("SimpleDateFormat")
     override fun onReceive(context: Context, intent: Intent) {
-        this.context = context
-        val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
-        wl.acquire(60 * 1000L /*10 minutes*/)
-        MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
-        inspectRecentData()
-        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show() // For example
-        wl.release()
+        if (ActivityCompat.checkSelfPermission(context,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        if(sharedPrefs.getBoolean("allow_Notifications", true)){
+            val fromTime = sharedPrefs.getString("fromTime", "")!!
+            val toTime = sharedPrefs.getString("toTime", "")!!
+            val temp = SimpleDateFormat("HH : mm")
+            val currentTime = temp.format(Date())
+
+            this.context = context
+
+            val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Partial wake lock: get api data")
+
+            if(fromTime != "" && toTime != ""){
+                if(fromTime < toTime){
+                    if(currentTime > toTime || currentTime < fromTime){
+                        wl.acquire(60 * 1000L /*10 minutes*/)
+                        MapsViewmodel(sharedPrefs).getRecentApiData()
+
+                        inspectRecentData()
+
+                        val flc = LocationServices.getFusedLocationProviderClient(context)
+                        flc.lastLocation.addOnSuccessListener {
+                                location: Location? ->
+                            Log.e("BACKGROUND LOC", "${location}")
+                            if (location != null) {
+                                val radius = sharedPrefs.getInt("UserRadius", 1000)
+                                if (radius != 0) {
+                                    Log.d("User radius", "User radius = $radius")
+                                    LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                    LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                } else {
+                                    Log.d("User radius", "User's radius config either not set or set to 0.")
+                                }
+                            }
+                        }
+
+                        wl.release()
+                    }
+                }
+                else if (fromTime > toTime){
+                    if(currentTime > toTime && currentTime < fromTime){
+                        wl.acquire(60 * 1000L /*10 minutes*/)
+                        MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+
+                        inspectRecentData()
+
+                        val flc = LocationServices.getFusedLocationProviderClient(context)
+                        flc.lastLocation.addOnSuccessListener {
+                                location: Location? ->
+                            Log.e("BACKGROUND LOC", "${location}")
+                            if (location != null) {
+                                val radius = sharedPrefs.getInt("UserRadius", 1000)
+                                if (radius != 0) {
+                                    Log.d("User radius", "User radius = $radius")
+                                    LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                    LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                                } else {
+                                    Log.d("User radius", "User's radius config either not set or set to 0.")
+                                }
+                            }
+                        }
+                        wl.release()
+                    }
+                }
+            }
+            else if(fromTime == "" && toTime == ""){
+                wl.acquire(60 * 1000L /*10 minutes*/)
+                MapsViewmodel(PreferenceManager.getDefaultSharedPreferences(context)).getRecentApiData()
+
+                inspectRecentData()
+
+                val flc = LocationServices.getFusedLocationProviderClient(context)
+                flc.lastLocation.addOnSuccessListener {
+                        location: Location? ->
+                    Log.e("BACKGROUND LOC", "${location}")
+                    if (location != null) {
+                        val radius = sharedPrefs.getInt("UserRadius", 1000)
+                        if (radius != 0) {
+                            Log.d("User radius", "User radius = $radius")
+                            LocalLightningChecker().getLocalLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                            LocalLightningChecker().getLocalForcastedLightning(this.context, LatLng(location.latitude, location.latitude), radius)
+                        } else {
+                            Log.d("User radius", "User's radius config either not set or set to 0.")
+                        }
+                    }
+                }
+                wl.release()
+            }
+        }
     }
+
+
 
     private fun inspectRecentData() {
         val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         var savedMarkersList: MutableSet<MapFragment.SavedMarkers>? = null
 
-        val jsonLinkedList = sharedPrefs!!.getString("SavedMarkers", null)
+        val jsonLinkedList = sharedPrefs.getString("SavedMarkers", null)
         if (jsonLinkedList != null) {
             savedMarkersList = Gson().fromJson(jsonLinkedList, object: TypeToken<MutableSet<MapFragment.SavedMarkers>>(){}.type)
             Log.d("Alarm", "Saved markers retrieved")
@@ -56,14 +152,14 @@ class Alarm : BroadcastReceiver() {
             Log.d("Alarm", "No saved markers")
             savedMarkersList = mutableSetOf()
         }
-        var notificationId = 0
+        val notificationId = 0
         if (!savedMarkersList.isNullOrEmpty()) {
             val recentData: ArrayList<UalfUtil.Ualf>? = MapsViewmodel.recentData.value
             recentData?.forEach {
                 val latitude: Double = it.lat
                 val longitude: Double = it.long
 
-                val newLocation: Location = Location("")
+                val newLocation = Location("")
                 newLocation.latitude = latitude
                 newLocation.longitude = longitude
 
@@ -72,13 +168,13 @@ class Alarm : BroadcastReceiver() {
                     val savedLongitude: Double = it.longitude
                     val savedRadius: Double = it.radius
 
-                    val savedLocation: Location = Location("")
+                    val savedLocation = Location("")
                     savedLocation.latitude = savedLatitude
                     savedLocation.longitude = savedLongitude
                     if (savedLocation.distanceTo(newLocation) <= savedRadius) {
-                        Log.d("ALFY", "Notification")
-                        var notification: NotificationCompat.Builder? = buildNotification(newLocation)
-                        var notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(context)
+                        val notification: NotificationCompat.Builder? = buildNotification(newLocation)
+                        val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(context)
+
                         notificationManager.notify(notificationId, notification!!.build())
 
                     }
@@ -92,7 +188,7 @@ class Alarm : BroadcastReceiver() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        var notification = NotificationCompat.Builder(context, "Default")
+        return NotificationCompat.Builder(context, "Default")
             .setSmallIcon(R.drawable.lightning_symbol)
             .setContentTitle(context.getString(R.string.notification_title))
             .setContentText(
@@ -105,12 +201,11 @@ class Alarm : BroadcastReceiver() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setDefaults(Notification.DEFAULT_ALL)
-        return notification
     }
 
 
     fun setAlarm(context: Context, minutes: Int) {
-
+        this.context = context
         val alarmUp = PendingIntent.getBroadcast(
             context, 0,
             Intent(context, Alarm::class.java),
@@ -130,6 +225,7 @@ class Alarm : BroadcastReceiver() {
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis(),
             (1000 * 60 * minutes).toLong(),
+//            (minutes).toLong(),
             pi
         )
     }

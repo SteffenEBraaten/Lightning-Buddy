@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="192dp"
               android:background="?attr/colorPrimaryDark"
@@ -8,10 +10,14 @@
               android:orientation="vertical"
               android:gravity="bottom">
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/menu"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/logo"
+            android:src="@drawable/ic_app_icon_intro"
+            android:scaleType="fitCenter"
+            android:cropToPadding="false"
+            android:paddingTop="10dp"
+            />
 
 </LinearLayout>

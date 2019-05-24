@@ -14,7 +14,10 @@ class CustomInfoWindow(val context: Context) : GoogleMap.InfoWindowAdapter {
         val infoData: InfoWindowData? = p0?.tag as InfoWindowData?
 
         infoView.findViewById<TextView>(R.id.info_title)?.text = "Lat: ${infoData?.lat}\tLong: ${infoData?.long}"
-        infoView.findViewById<TextView>(R.id.info_content)?.text = "Date: ${infoData?.time}"
+        infoView.findViewById<TextView>(R.id.info_date)?.text = "Date: ${infoData?.time}"
+        infoView.findViewById<TextView>(R.id.info_peakCurrent)?.text = "Peak current: ${infoData?.peakCurrent}"
+        infoView.findViewById<TextView>(R.id.info_riseTime)?.text = "Rise time: ${infoData?.riseTime}"
+        infoView.findViewById<TextView>(R.id.info_peakToZeroTime)?.text = "Peak to zero time: ${infoData?.peakToZeroTIme}"
         return infoView
     }
 
