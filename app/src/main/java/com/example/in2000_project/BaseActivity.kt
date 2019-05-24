@@ -96,9 +96,12 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         when(item.itemId){
             R.id.drawercontent_settings -> startActivity(Intent(this, SettingsActivity::class.java))
             R.id.drawercontent_set_radius -> {
-                if (ActivityCompat.checkSelfPermission(this.baseContext,
+                if (ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     startRadiusFragment(item)
+                }else{
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+                        , MY_PERMISSIONS_REQUEST_ACCESS_LOCATION)
                 }
             }
             R.id.drawercontent_lightninghistory -> startActivity(Intent(this, LightningHistoryActivity::class.java))
