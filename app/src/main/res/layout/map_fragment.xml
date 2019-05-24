@@ -4,11 +4,12 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	tools:context=".Maps.MainActivity"
+	tools:context=".maps.MainActivity"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/map_linear_layout">
 
 	<android.support.v7.widget.CardView
+			android:id="@+id/searchbar_card"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 		<fragment

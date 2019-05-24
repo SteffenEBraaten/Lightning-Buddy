@@ -1,13 +1,17 @@
 package com.example.in2000_project.maps
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
 import android.util.Log

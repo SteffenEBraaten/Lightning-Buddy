@@ -4,9 +4,9 @@ import android.util.Log
 import java.util.*
 import kotlin.collections.ArrayList
 
-public abstract class UalfUtil{
+abstract class UalfUtil{
 
-    public data class Ualf(
+    data class Ualf(
         val id : Int,
         val date : Date,
         val lat : Double,

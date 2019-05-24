@@ -100,12 +100,18 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
                               savedInstanceState: Bundle?): View? {
         Log.d("Fragment map", "Inflating map fragment")
         rootView = inflater.inflate(R.layout.map_fragment, parent, false)
+
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity)
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            view.findViewById<View>(R.id.searchbar_card).visibility = View.GONE
+        }
 
         Log.d("Fragment map", "Getting viewmodel for map")
         this.viewModel = ViewModelProviders.of(this.activity!!,
@@ -247,26 +253,6 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         return log(156543.03392 * Math.cos(lat * Math.PI / 180) * maxLength/ radius * 2, 2.0).toFloat()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when(requestCode) {
-            MY_PERMISSIONS_REQUEST_ACCESS_LOCATION -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-                        googleMap.isMyLocationEnabled = true
-                        Log.d("Fragment map", "Location permission granted")
-                        setUpMap()
-                    }
-                } else {
-                    // Permission denied.
-                    Log.d("Fragment map", "Location permission denied")
-                }
-            }
-            else -> {
-                //Ignore all other requests
-            }
-        }
-    }
     private fun setUpMap() {
         // The reason for checking this all the time is because the user could at any time revoke permissions
         if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -287,7 +273,6 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
         autocompleteFragment.setPlaceFields(arrayListOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
             Place.Field.VIEWPORT))
         autocompleteFragment.setOnPlaceSelectedListener(this)
-
     }
     public fun circleOnUser(radius: Int): Circle {
         val position = LatLng(lastLocation.latitude, lastLocation.longitude)
@@ -402,6 +387,7 @@ class MapFragment: OnMapReadyCallback, PlaceSelectionListener, Fragment() {
             prefEditor?.apply()
         }
     }
+
     fun clearMap() {
         googleMap.clear()
     }

@@ -41,6 +41,10 @@ class Alarm : BroadcastReceiver() {
 
     @SuppressLint("SimpleDateFormat")
     override fun onReceive(context: Context, intent: Intent) {
+        if (ActivityCompat.checkSelfPermission(context,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
         val sharedPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         if(sharedPrefs.getBoolean("allow_Notifications", true)){
             val fromTime = sharedPrefs.getString("fromTime", "")!!
@@ -61,11 +65,6 @@ class Alarm : BroadcastReceiver() {
 
                         inspectRecentData()
 
-                        if (ActivityCompat.checkSelfPermission(context,
-                                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(MainActivity(),
-                                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-                        }
                         val flc = LocationServices.getFusedLocationProviderClient(context)
                         flc.lastLocation.addOnSuccessListener {
                                 location: Location? ->
@@ -92,11 +91,6 @@ class Alarm : BroadcastReceiver() {
 
                         inspectRecentData()
 
-                        if (ActivityCompat.checkSelfPermission(context,
-                                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(MainActivity(),
-                                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-                        }
                         val flc = LocationServices.getFusedLocationProviderClient(context)
                         flc.lastLocation.addOnSuccessListener {
                                 location: Location? ->
@@ -122,12 +116,6 @@ class Alarm : BroadcastReceiver() {
 
                 inspectRecentData()
 
-                if (ActivityCompat.checkSelfPermission(context,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity(),
-                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-
-                }
                 val flc = LocationServices.getFusedLocationProviderClient(context)
                 flc.lastLocation.addOnSuccessListener {
                         location: Location? ->

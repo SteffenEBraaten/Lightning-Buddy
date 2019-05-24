@@ -1,5 +1,6 @@
 package com.example.in2000_project
 
+import android.Manifest
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
@@ -8,8 +9,11 @@ import android.view.MenuItem
 import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import com.example.in2000_project.LightningHistory.LightningHistoryActivity
@@ -39,16 +43,6 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
     protected fun getPrefs() : SharedPreferences{
         return PreferenceManager.getDefaultSharedPreferences(baseContext)
-    }
-
-    protected fun getSettings() : Settings{
-        val sharedPrefs = getPrefs()
-        return Settings(
-                    darkMode = sharedPrefs.getBoolean("darkMode", false),
-                    allowNotifications = sharedPrefs.getBoolean("allowNotifications", true),
-                    email = sharedPrefs.getString("email", "") as String,
-                    termsOfService = sharedPrefs.getBoolean("termsOfService", false)
-                )
     }
 
     protected fun setToolbar(title: String, navImg: Int?) {
@@ -102,12 +96,14 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         when(item.itemId){
             R.id.drawercontent_settings -> startActivity(Intent(this, SettingsActivity::class.java))
             R.id.drawercontent_set_radius -> {
-                startRadiusFragment(item)
+                if (ActivityCompat.checkSelfPermission(this.baseContext,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    startRadiusFragment(item)
+                }
             }
             R.id.drawercontent_lightninghistory -> startActivity(Intent(this, LightningHistoryActivity::class.java))
 
         }
-
         return true
     }
 
@@ -125,6 +121,27 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         item.isChecked = false
         this.drawer.closeDrawer(GravityCompat.START)
         attachCancelButton(setRadiusFragment)
+    }
+
+    private val MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 100
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode) {
+            MY_PERMISSIONS_REQUEST_ACCESS_LOCATION -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                        Log.e("Fragment map", "Location permission granted")
+                        recreate()
+                    }
+                } else {
+                    // Permission denied.
+                    Log.d("Fragment map", "Location permission denied")
+                }
+            }
+            else -> {
+                //Ignore all other requests
+            }
+        }
     }
 }
 

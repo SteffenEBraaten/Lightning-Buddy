@@ -130,6 +130,7 @@ class MapWithoutSearchbar() : OnMapReadyCallback, PlaceSelectionListener, Fragme
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+
         Places.initialize(activity!!, mapsAPI)
         placesClient = Places.createClient(activity!!)
 
@@ -189,28 +190,6 @@ class MapWithoutSearchbar() : OnMapReadyCallback, PlaceSelectionListener, Fragme
         val customInfoWindow = CustomInfoWindow(activity as Context)
         googleMap.setInfoWindowAdapter(customInfoWindow)
 
-    }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when(requestCode) {
-            MY_PERMISSIONS_REQUEST_ACCESS_LOCATION -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-                        googleMap.isMyLocationEnabled = true
-                        Log.d("Fragment map", "Location permission granted")
-                        setUpMap()
-                    }
-                } else {
-                    // Permission denied.
-                    Log.d("Fragment map", "Location permission denied")
-                }
-            }
-            else -> {
-                //Ignore all other requests
-            }
-        }
     }
 
     private fun setUpMap() {
